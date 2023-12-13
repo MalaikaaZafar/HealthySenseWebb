@@ -11,19 +11,18 @@ const auth = async (req, res, next) => {
     let decodedData;
 
     if (token) {    
-      decodedData = jwt.verify(token, secret);
-
-      req.userId = decodedData?.id;
-    } else {
-      decodedData = jwt.decode(token);
-
-      req.userId = decodedData.id;
-    }    
+      decodedData = jwt.verify(token, secret).then((decodedData, error) => {
+        if (error) {
+          return res.status(401).json({ message: "Invalid Token" });
+        }
+        req.userId = decodedData?.id;
+      });
+    }
 
     next();
 
   } catch (error) {
-    console.log(error);
+    return res.status(401).json({ message: "Error in Token" });
   }
 };
 
