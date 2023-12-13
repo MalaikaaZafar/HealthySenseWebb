@@ -1,5 +1,7 @@
 const Doctor = require('../models/Doctor');
 const User = require('../models/User');
+const Appointment=require('../models/Apointments');
+
 
 const registerDoctor = async (req, res) => {
     const { specialization, description, location, experience, workingHours, fee, services, appointmentSlots} = req.body;
@@ -45,6 +47,65 @@ const registerDoctor = async (req, res) => {
     }
 };
 
+// view all consultations of a doctor, both pending and completed
+const consultations=async(req,res)=>{
+    try{
+        const doctor=await Doctor.findById(req.UserId);
+        if(!doctor)
+            return res.status(404).json({message:"Doctor not found"});
+        const consultationList=await Appointment.find({doctorId:req.UserId});
+        return res.status(200).json({consultationList});
+    }catch(error){
+        console.log(error.message);
+        return res.status(500).json({message:"Something went wrong"});
+    }
+}
+
+// view details of a specific appointment
+const getConsultationById=async(req,res)=>{
+    const {consultationId}=req.params;
+    try{
+        const consultation=await Appointment.findById(consultationId);
+        if(!consultation)
+            return res.status(404).json({message:"Consultation not found"});
+        return res.status(200).json({consultation});
+    }catch(error){
+        console.log(error.message);
+        return res.status(500).json({message:"Something went wrong"});
+    }
+}
+
+// update consultation
+const updateConsultation=async(req,res)=>{
+    const {doctorId, initDate, initTime, date, time, updateReason, status}=req.body;
+    const consultation=await Appointment.findOne({doctorId, initDate, initTime});
+    if (!consultation)
+        return res.status(404).json({message:"Consultation not found"});
+    consultation.date=date;
+    consultation.time=time;
+    consultation.updateReason=updateReason;
+    consultation.status=status;
+    await consultation.save();
+    return res.status(200).json({consultation});
+}
+
+
+// add Appointment Slots
+const addAppointmentSlots=async(req,res)=>{
+    const {doctorId, date, time}=req.body;
+    const doctor=await Doctor.findById(doctorId);
+    if(!doctor)
+        return res.status(404).json({message:"Doctor not found"});
+    const appointmentSlots=doctor.appointmentSlots;
+    appointmentSlots.push({date, time});
+    await doctor.save();
+    return res.status(200).json({doctor});
+}
+
 module.exports = {
-    registerDoctor
+    registerDoctor, 
+    consultations, 
+    getConsultationById,
+    updateConsultation,
+    addAppointmentSlots
 };
