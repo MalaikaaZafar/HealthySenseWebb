@@ -11,9 +11,7 @@ app.use(bodyParser.json({limit: "30mb", extended:true}));
 app.use(bodyParser.urlencoded({limit: "30mb", extended:true}));
 app.use(cors());
 
-app.get('/', (res, req)=>{
-    res.send('Hello to MERN API');
-})
+app.use('/', require('./routes/UserRoutes'));
 
 const PORT =process.env.PORT || 3000;
 
