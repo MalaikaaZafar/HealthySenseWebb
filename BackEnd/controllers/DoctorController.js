@@ -63,9 +63,9 @@ const consultations=async(req,res)=>{
 
 // view details of a specific appointment
 const getConsultationById=async(req,res)=>{
-    const {consultationId}=req.params;
+    const {date, time}=req.body;
     try{
-        const consultation=await Appointment.findById(consultationId);
+        const consultation=await Appointment.findOne({doctorId:req.UserId, date, time});
         if(!consultation)
             return res.status(404).json({message:"Consultation not found"});
         return res.status(200).json({consultation});
