@@ -13,7 +13,7 @@ const registerDoctor = async (req, res) => {
         files[i].mv(`../uploads/${fileName}`, async (err) => {
             if (err) {
                 console.log(err);
-                return res.status(500).send({ msg: "Error occured" });
+                return res.status(500).send({ msg: "Error occured in uploading certificates" });
             }
         });
     }
