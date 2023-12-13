@@ -26,6 +26,7 @@ const doctorSchema = new mongoose.Schema({
     certificates: [certificateSchema],
     services: [{ type: String, required: true }],
     appointmentSlots:[appointmentSlotsSchema],
+    approvedStatus: { type: Boolean, required: true },
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);
