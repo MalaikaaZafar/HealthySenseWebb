@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     gender: { type: String, required: true, enum: ['Male', 'Female'] },
     type: { type: String, required: true, enum: ['Patient', 'Doctor', 'Admin'] },
     isBanned: { type: Boolean, default: false },
+    profilePicture: { type: String },
 });
 
 const User = mongoose.model('User', userSchema);

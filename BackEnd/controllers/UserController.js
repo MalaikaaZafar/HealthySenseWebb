@@ -7,7 +7,18 @@ dotenv.config();
 const secret = process.env.SECRET;
 
 const signup = async (req, res) => {
-    const { name, email, password, dob, country, phoneNumber, gender, type } = req.body;
+    const { name, email, password, dob, country, phoneNumber, gender, type} = req.body;
+
+    // upload image to images folder
+    const file = req.files.profilePicture;
+    const fileName = Date.now() + file.name;
+
+    file.mv(`../uploads/${fileName}`, async (err) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send({ msg: "Error occured" });
+        }
+    });
 
     try {
         const existingUser = await User.findOne({ email });
@@ -16,9 +27,9 @@ const signup = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const result = await User.create({ name, email, password: hashedPassword, dob, country, phoneNumber, gender, type });
+        const result = await User.create({ name, email, password: hashedPassword, dob, country, phoneNumber, gender, type, profilePicture: fileName });
 
-        const token = jwt.sign({ email: result.email, id: result._id }, secret );
+        const token = jwt.sign({ email: result.email, id: result._id }, secret);
 
         return res.status(201).json({ result, token });
     } catch (error) {
