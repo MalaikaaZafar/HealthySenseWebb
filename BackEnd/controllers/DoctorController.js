@@ -2,7 +2,7 @@ const Doctor = require('../models/Doctor');
 const User = require('../models/User');
 
 const registerDoctor = async (req, res) => {
-    const { specialization, description, location, experience, workingHours, fee, availability, certificates, services, appointmentSlots, approvedStatus } = req.body;
+    const { specialization, description, location, experience, workingHours, fee, certificates, services, appointmentSlots} = req.body;
 
     try {
         const existingUser = await User.findById(req.UserId);
@@ -10,7 +10,7 @@ const registerDoctor = async (req, res) => {
         if (!existingUser || existingUser.type !== "Doctor" || existingUser._id !== req.UserId)
             return res.status(404).json({ message: "Wrong User" });
 
-        const result = await Doctor.create({ id: req.UserId, specialization, description, location, experience, workingHours, fee, availability, certificates, services, appointmentSlots, approvedStatus });
+        const result = await Doctor.create({ id: req.UserId, specialization, description, location, experience, workingHours, fee, certificates, services, appointmentSlots});
 
         return res.status(201).json({ result });
     } catch (error) {

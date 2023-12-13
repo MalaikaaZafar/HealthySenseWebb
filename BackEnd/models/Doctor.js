@@ -22,11 +22,11 @@ const doctorSchema = new mongoose.Schema({
     experience: { type: Number, required: true },
     workingHours: { type: String, required: true },
     fee: { type: Number, required: true },
-    availability: { type: String },
+    availability: { type: Boolean, required: true, default: true },
     certificates: [certificateSchema],
     services: [{ type: String, required: true }],
     appointmentSlots:[appointmentSlotsSchema],
-    approvedStatus: { type: Boolean, required: true },
+    approvedStatus: { type: Boolean, required: true, default: false },
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);
