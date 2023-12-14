@@ -1,0 +1,162 @@
+  
+  .patientCard
+  {
+    display: flex;
+    flex-direction: row;
+    border-radius: 10px;
+    background: #F4F9FB;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    align-items: center;
+  }
+  
+  .ScreenBody{
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .half{
+    width: 50%;
+    margin: 3%;
+    align-items: center;
+    justify-content: center;
+  }
+  .patientImage
+  {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5%;
+  }
+  .patientImage img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    float: left;
+  }
+  
+  .patientDetails
+  {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+  }
+  
+  .docName p
+  {
+    margin: 5px;
+    color: #172331;
+    font-family: Roboto;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+  
+  .docSpeciality p, .docExperience p
+  {
+    margin:5px;
+    color: #8C8FA5;
+    font-family: Raleway;
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.42px;
+  }
+  
+  .topComponent{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+ 
+  .appointmentHours
+  {
+    display: flex;
+    flex-direction: row;
+  
+  }
+  
+  .appointmentHour
+  {
+    margin: 2px;
+    padding: 5px;
+    width: 50%;
+    background: #E9F5FA;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .appointmentHour:hover
+  {
+    background: #2854C3;
+    color: #FFF;
+  } 
+  
+  .appointmentProblem textarea{
+    width: 100%;
+    height: 200px;
+}
+  .infoCard
+  {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; 
+    border-radius: 10px;
+    margin-bottom: 10%;
+    align-items: center;
+  }
+
+  
+  
+  .infoCard .information
+  {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    text-align: center;
+    align-items: center;
+    background-color: #2854c3;
+    margin:1%;
+    border-radius: 13px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  
+  .appointmentDetails{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-top: 5%;
+    padding: 5%;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .heading{
+    display: flex;
+    flex-direction: row;
+    font-weight: bold;
+  }
+
+.appointmentDetails p{
+        margin: 0px;
+        padding: 0px;
+        color: #8C8FA5
+    }
+.detail{
+    margin-top: 2%;
+    margin-bottom: 5%;
+    width: 100%;
+}
+
+.appointmentBtns{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
