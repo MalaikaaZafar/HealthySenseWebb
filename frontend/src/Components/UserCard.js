@@ -8,7 +8,7 @@ function UserCard({type, width})
     return(
         <Card variant='outlined' style={{width:{width}, background:'#F4F9FB', borderRadius:'10px'}}>
             <div className='user-card-img'>
-            <Avatar style={{ margin:'1%', height: '75px', width: '75px', float: 'left' }}>H</Avatar>
+            <Avatar style={{ margin:'1%',marginLeft:'5%',marginRight:'5%', height: '75px', width: '75px', float: 'left' }}>H</Avatar>
                 {type==='doctor' ? <DoctorDetails/> : <PatientDetails/>}
             </div>
         </Card>

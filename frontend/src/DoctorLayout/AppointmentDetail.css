@@ -153,7 +153,9 @@
     margin-bottom: 5%;
     width: 100%;
 }
-
+.detail p{
+  margin-left: 3%;
+}
 .appointmentBtns {
   display: flex;
   flex-direction: column;
