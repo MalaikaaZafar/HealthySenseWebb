@@ -11,7 +11,7 @@ const auth = async (req, res, next) => {
     let decodedData;
 
     if (token) {    
-      decodedData = jwt.verify(token, secret).then((decodedData, error) => {
+      decodedData = jwt.verify(token, secret, (decodedData, error) => {
         if (error) {
           return res.status(401).json({ message: "Invalid Token" });
         }
