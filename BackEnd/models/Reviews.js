@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-    Doctorid: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
-    Patientid: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
-    Comment: { type: String, required: true },
+    doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
+    patientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
+    comment: { type: String, required: true },
     experience: {
         type: Number,
         required: true,
@@ -14,7 +14,7 @@ const reviewSchema = new mongoose.Schema({
             message: '{VALUE} is not an integer value for experience.',
         },
     },
-    CheckupRating: {
+    checkupRating: {
         type: Number,
         required: true,
         min: 0,
@@ -24,7 +24,7 @@ const reviewSchema = new mongoose.Schema({
             message: '{VALUE} is not an integer value for experience.',
         },
     },
-    EnviormentRating: {
+    environmentRating: {
         type: Number,
         required: true,
         min: 0,
@@ -34,7 +34,7 @@ const reviewSchema = new mongoose.Schema({
             message: '{VALUE} is not an integer value for experience.',
         },
     },
-    StaffRating: {
+    staffRating: {
         type: Number,
         required: true,
         min: 0,
@@ -44,7 +44,7 @@ const reviewSchema = new mongoose.Schema({
             message: '{VALUE} is not an integer value for experience.',
         },
     },
-    Recommendation: { type: Boolean, required: true },
+    recommendation: { type: Boolean, required: true },
     date: { type: Date, required: true },
 });
 

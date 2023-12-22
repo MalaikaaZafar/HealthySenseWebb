@@ -8,7 +8,9 @@ const userSchema = new mongoose.Schema({
     country: { type: String, required: true },
     phoneNumber: { type: String, required: true, match: /^[0-9]{11}$/ },
     gender: { type: String, required: true, enum: ['Male', 'Female'] },
-    type: { type: String, required: true, enum: ['Patient', 'Doctor'] },
+    type: { type: String, required: true, enum: ['Patient', 'Doctor', 'Admin'] },
+    isBanned: { type: Boolean, default: false },
+    profilePicture: { type: String },
 });
 
 const User = mongoose.model('User', userSchema);

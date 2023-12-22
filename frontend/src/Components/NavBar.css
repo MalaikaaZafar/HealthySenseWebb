@@ -34,3 +34,12 @@
     color: #FFF;  
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.10);
   }
+
+  .navButton{
+    color: "#979797";
+    text-transform:'none';
+    border-right: 'none';
+  }
+  .navButton:hover{
+    color: "#2854C3";
+  }

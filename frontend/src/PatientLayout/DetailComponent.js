@@ -12,12 +12,12 @@ function DetailComponent({timing, problem, fee, feeStatus}) {
       <p>Today-21 January, Friday</p>
       <p style={{color: "#2854C3", fontWeight: "bold"}}>{timing}</p>
       </div>
-      <div>
-       <p className="heading"><PatientIcon/> Doctor information </p>
+      <div >
+       <p className="heading"><PatientIcon/> Patient information </p>
        <div className="detail">
-              <p>Dr. Amna Irum</p>
-              <p>Nephrologist</p>
-              <p>5+ Years of Experience</p>
+              <p>Patient Name</p>
+              <p>Age: 5</p>
+              <p>Phone: 1234561234</p>
         </div>
       </div>
       <div >
@@ -29,6 +29,7 @@ function DetailComponent({timing, problem, fee, feeStatus}) {
       <div >
       <p className="heading"><FeeIcon/> Fee information </p>
       <div className="detail" style={{marginBottom: '0px'}}>
+       
               <p  style={{color: "#2854C3", fontWeight: "bold"}}>{feeStatus}</p>
               <p>{fee}</p>
         </div>
