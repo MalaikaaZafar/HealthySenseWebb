@@ -1,20 +1,43 @@
-import * as React from 'react';
+import {React, useEffect, useState} from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
 import AppointmentCard from '../Components/AppointmentCard';
 
- function AppointmentList() {
-  const [value, setValue] = React.useState('Scheduled');
+async function fetchAppointments() {
+    const appoinmentList= await fetch(`http://localhost:3000/doctor/consultations`,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify(
+        //     {UserId: '1'}
+        // ),
+    }).then(response =>  response.json());
+    return appoinmentList;
+}
 
+ function AppointmentList() {
+  const [value, setValue] = useState('Scheduled');
+  const [appointmentList, setAppointmentList] = useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
     console.log(newValue);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchAppointments();
+      if (data) {
+        setAppointmentList(data);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
-    <Box sx={{width: '100%'}} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+  <Box sx={{width: '100%'}} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
    <Box >
       <Tabs
         value={value}
@@ -29,8 +52,8 @@ import AppointmentCard from '../Components/AppointmentCard';
       </Tabs>
     </Box>
     <Box style={{display: 'flex', flexDirection: 'row', flexWrap:'wrap', width: '80%'}}>
-    {Array.from({ length: 5 }).map((_, index) => (
-    <AppointmentCard key={index} type='doctor' status={value}/>
+    {appointmentList && appointmentList.map((app, index) => (
+    <AppointmentCard key={index} type='doctor' status={app.status} date={app.date} time={app.time}/>
   ))}
     </Box>
     </Box>

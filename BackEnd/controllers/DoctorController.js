@@ -55,7 +55,7 @@ const getAllDoctors = async (req, res) => {
 
 // view all consultations of a doctor, both pending and completed
 const consultations=async(req,res)=>{
-    const { UserId } = req.body;
+    const UserId="65854380aa6b07046cf14512";
     console.log('req.UserId',req.UserId)
     try{
         const doctor=await Doctor.findOne({id:UserId});
@@ -64,7 +64,7 @@ const consultations=async(req,res)=>{
             return res.status(404).json({message:"Doctor not found"});
        
         const consultationList=await Appointment.find({doctorId:UserId});
-        return res.status(200).json({consultationList});
+        return res.status(200).json(consultationList);
     }catch(error){
         console.log(error.message);
         return res.status(500).json({message:"Something went wrong"});

@@ -24,20 +24,6 @@
     align-items: center;
     justify-content: center;
   }
-  .patientImage
-  {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5%;
-  }
-  .patientImage img{
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    float: left;
-  }
-  
   .patientDetails
   {
     display: flex;

@@ -1,44 +1,21 @@
   *{
   font-family: Roboto;
   }  
-  .patientCard
-  {
+
+  .ScreenBodyAD{
     display: flex;
     flex-direction: row;
-    border-radius: 10px;
-    background: #F4F9FB;
-    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
     align-items: center;
+    width: 70%;
+  }
+  
+  .halfAD{
     width: 100%;
-  }
-  
-  .ScreenBody{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .half{
-    width: 50%;
     margin-top: 3%;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
-  .patientImage
-  {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5%;
-  }
-  .patientImage img{
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    float: left;
-  }
-  
   .patientDetails
   {
     display: flex;

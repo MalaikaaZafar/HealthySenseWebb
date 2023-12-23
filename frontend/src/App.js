@@ -1,14 +1,24 @@
 import NavBar from './Components/NavBar.js';
 import AppointmentDetail from './DoctorLayout/AppointmentDetail.js';
-import UserCard from './Components/UserCard.js';
 import CustomTabPanel from './DoctorLayout/ViewAppointmentList.js';
-import { AppBar } from '@mui/material';
-import AppointmentCard from './Components/AppointmentCard.js';
+import CancelAppointment from './DoctorLayout/CancelAppointment.js';
+import AppointmentSlots from './DoctorLayout/AppointmentSlots.js';
+import RescheduleAppointment from './DoctorLayout/RescheduleAppointment.js';
+
+import { Routes, Route } from 'react-router-dom';
 function App() {
   return (
     <div className="App">
-      <NavBar/>
-      <CustomTabPanel/>
+      <Routes>
+        <Route path="/doctor" element={<NavBar />}>
+          <Route index element={<CustomTabPanel />} />
+          <Route path="/doctor/appointmentDetail" element={<AppointmentDetail />} />
+          <Route path="/doctor/viewAppointmentList" element={<CustomTabPanel />} />
+          <Route path="/doctor/cancelAppointment" element={<CancelAppointment />} />
+          <Route path="/doctor/appointmentSlots" element={<AppointmentSlots />} />
+          <Route path="/doctor/rescheduleAppointment" element={<RescheduleAppointment />} />
+        </Route>
+      </Routes>
     </div>
   );
 }
