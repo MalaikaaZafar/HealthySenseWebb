@@ -2,7 +2,7 @@
 import './App.css';
 import NavBar from './Components/NavBar';
 //import AppointmentDetail from './DoctorLayout/AppointmentDetail';
-import ManageAccount from './PatientLayout/Account/ManageAccount';
+import ManageAccount from './DoctorLayout/Account/ManageAccount';
 function App() {
   return (
     <div className="App">
