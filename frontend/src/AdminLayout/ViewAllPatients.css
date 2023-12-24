@@ -6,6 +6,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  bottom: 0px;
 }
 
 .userListScreen {
@@ -13,6 +14,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100%;
+  bottom:0px;
 }
 
 .screenBodyUserList {
@@ -38,4 +40,11 @@ body {
   flex-wrap: wrap;
   border-radius: 10px;
   overflow: hidden;
+}
+
+
+@media screen and (max-width: 600px) {
+  .screenBodyUserList {
+    width: 90%;
+  }
 }

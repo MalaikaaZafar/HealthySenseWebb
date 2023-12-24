@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.post('/register', auth, registerDoctor);
 router.get("/consultations", consultations);
-router.get("/consultationsByDateTime", getConsultationById);
+router.get("/consultations/:id", getConsultationById);
 router.put("/updateConsultation", updateConsultation);
 module.exports = router;

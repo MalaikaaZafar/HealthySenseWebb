@@ -1,6 +1,7 @@
 const Doctor = require('../models/Doctor');
 const User = require('../models/User');
 const Appointment=require('../models/Apointments');
+const Payment = require('../models/Payment');
 
 
 const registerDoctor = async (req, res) => {
@@ -50,7 +51,6 @@ const registerDoctor = async (req, res) => {
 // view all consultations of a doctor, both pending and completed
 const consultations=async(req,res)=>{
     const UserId="65854380aa6b07046cf14512";
-    console.log('req.UserId',req.UserId)
     try{
         const doctor=await Doctor.findOne({id:UserId});
         console.log(doctor);
@@ -58,7 +58,12 @@ const consultations=async(req,res)=>{
             return res.status(404).json({message:"Doctor not found"});
        
         const consultationList=await Appointment.find({doctorId:UserId});
-        return res.status(200).json(consultationList);
+        const consultations= await Promise.all(
+            consultationList.map(async (consultation)=>{
+            const patient = await User.findById(consultation.patientId, {_id:0, name: 1});
+            return {name: patient.name, consult: consultation};
+        }));
+        return res.status(200).json(consultations);
     }catch(error){
         console.log(error.message);
         return res.status(500).json({message:"Something went wrong"});
@@ -67,12 +72,17 @@ const consultations=async(req,res)=>{
 
 // view details of a specific appointment
 const getConsultationById=async(req,res)=>{
-    const {UserId, date, time}=req.body;
+    const {id}= req.params;
     try{
-        const consultation=await Appointment.findOne({doctorId:UserId, date:date, time:time});
+        const consultation=await Appointment.findById(id);
         if(!consultation)
             return res.status(404).json({message:"Consultation not found"});
-        return res.status(200).json({consultation});
+        const user=await User.findById(consultation.patientId);
+        const fee= await Payment.findOne({appointmentId: id}, {amount: 1, status:1});
+        const doctor= await User.findOne({_id:consultation.doctorId});
+        const docDetails= await Doctor.findOne({id:consultation.doctorId});
+        const docOrPatient={user: doctor, details: docDetails};
+        return res.status(200).json({user, docOrPatient, fee, consult:consultation});
     }catch(error){
         console.log(error.message);
         return res.status(500).json({message:"Something went wrong"});
