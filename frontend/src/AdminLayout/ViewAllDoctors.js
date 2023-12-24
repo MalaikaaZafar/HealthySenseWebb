@@ -1,0 +1,44 @@
+import { React, useEffect, useState } from "react";
+import "./ViewAllPatients.css";
+import UserCard from "../Components/UserCard";
+
+function ViewAlldoctors() {
+  const [doctorList, setDoctorList] = useState([]);
+
+  async function fetchUsers() {
+    const docList = await fetch(
+      `http://localhost:3000/admin/doctorList`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((response) => response.json());
+    setDoctorList(docList);
+  }
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchUsers();
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <div className="userListScreen">
+      <div className="screenBodyUserList">
+        <div className="halfUserScreen">
+          <div className="userList">
+            {doctorList && doctorList.map((doctor) => {
+               <UserCard type="doctor" user={doctor} />;
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ViewAlldoctors;

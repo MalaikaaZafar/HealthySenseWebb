@@ -59,13 +59,7 @@ const login = async (req, res) => {
 };
 
 
-const getUser= async (req, res) => {
-    const arr= await User.find({type: 'Patient'});
-    return res.status(200).json(arr);
-}
-
 module.exports = {
     login,
     signup, 
-    getUser
 };

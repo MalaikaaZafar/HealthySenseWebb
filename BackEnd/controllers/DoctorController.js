@@ -47,12 +47,6 @@ const registerDoctor = async (req, res) => {
     }
 };
 
-const getAllDoctors = async (req, res) => {
-    const docList=await Doctor.find();
-    return res.status(200).json({docList});
-}
-
-
 // view all consultations of a doctor, both pending and completed
 const consultations=async(req,res)=>{
     const UserId="65854380aa6b07046cf14512";
@@ -114,7 +108,6 @@ const addAppointmentSlots=async(req,res)=>{
 
 module.exports = {
     registerDoctor,
-    getAllDoctors, 
     consultations, 
     getConsultationById,
     updateConsultation,
