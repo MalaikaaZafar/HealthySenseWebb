@@ -18,6 +18,7 @@ const ManageAccount = () => {
             }
         ],
         BloodType: "A+",
+        Picture: null,
     });
     const [History, setHistory] = useImmer({
         name: "John Doe",
@@ -32,6 +33,7 @@ const ManageAccount = () => {
             }
         ],
         BloodType: "A+",
+        Picture: null,
     });
     const [Index, setIndex] = useState(-1);
     const [HistoryModal, setHistoryModal] = useState(false);
@@ -71,6 +73,19 @@ const ManageAccount = () => {
         HistoryModalClose();
     }
 
+    const HandleProfilePicChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                setPatientData(draft => {
+                    draft.Picture = reader.result;
+                })
+            };
+        }
+    }
+
     const EditHistoryData = () => {
         if (HistoryData.Type.trim() === "" || HistoryData.Description.trim() === "") {
             alert("Please fill all the fields");
@@ -94,7 +109,20 @@ const ManageAccount = () => {
     return (
         <Container>
             <Typography variant="h4">Manage Account</Typography>
-            <Avatar sx={{ width: 100, height: 100 }} />
+            <Avatar sx={{ width: 100, height: 100 }} src={PatientData.Picture} />
+            <div className="row-display">
+                <input type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={(e) => { HandleProfilePicChange(e) }}
+                    id="profilePictureInput"
+                />
+                <label htmlFor="profilePictureInput">
+                    <Typography variant="contained" style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }} component="span">
+                        Change Profile Picture
+                    </Typography>
+                </label>
+            </div>
             <TextField id="outlined-basic" label="Name" variant="outlined" value={PatientData.name} />
             <TextField id="outlined-basic" label="Age" variant="outlined" value={PatientData.Age} />
             <TextField id="outlined-basic" label="Address" variant="outlined" value={PatientData.Address} />
@@ -197,7 +225,7 @@ const ManageAccount = () => {
                         variant="outlined"
                         value={HistoryData.Description}
                         onChange={(e) => { setHistoryData(draft => { draft.Description = e.target.value }) }}
-                        style={{ width: '600px', marginBottom: '20px' }} 
+                        style={{ width: '600px', marginBottom: '20px' }}
                     />
                     <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>
                         <Button variant="contained"
