@@ -36,3 +36,83 @@
     transform: rotate(360deg);
   }
 } */
+
+
+.row-display {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.Column-display {
+  display: flex;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.column1 {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+}
+
+.column2 {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+}
+
+.MuiAccordionDetails-root {
+  padding-top: 0% !important;
+}
+
+.PatientDetails-Diag {
+  padding: 3%;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.336);
+  border-radius: 10px;
+  transition: 0.5s ease-in-out;
+  margin-bottom: 20px;
+}
+
+.PatientDetails-Diag h6 {
+  font-size: large !important;
+}
+
+
+.loading-animation{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  width: 100%;
+}
+
+.Diagnosis-Diag{
+  width: 100%;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.column21{
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin-bottom: 30px !important;
+}
+
+.model-container{
+  position: absolute;
+  top :50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  width: fit-content;
+  border-radius: 10px;
+  padding: 20px;
+}
