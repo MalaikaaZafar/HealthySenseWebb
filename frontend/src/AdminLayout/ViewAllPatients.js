@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import axios from "axios";
 
 import "./ViewAllPatients.css";
-import UserCard from "../Components/UserCard";
+import UserCard from "../components/UserCard";
 
 function ViewAllPatients() {
   const [patientList, setPatientList] = useState([]);

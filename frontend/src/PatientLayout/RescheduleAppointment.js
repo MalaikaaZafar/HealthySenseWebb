@@ -4,28 +4,19 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
 import { format } from "date-fns";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
-
-import TimeIcon from "@mui/icons-material/AccessTime";
 
 import { useImmer } from "use-immer";
 import { useState, useEffect, createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+
 import "./RescheduleAppointment.css";
-import UserCard from "../Components/UserCard";
-import  AppointmentCard from "../Components/AppointmentCard";
+import  AppointmentCard from "../components/AppointmentCard";
 
 const apptContext = createContext();
 
@@ -45,54 +36,48 @@ const groupSlotsByDate = (slotData) => {
   return groupedSlots;
 };
 
-function RescheduleAppointment() {
+export const RescheduleAppointment = () => {
   const [reason, setReason] = useState("Something urgent came up");
   const [appointment, setAppointment] = useImmer(null);
-  const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const { id } = useParams();
+
   function setReasonHandler(event) {
     setReason(event.target.value);
   }
 
-  const addSlot = () => {
-    setOpen(true);
-  };
 
-  const { id } = useParams();
+ 
   const getAppointment = async () => {
-    const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
-    const appoinmentList = await fetch(formattedStr, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((response) => response.json());
-    setAppointment(appoinmentList);
+    try{
+      const formattedStr = `http://localhost:3000/patient/consultations/${id}`;
+      const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
+      setAppointment(appoinmentList);
+    }
+    catch(err)
+    {
+      alert(err);
+    }
+    
   };
 
   const rescheduleAppt = async () => {
-   try{ const resched=await fetch("http://localhost:3000/doctor/consultations/reschedule", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+   try{ 
+      const resched=await axios.post("http://localhost:3000/patient/consultations/reschedule", ({
         id: id,
         date: selectedDate,
         time: selectedTime,
         reason: reason,
-      }),
-    }).then ((response) => response.json());
-    console.log(resched);
-    if (resched.message==="Success") {
-      alert("Appointment Rescheduled Successfully! Please check your email for further details.");
-      setAppointment(draft=>{
-        draft.consult=resched.appointment;
-        // draft.docOrPatient.appointmentSlots=resched.docOrPatient.appointmentSlots;
-      })
-      setAppointment(draft=>{
-        draft.docOrPatient.details.appointmentSlots=resched.docOrPatient.appointmentSlots;
+      }))
+      .then(response=>response.data);
+      if (resched.message==="Success") {
+        alert("Appointment Rescheduled Successfully! Please check your email for further details.");
+        setAppointment(draft=>{
+          draft.date=resched.date;
+          draft.time=resched.time;
+          draft.updateReason=reason;
+          draft.doctorId.appointmentSlots=resched.doctorId.appointmentSlots;
       })
     } 
     else {
@@ -125,7 +110,7 @@ function RescheduleAppointment() {
     <div className="rescheduleAppointmentScreen">
       <div className="ScreenBody">
         <div className="halfra">
-          {appointment && <div className="appt"><AppointmentCard type="patient" appt={appointment} /></div>}
+          {appointment && <div className="appt"><AppointmentCard type="doctor" appt={appointment} /></div>}
           <div className="reasonDiv">
             <h2 style={{ color: "#2854C3" }}>Reason for Rescheduling</h2>
             <FormControl>
@@ -167,8 +152,8 @@ function RescheduleAppointment() {
             <div className="apptResched">
               <h3>Reschedule Date and Time</h3>
               <div className="appointmentHours">
-                {appointment?.docOrPatient?.details?.appointmentSlots &&
-                appointment.docOrPatient.details.appointmentSlots.length !==
+                {appointment?.doctorId?.appointmentSlots &&
+                appointment.doctorId.appointmentSlots.length !==
                   0 ? (
                   <div className="selectSlot">
                     <FormControl sx={{ width: "100%", margin: "10px" }}>
@@ -210,14 +195,6 @@ function RescheduleAppointment() {
                   <p>No Appointment Slots are Available</p>
                 )}
               </div>
-              <Button
-                variant="contained"
-                onClick={addSlot}
-                className="addSlotBtn"
-                sx={{background: "#2854c3"}}
-              >
-                Add Slot
-              </Button>
             </div>
           </div>
           <div className="appointmentBtns">
@@ -238,138 +215,7 @@ function RescheduleAppointment() {
           </div>
         </div>
       </div>
-      {open && (
-        <apptContext.Provider value={{ appointment, setAppointment }}>
-          <AddSlotDialog open={open} setOpen={setOpen} />
-        </apptContext.Provider>
-      )}
     </div>
   );
 }
 
-function AddSlotDialog({ open, setOpen }) {
-  const [date, setDate] = useState(null);
-  const [time, setTime] = useState(null);
-  const { appointment, setAppointment } = useContext(apptContext);
-
-  const handleClose = () => {
-    setOpen(false);
-    setAppointment((draft) => {
-      if (time && time.date && time.time && time.availability)
-        draft.docOrPatient.details.appointmentSlots.push({
-          date: time.date,
-          time: time.time,
-          availability: time.availability,
-        });
-    });
-  };
-
-  const handleSave = () => {
-    handleClose();
-  };
-
-  const handleDateChange = (newDate) => {
-    setDate(newDate);
-  };
-
-  const handleTimeChange = (newTime) => {
-    console.log("newTime:", newTime);
-
-    if (newTime) {
-      if (
-        Array.isArray(newTime) &&
-        newTime.length === 2 &&
-        newTime[0] &&
-        newTime[1]
-      ) {
-        const startTime = newTime[0].toDate();
-        const endTime = newTime[1].toDate();
-        if (startTime && endTime && startTime < endTime) {
-          const startTimeStr =
-            (startTime.getHours() % 12) +
-            ":" +
-            startTime.getMinutes() +
-            " " +
-            (startTime.getHours() >= 12 ? "PM" : "AM");
-          const endTimeStr =
-            (endTime.getHours() % 12) +
-            ":" +
-            endTime.getMinutes() +
-            " " +
-            (endTime.getHours() >= 12 ? "PM" : "AM");
-          const timeStr = startTimeStr + " - " + endTimeStr;
-          if (!timeStr.includes("NaN")) {
-            console.log("timeStr:", date);
-            const timeObj = {
-              time: timeStr,
-              availability: true,
-              date: format(new Date(date), "yyyy-MM-dd"),
-            };
-            setTime(timeObj);
-          }
-        }
-      }
-    }
-  };
-
-  return (
-    <Dialog
-      maxWidth="sm"
-      fullWidth={true}
-      open={open}
-      onClose={handleClose}
-      classes={{ paper: "MuiDialog-paper" }}
-    >
-      <DialogTitle
-        style={{
-          display: "flex",
-          alignItems: "center",
-          alignContent: "center",
-          justifyContent: "center",
-          background: "#f4f9fb",
-        }}
-      >
-        Add Slots
-      </DialogTitle>
-      <DialogContent
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "left",
-          justifyContent: "center",
-          background: "#f4f9fb",
-        }}
-      >
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <h3 style={{ margin: "5px" }}>Select Date</h3>
-          <DatePicker
-            format="YYYY - MM - DD "
-            disablePast
-            slotProps={{ textField: { variant: "filled" } }}
-            label="MM/DD/YYYY"
-            style={{ margin: "5px" }}
-            onChange={handleDateChange}
-            dateAdapter={AdapterDayjs}
-          />
-          <h3 style={{ margin: "5px" }}>Add Time Slots</h3>
-          <SingleInputTimeRangeField
-            disablePast
-            slotProps={{ textField: { variant: "standard", size: "medium" } }}
-            label="HH:MM (AM/PM)"
-            onChange={handleTimeChange}
-            style={{ width: "100%", padding: "0px" }}
-          />
-        </LocalizationProvider>
-      </DialogContent>
-      <DialogActions style={{ background: "#f4f9fb" }}>
-        <Button onClick={handleClose} className="actionButton">
-          Cancel
-        </Button>
-        <Button onClick={handleSave} className="actionButton">
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
-export default RescheduleAppointment;

@@ -12,7 +12,7 @@ import axios from "axios";
 import {useImmer} from 'use-immer';
 
 import "./CancelAppointment.css";
-import AppointmentCard from "../Components/AppointmentCard";
+import AppointmentCard from "../components/AppointmentCard";
 
 
 const CancelAppointment = () => {

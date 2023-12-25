@@ -3,7 +3,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
-import ApptCardForList from '../Components/ApptCardForList';
+import ApptCardForList from '../components/ApptCardForList';
 import './ViewApptList.css';
 
 async function fetchAppointments() {
@@ -53,7 +53,7 @@ async function fetchAppointments() {
       <div className="apptListBody">
           <div className="apptList">
     {appointmentList && appointmentList.map((app, index) => 
-        app.consult.status === value ? <div style={{ margin:'10px', width:'45%'}}><ApptCardForList key={index} type="doctor" appt={app}/></div> : null
+        app.consult.status === value ? <div style={{ margin:'10px', width:'45%'}}><ApptCardForList key={index} type="patient" appt={app}/></div> : null
   )}
     </div>
     </div>
