@@ -14,9 +14,9 @@ function ApptCardForList({ type, appt }) {
   const goToDetails = (event) => {
     event.preventDefault();
     if (type === "doctor") {
-       Navigate(`/patient/appointments/${appt.consult._id}`);
+       Navigate(`/patient/appointments/${appt._id}`);
     } else {
-      Navigate(`/doctor/appointments/${appt.consult._id}`);
+      Navigate(`/doctor/appointments/${appt._id}`);
     }
   }
   return (
@@ -50,11 +50,11 @@ function ApptCardForList({ type, appt }) {
             <p>Online Session</p>
           </div>
           <div className="docExperience">
-            <p style={{display:'flex', alignItems:'center'}}><TimeIcon sx={{margin: '2%'}}/>{appt.consult.time} </p>
-            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.consult.date), "yyyy-MM-dd")}</p>
+            <p style={{display:'flex', alignItems:'center'}}><TimeIcon sx={{margin: '2%'}}/>{appt.time} </p>
+            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.date), "yyyy-MM-dd")}</p>
           </div>
           <appointmentContext.Provider value={appt}>
-          {appt.consult.status === "Completed" || appt.consult.status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} Navigate={Navigate}/>}
+          {appt.status === "Completed" || appt.status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} Navigate={Navigate}/>}
           </appointmentContext.Provider>
         </div>
       </div>
@@ -78,7 +78,10 @@ function IsNotComplete({type, Navigate}) {
     <div className="apptButtons" style={{display:'flex', flexDirection:'row'}}>
       <Button
         onClick={(e) => {
-          Navigate(`/doctor/appointments/cancel/${appt.consult._id}`);
+          if (type==="doctor")
+            Navigate(`/patient/appointments/cancel/${appt._id}`);
+          else
+            Navigate(`/doctor/appointments/cancel/${appt._id}`);
           e.stopPropagation();
         }}
         variant="contained"
@@ -94,7 +97,10 @@ function IsNotComplete({type, Navigate}) {
       </Button>
       <Button
         onClick={(e) => {
-          Navigate(`/doctor/appointments/reschedule/${appt.consult._id}`);
+          if (type==="doctor")
+            Navigate(`/patient/appointments/reschedule/${appt._id}`);
+          else
+          Navigate(`/doctor/appointments/reschedule/${appt._id}`);
           e.stopPropagation();
         }}
         variant="contained"
@@ -115,7 +121,7 @@ function PatientDetails() {
   const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Name: {appt.name}</p>
+      <p>Name: {appt.user.name}</p>
     </div>
   );
 }
@@ -124,7 +130,7 @@ function DoctorDetails() {
   const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Dr. {appt.name}</p>
+      <p>Dr. {appt?.doctorId?.user?.name}</p>
     </div>
   );
 }

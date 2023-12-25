@@ -1,6 +1,6 @@
 import { React, useEffect, useState } from "react";
 import "./ViewAllPatients.css";
-import DoctorCard from "../Components/DoctorCard";
+import DoctorCard from "../components/DoctorCard";
 import axios from "axios";
 
 function ViewAlldoctors() {

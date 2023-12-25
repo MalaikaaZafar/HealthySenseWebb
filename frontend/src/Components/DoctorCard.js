@@ -36,15 +36,15 @@ function DoctorCard({user})
         >
             <div className='user-card-img'>
             <Avatar style={{ margin:'1%',marginLeft:'5%',marginRight:'5%', height: '75px', width: '75px', float: 'left' }}>
-                {user.profilePicture? user.profilePicture: "H"}</Avatar>
+                {user.user?.profilePicture? user.user?.profilePicture: "H"}</Avatar>
                 <div className="docDetailTop" style={{}}>
                 <div className="docName"><p>Dr. {user.user.name}</p></div>
-                <div className="docSpeciality"><p>{user.details.specialization}</p></div>
+                <div className="docSpeciality"><p>{user.specialization}</p></div>
                 </div>
             </div>
             <div className='user-card-details'>
             <div>
-                <p style={{fontSize:'medium'}}>{user.details.experience}</p>
+                <p style={{fontSize:'medium'}}>{user.experience}</p>
                 <p style={{fontSize:'smaller'}}>Experience</p>
             </div>
             <Divider orientation='vertical' flexItem/>
@@ -55,12 +55,10 @@ function DoctorCard({user})
             </div>
             <div className='location-fee'>
             <div className='location'>
-                <p style={{fontSize:'medium' , margin: '2px' }}>{user.details.location}</p>
-                <p style={{fontSize:'small',color: user.details.availability? "green":"red", margin: '2px'}}>{user.details.availability? "Available": "Unavailable"}</p>
-                
-            </div>
-            <div className='user-card-Office'>
-                <p style={{background:'#2854c3', color: '#f9f9f9'}}><FeeIcon sx={{}}/>Fee: {user.details.fee}</p>
+                <p style={{fontSize:'medium' , margin: '2px' }}><FeeIcon sx={{}}/>Fee: {user.fee}</p>
+                <p style={{ fontSize: 'small', color: user.availability ? "green" : "red", marginLeft: '10%' }}>
+                         {(user.availability && user?.availability === true) ? "Available" : "Unavailable"}
+                </p>                
             </div>
             </div>
         </Card>

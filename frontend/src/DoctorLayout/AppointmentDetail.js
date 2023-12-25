@@ -3,7 +3,7 @@ import "@fontsource/roboto";
 import Avatar from '@mui/material/Avatar';
 import './AppointmentDetail.css';
 
-import UserCard from '../Components/UserCard';
+import UserCard from '../components/UserCard';
 import DetailComponent from './DetailComponent';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';

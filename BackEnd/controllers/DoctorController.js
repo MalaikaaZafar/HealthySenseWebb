@@ -2,6 +2,7 @@ const Doctor = require('../models/Doctor');
 const User = require('../models/User');
 const Appointment=require('../models/Apointments');
 const Payment = require('../models/Payment');
+const { populate } = require('../models/Patient');
 
 
 const doctorController = {
@@ -58,27 +59,17 @@ const doctorController = {
 
     // view all consultations of a doctor, both pending and completed
     consultations: async (req, res) => {
-        const UserId = "65854380aa6b07046cf14512";
+        const UserId = "658546f9e3b8a4d7e100aa68";
         try {
-            const doctor = await Doctor.findOne({ id: UserId });
-            console.log(doctor);
-            if (!doctor)
-                return res.status(404).json({ message: "Doctor not found" });
-
-            const consultationList = await Appointment.find({ doctorId: UserId });
-            const consultations = await Promise.all(
-                consultationList.map(async (consultation) => {
-                    const patient = await User.findById(consultation.patientId, { _id: 0, name: 1 });
-                    return { name: patient.name, consult: consultation };
-                }));
-            return res.status(200).json(consultations);
+            const apptList= await Appointment.find({doctorId: UserId}).populate({path:'doctorId', populate:{path:'user'}}).exec();
+            return res.status(200).json( apptList );
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
         }
     },
 
-    // view details of a specific appointment
+    // view details of a specific appointment 
     getConsultationById: async (req, res) => {
         const { id } = req.params;
         try {

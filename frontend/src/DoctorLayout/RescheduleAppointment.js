@@ -24,7 +24,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import "./RescheduleAppointment.css";
-import  AppointmentCard from "../Components/AppointmentCard";
+import  AppointmentCard from "../components/AppointmentCard";
 
 const apptContext = createContext();
 
