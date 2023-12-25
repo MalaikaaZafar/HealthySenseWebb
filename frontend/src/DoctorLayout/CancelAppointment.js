@@ -12,9 +12,11 @@ import "./CancelAppointment.css";
 import UserCard from "../Components/UserCard";
 import AppointmentCard from "../Components/AppointmentCard";
 
+import {useImmer} from 'use-immer';
+
 const CancelAppointment = () => {
     const [reason, setReason]= useState("Something urgent came up");
-    const [appointment, setAppointment] = useState(null);
+    const [appointment, setAppointment] = useImmer(null);
     const {id}= useParams();
     const fetchAppointment=async ()=>{
       const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
@@ -36,13 +38,17 @@ const CancelAppointment = () => {
         },
         body: JSON.stringify({id: id, reason: reason})
       }).then((response) => response.json());
-      if (appoinmentList.message==="Something went wrong")
+      if (appoinmentList.message==="Success")
       {
-        alert("Something went wrong");
+        alert("Appointment Cancelled");
+        setAppointment(draft=>{
+          draft.status="Cancelled";
+          draft.updateReason=reason;
+        })
       }
       else 
       {
-        alert("Appointment Cancelled");
+        alert("Something went wrong"); 
       }
     }
 

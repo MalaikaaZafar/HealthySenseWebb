@@ -14,7 +14,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<NavBar />}>
-          <Route index element={<CancelAppointment />}/>
+          <Route index element={<AppointmentSlots />}/>
         </Route>
         <Route path="/admin" element={<NavBar />}>
           <Route index element={<ViewAllPatients />} />

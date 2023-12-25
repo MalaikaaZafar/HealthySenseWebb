@@ -65,6 +65,7 @@ function PatientDetails() {
   return (
     <div className="docName">
       <p>Name: {appt.user?.name}</p>
+      <p>Status: <b>{appt.consult?.status}</b></p>
     </div>
   );
 }
@@ -74,6 +75,8 @@ function DoctorDetails() {
   return (
     <div className="docName">
       <p>Dr. {appt.user?.name}</p>
+      <span>{appt.details?.specialization}</span>
+      <p>Status:  {appt.consult?.status}</p>
     </div>
   );
 }

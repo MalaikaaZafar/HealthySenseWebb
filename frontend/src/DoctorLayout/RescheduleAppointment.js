@@ -72,21 +72,36 @@ function RescheduleAppointment() {
   };
 
   const rescheduleAppt = async () => {
-    const resched=await fetch("http://localhost:3000/doctor/consultations/reschedule", {
+   try{ const resched=await fetch("http://localhost:3000/doctor/consultations/reschedule", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        appointmentId: id,
+        id: id,
         date: selectedDate,
         time: selectedTime,
         reason: reason,
       }),
     }).then ((response) => response.json());
-    if (resched.time===selectedTime && resched.date===selectedDate) {
+    console.log(resched);
+    if (resched.message==="Success") {
       alert("Appointment Rescheduled Successfully! Please check your email for further details.");
+      setAppointment(draft=>{
+        draft.consult=resched.appointment;
+        // draft.docOrPatient.appointmentSlots=resched.docOrPatient.appointmentSlots;
+      })
+      setAppointment(draft=>{
+        draft.docOrPatient.details.appointmentSlots=resched.docOrPatient.appointmentSlots;
+      })
     } 
+    else {
+      alert("Something went wrong");
+    }}
+    catch(err)
+    {
+      alert(err);
+    }
   };
 
   useEffect(() => {
@@ -150,13 +165,13 @@ function RescheduleAppointment() {
         <div className="halfra">
           <div className="appointmentDetailsRA">
             <div className="apptResched">
-              <h3 style={{ color: "#2854C3" }}>Reschedule Date and Time</h3>
+              <h3>Reschedule Date and Time</h3>
               <div className="appointmentHours">
                 {appointment?.docOrPatient?.details?.appointmentSlots &&
                 appointment.docOrPatient.details.appointmentSlots.length !==
                   0 ? (
                   <div className="selectSlot">
-                    <FormControl sx={{ width: "100%", margin: "19px" }}>
+                    <FormControl sx={{ width: "100%", margin: "10px" }}>
                       <InputLabel id="date-label">YYYY - MM - DD</InputLabel>
                       <Select
                         labelId="date-label"
@@ -183,10 +198,10 @@ function RescheduleAppointment() {
                       >
                         {selectedDate &&
                           groupedSlots[selectedDate].map((slot) => 
-                            {slot.availability===true &&
+                            slot.availability===true &&
                             <MenuItem key={slot.time} value={slot.time}>
                               {slot.time}
-                            </MenuItem>}
+                            </MenuItem>
                           )}
                       </Select>
                     </FormControl>
@@ -198,13 +213,8 @@ function RescheduleAppointment() {
               <Button
                 variant="contained"
                 onClick={addSlot}
-                style={{
-                  background: "#2854c3",
-                  margin: "10px",
-                  width: "50%",
-                  textTransform: "none",
-                  borderRadius: "10px",
-                }}
+                className="addSlotBtn"
+                sx={{background: "#2854c3"}}
               >
                 Add Slot
               </Button>
@@ -212,6 +222,7 @@ function RescheduleAppointment() {
           </div>
           <div className="appointmentBtns">
             <Button
+              onClick={rescheduleAppt}
               variant="contained"
               style={{
                 background: "#2854c3",
@@ -291,7 +302,7 @@ function AddSlotDialog({ open, setOpen }) {
             console.log("timeStr:", date);
             const timeObj = {
               time: timeStr,
-              availability: "Available",
+              availability: true,
               date: format(new Date(date), "yyyy-MM-dd"),
             };
             setTime(timeObj);

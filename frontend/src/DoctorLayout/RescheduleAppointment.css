@@ -8,6 +8,14 @@ p{
   margin: 0px;
   width: 100%;
 }
+
+
+body {
+  background-color: #f7f7f7; /* Light background color */
+  font-family: 'Roboto', sans-serif; /* Use the Roboto font */
+  margin: 0;
+  padding: 0;
+}
     .ScreenBody{
       display: flex;
       flex-direction: row;
@@ -16,10 +24,19 @@ p{
     .halfra{
       width: 50%;
       margin: 3%;
-      padding: 10px;
+      padding: 3%;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      background-color: #ffffff;
+    }
+    .addSlotBtn{
+      margin: 10px;
+      width: 50%;
+      text-transform: none;
+      border-radius: 10px;
+      /* float: right; */
     }
 
     .appt {
@@ -92,7 +109,6 @@ p{
     margin: 2px;
     padding: 5%;
     width: 25%;
-    background: #E9F5FA;
     color: #8C8FA5;
     font-size: 13px;
     border-radius: 10px;
@@ -116,15 +132,18 @@ p{
     margin: 5px;
   }
 
+  .apptResched h3{
+    color: #2854C3;
+    margin: 10px;
+  }
+
   .selectSlot{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 2px;
     padding: 5%;
     width: 100%;
-    background: #E9F5FA;
     color: #8C8FA5;
     font-size: 13px;
     border-radius: 10px;

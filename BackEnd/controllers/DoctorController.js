@@ -96,18 +96,22 @@ const rescheduleAppt=async(req,res)=>{
         const appointment=await Appointment.findById(id);
         if(!appointment)
             return res.status(404).json({message:"Appointment not found"});
-        const slot=await Doctor.findOne({id: appointment.doctorId,appointmentSlots:{$elemMatch:{date:appointment.date, time:appointment.time}}});
-        if (!slot)
+        const doctor=await Doctor.findOne({id:appointment.doctorId});
+        if (doctor)
         {
-            const doctor=await Doctor.findOne({id:appointment.doctorId});
-            doctor.appointmentSlots.push({date:date, time:time, availability: false});
-            await doctor.save();
+            var slots = doctor.appointmentSlots.filter(slot => (slot.date !== appointment.date && slot.time !== appointment.time));
+            slots.push({date: appointment.date, time: appointment.time, availability: true});
+            const newSlots=slots.filter(slot => (slot.date !== date && slot.time !== time));
+            newSlots.push({date, time, availability:false});
+            doctor.appointmentSlots=newSlots;
+            console.log(doctor.appointmentSlots);
         }
+        await doctor.save();
         appointment.date=date;
         appointment.time=time;
         appointment.updateReason=reason;
         await appointment.save();
-        return res.status(200).json(appointment);
+        return res.status(200).json({message: 'Success', appointment: appointment, docOrPatient: doctor});
     }catch(error){
         console.log(error.message);
         return res.status(500).json({message:"Something went wrong"});
@@ -122,10 +126,9 @@ const cancelAppt=async (req,res)=>{
             return res.status(404).json({message:"Appointment not found"});
         appointment.status="Cancelled";
         appointment.updateReason=reason;
-        const doc=await Doctor.findOne({id: appointment.doctorId,appointmentSlots:{$elemMatch:{date:appointment.date, time:appointment.time}}});
+        const doc=await Doctor.findOne({id: appointment.doctorId});
         const slot = doc.appointmentSlots.find(slot => slot.date === appointment.date && slot.time === appointment.time);
-        if (slot)
-            slot.availability=true;
+        slot.availability=true;
         await doc.save();
         await appointment.save();
         console.log(appointment);
@@ -137,15 +140,22 @@ const cancelAppt=async (req,res)=>{
 }
 
 // add Appointment Slots
-const addAppointmentSlots=async(req,res)=>{
-    const {doctorId, date, time}=req.body;
-    const doctor=await Doctor.findById(doctorId);
-    if(!doctor)
-        return res.status(404).json({message:"Doctor not found"});
-    const appointmentSlots=doctor.appointmentSlots;
-    appointmentSlots.push({date, time});
-    await doctor.save();
-    return res.status(200).json({doctor});
+const addSlots=async(req,res)=>{
+    const {slots}=req.body;
+    const UserId="65854380aa6b07046cf14512";
+    try{
+        const doctor=await Doctor.findOne({id:UserId});
+        if(!doctor)
+            return res.status(404).json({message:"Doctor not found"});
+        const newSlots=doctor.appointmentSlots.concat(slots);
+        doctor.appointmentSlots=newSlots;
+        await doctor.save();
+        return res.status(200).json({message:"Success"});
+    }
+    catch(error){
+        console.log(error.message);
+        return res.status(500).json({message:"Something went wrong"});
+    }
 }
 
 module.exports = {
@@ -154,7 +164,7 @@ module.exports = {
     getConsultationById,
     rescheduleAppt,
     cancelAppt,
-    addAppointmentSlots
+    addSlots
 };
 
 
