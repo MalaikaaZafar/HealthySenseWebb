@@ -1,21 +1,14 @@
 import { React, useEffect, useState } from "react";
 import "./ViewAllPatients.css";
 import DoctorCard from "../Components/DoctorCard";
-
+import axios from "axios";
 
 function ViewAlldoctors() {
   const [doctorList, setDoctorList] = useState([]);
 
   async function fetchUsers() {
-    const docList = await fetch(
-      `http://localhost:3000/admin/doctorList`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).then((response) => response.json());
+    const docList = await axios.get("http://localhost:3000/admin/doctorList")
+                    .then(response=>response.data);
     setDoctorList(docList);
   }
 

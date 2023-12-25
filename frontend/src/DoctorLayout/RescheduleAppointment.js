@@ -18,13 +18,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
 
-import TimeIcon from "@mui/icons-material/AccessTime";
-
 import { useImmer } from "use-immer";
 import { useState, useEffect, createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+
 import "./RescheduleAppointment.css";
-import UserCard from "../Components/UserCard";
 import  AppointmentCard from "../Components/AppointmentCard";
 
 const apptContext = createContext();
@@ -62,34 +61,23 @@ function RescheduleAppointment() {
   const { id } = useParams();
   const getAppointment = async () => {
     const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
-    const appoinmentList = await fetch(formattedStr, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((response) => response.json());
+    const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
     setAppointment(appoinmentList);
   };
 
   const rescheduleAppt = async () => {
-   try{ const resched=await fetch("http://localhost:3000/doctor/consultations/reschedule", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+   try{ 
+      const reqBody= JSON.stringify({
         id: id,
         date: selectedDate,
         time: selectedTime,
         reason: reason,
-      }),
-    }).then ((response) => response.json());
-    console.log(resched);
-    if (resched.message==="Success") {
-      alert("Appointment Rescheduled Successfully! Please check your email for further details.");
-      setAppointment(draft=>{
-        draft.consult=resched.appointment;
-        // draft.docOrPatient.appointmentSlots=resched.docOrPatient.appointmentSlots;
+      });
+      const resched=await axios.post("http://localhost:3000/doctor/consultations/reschedule", reqBody).then(response=>response.data);
+      if (resched.message==="Success") {
+        alert("Appointment Rescheduled Successfully! Please check your email for further details.");
+        setAppointment(draft=>{
+          draft.consult=resched.appointment;
       })
       setAppointment(draft=>{
         draft.docOrPatient.details.appointmentSlots=resched.docOrPatient.appointmentSlots;
