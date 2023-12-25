@@ -20,7 +20,7 @@ const ViewReport = () => {
         notes: "blah blah blah",
     });
     return (
-        <PDFDownloadLink document={<MyDocument Diagnosis={Diagnosis} />} fileName="report.pdf">
+        <PDFDownloadLink document={<MyDocument Diagnosis={Diagnosis} />} fileName={Diagnosis.PaitentName+"_"+Diagnosis.ApointmentDate+"_report.pdf"}>
             {({ blob, url, loading, error }) =>
                 loading ? "Loading document..." : <Button variant="contained" className="downloadReportbtn">Download Report</Button>
             }
