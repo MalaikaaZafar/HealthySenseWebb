@@ -1,50 +1,23 @@
 *{
     font-family: Roboto;
     }  
-
-p{
-  display:flex;
-  align-items: center;
-  margin: 0px;
-  width: 100%;
-}
-
-
-body {
-  background-color: #f7f7f7; /* Light background color */
-  font-family: 'Roboto', sans-serif; /* Use the Roboto font */
-  margin: 0;
-  padding: 0;
-}
-    .ScreenBody{
-      display: flex;
-      flex-direction: row;
-    }
     
-    .halfra{
-      width: 50%;
-      margin: 3%;
-      padding: 3%;
-      border-radius: 10px;
+    .ScreenBodyCA{
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      background-color: #ffffff;
+       align-items: center; 
+     justify-content: center; 
     }
-    .addSlotBtn{
-      margin: 10px;
+    
+    .halfCA{
       width: 50%;
-      text-transform: none;
-      border-radius: 10px;
-      /* float: right; */
-    }
-
-    .appt {
+      margin: 3%;
       display: flex;
-      justify-content: center;
-      width: 100%;
+      flex-direction: column;
+       justify-content: center; 
     }
 
+    
     .patientDetails
     {
       display: flex;
@@ -81,7 +54,6 @@ body {
     {
       display: flex;
       flex-direction: row;
-      flex-wrap: wrap;
     }
 
   .appointmentBtns {
@@ -108,9 +80,11 @@ body {
     align-items: center;
     margin: 2px;
     padding: 5%;
-    width: 25%;
+    width: 50%;
+    background: #E9F5FA;
     color: #8C8FA5;
     font-size: 13px;
+    
     border-radius: 10px;
     text-align: center;
     transition: background 0.3s, color 0.3s; 
@@ -122,31 +96,4 @@ body {
   }
 
 
-  .apptResched{
-    width: 90%;
-    border-style: solid;
-    padding: 5%;
-    border-radius: 10px;
-    border-color: #b5b7bd;
-    border-width: 1px;
-    margin: 5px;
-  }
-
-  .apptResched h3{
-    color: #2854C3;
-    margin: 10px;
-  }
-
-  .selectSlot{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 5%;
-    width: 100%;
-    color: #8C8FA5;
-    font-size: 13px;
-    border-radius: 10px;
-    text-align: center;
-    transition: background 0.3s, color 0.3s; 
-  }
+  

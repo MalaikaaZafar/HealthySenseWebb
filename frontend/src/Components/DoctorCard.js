@@ -22,7 +22,7 @@ function DoctorCard({user})
         variant="outlined"
         onClick={goToUserPage}
         sx={{
-            width: '40%',
+            width: '100%',
             background: '#F4F9FB', // Set your desired background color
             borderRadius: '10px',
             margin: '5px',
@@ -43,11 +43,6 @@ function DoctorCard({user})
                 </div>
             </div>
             <div className='user-card-details'>
-            <div>
-                <p style={{fontSize:'medium'}}>Under 20 Min</p>
-                <p style={{fontSize:'smaller'}}>Wait Time</p>
-            </div>
-            <Divider orientation='vertical' flexItem/>
             <div>
                 <p style={{fontSize:'medium'}}>{user.details.experience}</p>
                 <p style={{fontSize:'smaller'}}>Experience</p>

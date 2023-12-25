@@ -48,3 +48,21 @@ body {
     width: 90%;
   }
 }
+
+.docCard{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  margin:2%;
+}
+
+.userCard{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  margin:10px;
+}

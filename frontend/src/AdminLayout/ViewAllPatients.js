@@ -33,7 +33,7 @@ function ViewAllPatients() {
         <div className="halfUserScreen">
           <div className="userList">
             {patientList && patientList.map((patient) => {
-               return <UserCard user={patient}/>;
+               return <div className="userCard"><UserCard user={patient}/></div>;
             })}
           </div>
         </div>

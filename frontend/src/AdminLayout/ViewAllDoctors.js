@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from "react";
 import "./ViewAllPatients.css";
 import DoctorCard from "../Components/DoctorCard";
-import UserCard from "../Components/UserCard";
+
 
 function ViewAlldoctors() {
   const [doctorList, setDoctorList] = useState([]);
@@ -33,7 +33,7 @@ function ViewAlldoctors() {
         <div className="halfUserScreen">
           <div className="userList">
             {doctorList && doctorList.map((doctor) => {
-                return <DoctorCard user={doctor} />;
+                return <div className="docCard"><DoctorCard user={doctor} /></div>;
             })}
           </div>
         </div>

@@ -13,7 +13,6 @@ function UserCard({user})
             width: '100%',
             background: '#F4F9FB', // Set your desired background color
             borderRadius: '10px',
-            margin: '10px',
             '&:hover': {
                 cursor:'pointer',
                 background: '#F4F8FB', // Set your desired background color

@@ -18,16 +18,16 @@ function App() {
         </Route>
         <Route path="/admin" element={<NavBar />}>
           <Route index element={<ViewAllPatients />} />
-          <Route path="/admin/doctors" element={<ViewAllDoctors />} />
-          <Route path='/admin/patients' element={<ViewAllPatients />} />
+          <Route path="doctors" element={<ViewAllDoctors />} />
+          <Route path='patients' element={<ViewAllPatients />} />
         </Route>
         <Route path="/doctor" element={<NavBar />}>
           <Route index element={<CustomTabPanel />} />
-          <Route path="/doctor/appointments/:id" element={<AppointmentDetail />} />
-          <Route path="/doctor/appointments" element={<CustomTabPanel />} />
-          <Route path="/doctor/appointments/cancel/:id" element={<CancelAppointment />} />
-          <Route path="/doctor/appointmentSlots" element={<AppointmentSlots />} />
-          <Route path="/doctor/appointments/reschedule/:id" element={<RescheduleAppointment />} />
+          <Route path="appointments/:id" element={<AppointmentDetail />} />
+          <Route path="appointments" element={<CustomTabPanel />} />
+          <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
+          <Route path="appointmentSlots" element={<AppointmentSlots />} />
+          <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
         </Route>
       </Routes>
     </div>
