@@ -13,7 +13,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
-import { FormHelperText } from "@mui/material";
 
 const slotData = [
   // Slots for date "2023-01-01"
@@ -222,7 +221,7 @@ function AddSlotDialog({ open, setOpen }) {
             const timeObj = {
               time: timeStr,
               availability: "Available",
-              date: format(date, "yyyy-MM-dd"),
+              date: format(new Date(date), "yyyy-MM-dd"),
             };
             setTimeList([...timeList, timeObj]);
           }

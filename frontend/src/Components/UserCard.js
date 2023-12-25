@@ -6,7 +6,6 @@ const userContext=createContext();
 
 function UserCard({user})
 {
-    console.log(user)
     return(
         <Card
         variant="outlined"
@@ -24,9 +23,9 @@ function UserCard({user})
         >
             <div className='user-card-img'>
             <Avatar style={{ margin:'1%',marginLeft:'5%',marginRight:'5%', height: '75px', width: '75px', float: 'left' }}>
-                {user?.user.profilePicture? user.profilePicture: "H"}</Avatar>
+                {user?.user?.profilePicture? user.profilePicture: "H"}</Avatar>
                 <userContext.Provider value={user}>
-                {user.user.type==='Doctor' ? <DoctorDetails/> : <PatientDetails/>}
+                {user?.user?.type==='Doctor' ? <DoctorDetails/> : <PatientDetails/>}
                 </userContext.Provider>
             </div>
         </Card>

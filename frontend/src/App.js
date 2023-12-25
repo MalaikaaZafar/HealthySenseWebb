@@ -14,7 +14,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<NavBar />}>
-          <Route index element={<ViewAllDoctors />}/>
+          <Route index element={<CancelAppointment />}/>
         </Route>
         <Route path="/admin" element={<NavBar />}>
           <Route index element={<ViewAllPatients />} />
@@ -25,9 +25,9 @@ function App() {
           <Route index element={<CustomTabPanel />} />
           <Route path="/doctor/appointments/:id" element={<AppointmentDetail />} />
           <Route path="/doctor/appointments" element={<CustomTabPanel />} />
-          <Route path="/doctor/cancelAppointment" element={<CancelAppointment />} />
+          <Route path="/doctor/appointments/cancel/:id" element={<CancelAppointment />} />
           <Route path="/doctor/appointmentSlots" element={<AppointmentSlots />} />
-          <Route path="/doctor/rescheduleAppointment" element={<RescheduleAppointment />} />
+          <Route path="/doctor/appointments/reschedule/:id" element={<RescheduleAppointment />} />
         </Route>
       </Routes>
     </div>

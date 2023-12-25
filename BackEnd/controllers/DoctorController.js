@@ -90,19 +90,51 @@ const getConsultationById=async(req,res)=>{
 }
 
 // update consultation
-const updateConsultation=async(req,res)=>{
-    const {id, date, time, updateReason, status}=req.body;
-    const consultation=await Appointment.findById(id);
-    if (!consultation)
-        return res.status(404).json({message:"Consultation not found"});
-    consultation.date=date;
-    consultation.time=time;
-    consultation.updateReason=updateReason;
-    consultation.status=status;
-    await consultation.save();
-    return res.status(200).json({consultation});
+const rescheduleAppt=async(req,res)=>{
+    const {id, date, time, reason}=req.body;
+    try{
+        const appointment=await Appointment.findById(id);
+        if(!appointment)
+            return res.status(404).json({message:"Appointment not found"});
+        const slot=await Doctor.findOne({id: appointment.doctorId,appointmentSlots:{$elemMatch:{date:appointment.date, time:appointment.time}}});
+        if (!slot)
+        {
+            const doctor=await Doctor.findOne({id:appointment.doctorId});
+            doctor.appointmentSlots.push({date:date, time:time, availability: false});
+            await doctor.save();
+        }
+        appointment.date=date;
+        appointment.time=time;
+        appointment.updateReason=reason;
+        await appointment.save();
+        return res.status(200).json(appointment);
+    }catch(error){
+        console.log(error.message);
+        return res.status(500).json({message:"Something went wrong"});
+    }
 }
 
+const cancelAppt=async (req,res)=>{
+    const {id, reason} = req.body;
+    try{
+        const appointment=await Appointment.findById(id);
+        if(!appointment)
+            return res.status(404).json({message:"Appointment not found"});
+        appointment.status="Cancelled";
+        appointment.updateReason=reason;
+        const doc=await Doctor.findOne({id: appointment.doctorId,appointmentSlots:{$elemMatch:{date:appointment.date, time:appointment.time}}});
+        const slot = doc.appointmentSlots.find(slot => slot.date === appointment.date && slot.time === appointment.time);
+        if (slot)
+            slot.availability=true;
+        await doc.save();
+        await appointment.save();
+        console.log(appointment);
+        return res.status(200).json(appointment);
+    }catch(error){
+        console.log(error.message);
+        return res.status(500).json({message:"Something went wrong"});
+    }
+}
 
 // add Appointment Slots
 const addAppointmentSlots=async(req,res)=>{
@@ -120,6 +152,9 @@ module.exports = {
     registerDoctor,
     consultations, 
     getConsultationById,
-    updateConsultation,
+    rescheduleAppt,
+    cancelAppt,
     addAppointmentSlots
 };
+
+

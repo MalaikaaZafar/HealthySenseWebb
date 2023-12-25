@@ -1,23 +1,33 @@
 *{
     font-family: Roboto;
     }  
-    
+
+p{
+  display:flex;
+  align-items: center;
+  margin: 0px;
+  width: 100%;
+}
     .ScreenBody{
       display: flex;
       flex-direction: row;
-      /* align-items: center; */
-        /* justify-content: center; */
     }
     
     .halfra{
       width: 50%;
       margin: 3%;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      /* justify-content: center; */
+      justify-content: center;
     }
 
-    
+    .appt {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
     .patientDetails
     {
       display: flex;
@@ -54,6 +64,7 @@
     {
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
     }
 
   .appointmentBtns {
@@ -80,11 +91,10 @@
     align-items: center;
     margin: 2px;
     padding: 5%;
-    width: 50%;
+    width: 25%;
     background: #E9F5FA;
     color: #8C8FA5;
     font-size: 13px;
-    
     border-radius: 10px;
     text-align: center;
     transition: background 0.3s, color 0.3s; 
@@ -96,4 +106,28 @@
   }
 
 
-  
+  .apptResched{
+    width: 90%;
+    border-style: solid;
+    padding: 5%;
+    border-radius: 10px;
+    border-color: #b5b7bd;
+    border-width: 1px;
+    margin: 5px;
+  }
+
+  .selectSlot{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+    padding: 5%;
+    width: 100%;
+    background: #E9F5FA;
+    color: #8C8FA5;
+    font-size: 13px;
+    border-radius: 10px;
+    text-align: center;
+    transition: background 0.3s, color 0.3s; 
+  }
