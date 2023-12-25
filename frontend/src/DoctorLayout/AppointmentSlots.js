@@ -13,7 +13,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
-import { FormHelperText } from "@mui/material";
 
 const slotData = [
   // Slots for date "2023-01-01"
@@ -173,18 +172,33 @@ function AddSlotDialog({ open, setOpen }) {
     setOpen(false);
   };
 
-  const handleSave = () => {
-    setSlotList((prevSlotList) => {
-      const currentDateKey = date.format("YYYY-MM-DD ");
-      const updatedSlotList = { ...prevSlotList };
-      if (!updatedSlotList[currentDateKey]) {
-        updatedSlotList[currentDateKey] = [];
-      }
-      return {
-        ...updatedSlotList,
-        [currentDateKey]: [...updatedSlotList[currentDateKey], ...timeList],
-      };
-    });
+  const handleSave = async () => {
+
+    const responseObj=await fetch ('http://localhost:3000/doctor/addSlots', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({slots: timeList}),
+    }).then(response => response.json())
+
+    if (responseObj.message === "Success") {
+      alert("Slots added successfully!");
+      setSlotList((prevSlotList) => {
+        const currentDateKey = date.format("YYYY-MM-DD ");
+        const updatedSlotList = { ...prevSlotList };
+        if (!updatedSlotList[currentDateKey]) {
+          updatedSlotList[currentDateKey] = [];
+        }
+        return {
+          ...updatedSlotList,
+          [currentDateKey]: [...updatedSlotList[currentDateKey], ...timeList],
+        };
+      });
+    }
+    else{
+      alert("Slots could not be added!");
+    }
     handleClose();
   };
 
@@ -221,8 +235,8 @@ function AddSlotDialog({ open, setOpen }) {
           if (!timeList.includes(timeStr) && !timeStr.includes("NaN")) {
             const timeObj = {
               time: timeStr,
-              availability: "Available",
-              date: format(date, "yyyy-MM-dd"),
+              availability: true,
+              date: format(new Date(date), "yyyy-MM-dd"),
             };
             setTimeList([...timeList, timeObj]);
           }

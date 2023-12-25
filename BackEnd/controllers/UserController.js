@@ -38,7 +38,7 @@ const userController = {
         }
     },
 
-    login: async (req, res) => {
+    login: login = async (req, res) => {
         const { email, password } = req.body;
 
         try {

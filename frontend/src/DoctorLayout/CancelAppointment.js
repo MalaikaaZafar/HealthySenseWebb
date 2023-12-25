@@ -6,20 +6,77 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import "./CancelAppointment.css";
 import UserCard from "../Components/UserCard";
+import AppointmentCard from "../Components/AppointmentCard";
 
-function CancelAppointment() {
+import {useImmer} from 'use-immer';
+
+const CancelAppointment = () => {
     const [reason, setReason]= useState("Something urgent came up");
+    const [appointment, setAppointment] = useImmer(null);
+    const {id}= useParams();
+    const fetchAppointment=async ()=>{
+      const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
+      const appoinmentList = await fetch(formattedStr, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((response) => response.json());
+      setAppointment(appoinmentList);
+    }
+
+    const cancelAppointment=async ()=>{
+      const formattedStr = `http://localhost:3000/doctor/consultations/cancel`;
+      const appoinmentList = await fetch(formattedStr, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id: id, reason: reason})
+      }).then((response) => response.json());
+      if (appoinmentList.message==="Success")
+      {
+        alert("Appointment Cancelled");
+        setAppointment(draft=>{
+          draft.status="Cancelled";
+          draft.updateReason=reason;
+        })
+      }
+      else 
+      {
+        alert("Something went wrong"); 
+      }
+    }
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const data = await fetchAppointment();
+        if (data) {
+          setAppointment(data);
+        }
+      };
+      fetchData();
+    }, []);
+
     function setReasonHandler(event){
         setReason(event.target.value);
     }
+
   return (
     <div className="cancelAppointmentScreen">
       <div className="ScreenBodyCA">
         <div className="halfCA">
-          <UserCard type="patient" width="100%" />
+          {
+            appointment && 
+            <div className="user">
+              <AppointmentCard appt={appointment} />
+            </div>
+          }
+          
           <div className="reasonDiv">
             <h2 style ={{color: '#2854C3'}}>Reason for Cancelling Appointment</h2>
             <FormControl>
@@ -52,6 +109,7 @@ function CancelAppointment() {
           </div>
           <div className="appointmentBtns">
             <Button
+              onClick={cancelAppointment}
               variant="contained"
               style={{
                 background: "#2854c3",

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const appointmentSlotsSchema=new mongoose.Schema({
     date:{type:Date,required:true},
-    time:{type:Date,required:true},
+    time:{type:String,required:true},
     availability:{type:Boolean, default:true}
 });
 

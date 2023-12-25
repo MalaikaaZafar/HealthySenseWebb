@@ -13,6 +13,7 @@ app.use(cors());
 
 app.use('/', require('./routes/UserRoutes'));
 app.use('/doctor', require('./routes/DoctorRoutes'));
+app.use('/admin', require('./routes/AdminRoutes'));
 
 const PORT =process.env.PORT || 3000;
 

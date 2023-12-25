@@ -9,7 +9,7 @@ import DateIcon from '@mui/icons-material/DateRangeOutlined';
 import TimeIcon from '@mui/icons-material/AccessTimeOutlined';
 
 const appointmentContext=createContext();
-function AppointmentCard({ type, appt }) {
+function ApptCardForList({ type, appt }) {
   const Navigate = useNavigate();
   const goToDetails = (event) => {
     event.preventDefault();
@@ -53,19 +53,69 @@ function AppointmentCard({ type, appt }) {
             <p style={{display:'flex', alignItems:'center'}}><TimeIcon sx={{margin: '2%'}}/>{appt.consult.time} </p>
             <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.consult.date), "yyyy-MM-dd")}</p>
           </div>
+          <appointmentContext.Provider value={appt}>
+          {appt.consult.status === "Completed" || appt.consult.status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} Navigate={Navigate}/>}
+          </appointmentContext.Provider>
         </div>
       </div>
     </Card>
   );
 }
 
+function IsComplete({ type, Navigate }){
+  const appt=useContext(appointmentContext);
+  return (
+    <Button
+      style={{background: "#F4F9FB", color: "#3B86FF", textTransform: "none" }}>
+      Leave Review
+    </Button>
+  );
+}
 
+function IsNotComplete({type, Navigate}) {
+  const appt=useContext(appointmentContext);
+  return (
+    <div className="apptButtons" style={{display:'flex', flexDirection:'row'}}>
+      <Button
+        onClick={(e) => {
+          Navigate(`/doctor/appointments/cancel/${appt.consult._id}`);
+          e.stopPropagation();
+        }}
+        variant="contained"
+        style={{
+          background: "#F4F9FB",
+          color: "#3B86FF",
+          border: "1px solid #3B86FF",
+          margin: "1%",
+          textTransform: "none",
+        }}
+      >
+        Cancel
+      </Button>
+      <Button
+        onClick={(e) => {
+          Navigate(`/doctor/appointments/reschedule/${appt.consult._id}`);
+          e.stopPropagation();
+        }}
+        variant="contained"
+        style={{
+          background: "#2854c3",
+          color: "#f4f9fb",
+          border: "1px solid #3B86FF",
+          margin: "1%",
+          textTransform: "none",
+        }}
+      >
+        Reschedule
+      </Button>
+    </div>
+  );
+}
 function PatientDetails() {
   const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Name: {appt.user?.name}</p>
-      <p>Status: <b>{appt.consult?.status}</b></p>
+      <p>Name: {appt.name}</p>
     </div>
   );
 }
@@ -74,11 +124,9 @@ function DoctorDetails() {
   const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Dr. {appt.user?.name}</p>
-      <span>{appt.details?.specialization}</span>
-      <p>Status:  {appt.consult?.status}</p>
+      <p>Dr. {appt.name}</p>
     </div>
   );
 }
 
-export default AppointmentCard;
+export default ApptCardForList;

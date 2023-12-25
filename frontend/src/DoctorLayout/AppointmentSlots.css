@@ -1,4 +1,4 @@
-/* Global Styles */
+
 
 body {
   background-color: #f7f7f7; /* Light background color */
@@ -24,23 +24,6 @@ body {
   padding: 20px;
 }
 
-/* .appointmentDetailsScreen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.ScreenBody {
-  display: flex;
-  width: 80%;
-  justify-content: space-between;
-  margin: 20px;
-} */
-
-/* .half {
-  flex: 1;
-} */
 
 .slotList {
   display: flex;

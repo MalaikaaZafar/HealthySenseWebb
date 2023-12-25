@@ -4,11 +4,13 @@ import logo from './healthySenseLogo.png';
 import './NavBar.css';
 import { ButtonGroup } from '@mui/material';
 import {styled} from '@mui/material/styles';
+import { Outlet } from 'react-router-dom';
 
 
 
 function NavBar() {
   return (
+    <>
     <header>
       <div className="top">
         <div className="logo">
@@ -29,6 +31,8 @@ function NavBar() {
         </ButtonGroup>
       </div>
     </header>
+    <Outlet />
+    </>
   );
 }
 

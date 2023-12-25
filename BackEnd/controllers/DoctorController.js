@@ -1,6 +1,7 @@
 const Doctor = require('../models/Doctor');
 const User = require('../models/User');
-const Appointment = require('../models/Apointments');
+const Appointment=require('../models/Apointments');
+const Payment = require('../models/Payment');
 
 
 const doctorController = {
@@ -58,7 +59,6 @@ const doctorController = {
     // view all consultations of a doctor, both pending and completed
     consultations: async (req, res) => {
         const UserId = "65854380aa6b07046cf14512";
-        console.log('req.UserId', req.UserId)
         try {
             const doctor = await Doctor.findOne({ id: UserId });
             console.log(doctor);
@@ -66,7 +66,12 @@ const doctorController = {
                 return res.status(404).json({ message: "Doctor not found" });
 
             const consultationList = await Appointment.find({ doctorId: UserId });
-            return res.status(200).json(consultationList);
+            const consultations = await Promise.all(
+                consultationList.map(async (consultation) => {
+                    const patient = await User.findById(consultation.patientId, { _id: 0, name: 1 });
+                    return { name: patient.name, consult: consultation };
+                }));
+            return res.status(200).json(consultations);
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -75,12 +80,17 @@ const doctorController = {
 
     // view details of a specific appointment
     getConsultationById: async (req, res) => {
-        const { UserId, date, time } = req.body;
+        const { id } = req.params;
         try {
-            const consultation = await Appointment.findOne({ doctorId: UserId, date: date, time: time });
+            const consultation = await Appointment.findById(id);
             if (!consultation)
                 return res.status(404).json({ message: "Consultation not found" });
-            return res.status(200).json({ consultation });
+            const user = await User.findById(consultation.patientId);
+            const fee = await Payment.findOne({ appointmentId: id }, { amount: 1, status: 1 });
+            const doctor = await User.findOne({ _id: consultation.doctorId });
+            const docDetails = await Doctor.findOne({ id: consultation.doctorId });
+            const docOrPatient = { user: doctor, details: docDetails };
+            return res.status(200).json({ user, docOrPatient, fee, consult: consultation });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -118,5 +128,73 @@ const doctorController = {
         const specialties = await Doctor.distinct("specialization");
         return res.status(200).json({ specialties });
     },
+
+    rescheduleAppt: async (req, res) => {
+        const { id, date, time, reason } = req.body;
+        try {
+            const appointment = await Appointment.findById(id);
+            if (!appointment)
+                return res.status(404).json({ message: "Appointment not found" });
+            const doctor = await Doctor.findOne({ id: appointment.doctorId });
+            if (doctor) {
+                var slots = doctor.appointmentSlots.filter(slot => (slot.date !== appointment.date && slot.time !== appointment.time));
+                slots.push({ date: appointment.date, time: appointment.time, availability: true });
+                const newSlots = slots.filter(slot => (slot.date !== date && slot.time !== time));
+                newSlots.push({ date, time, availability: false });
+                doctor.appointmentSlots = newSlots;
+                console.log(doctor.appointmentSlots);
+            }
+            await doctor.save();
+            appointment.date = date;
+            appointment.time = time;
+            appointment.updateReason = reason;
+            await appointment.save();
+            return res.status(200).json({ message: 'Success', appointment: appointment, docOrPatient: doctor });
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
+
+    cancelAppt: async (req, res) => {
+        const { id, reason } = req.body;
+        try {
+            const appointment = await Appointment.findById(id);
+            if (!appointment)
+                return res.status(404).json({ message: "Appointment not found" });
+            appointment.status = "Cancelled";
+            appointment.updateReason = reason;
+            const doc = await Doctor.findOne({ id: appointment.doctorId });
+            const slot = doc.appointmentSlots.find(slot => slot.date === appointment.date && slot.time === appointment.time);
+            slot.availability = true;
+            await doc.save();
+            await appointment.save();
+            console.log(appointment);
+            return res.status(200).json(appointment);
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
+    addSlots: async (req, res) => {
+        const { slots } = req.body;
+        const UserId = "65854380aa6b07046cf14512";
+        try {
+            const doctor = await Doctor.findOne({ id: UserId });
+            if (!doctor)
+                return res.status(404).json({ message: "Doctor not found" });
+            const newSlots = doctor.appointmentSlots.concat(slots);
+            doctor.appointmentSlots = newSlots;
+            await doctor.save();
+            return res.status(200).json({ message: "Success" });
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
+
+
 };
+
 module.exports = doctorController;
