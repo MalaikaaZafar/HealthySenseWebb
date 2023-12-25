@@ -9,9 +9,11 @@ import ViewAllDoctors from './AdminLayout/ViewAllDoctors.js';
 import ViewAllPatients from './AdminLayout/ViewAllPatients.js';
 
 import { Routes, Route } from 'react-router-dom';
+import Search from './pages/Search.js';
 function App() {
   return (
     <div className="App">
+      <NavBar />
       <Routes>
         <Route path="/" element={<NavBar />}>
           <Route index element={<AppointmentSlots />}/>
@@ -29,8 +31,9 @@ function App() {
           <Route path="appointmentSlots" element={<AppointmentSlots />} />
           <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
         </Route>
+
       </Routes>
-    </div>
+    </div >
   );
 }
 

@@ -1,10 +1,10 @@
 const express = require('express');
-const { getAllDoctors, getAllPatients, getDoctorsDetails } = require('../controllers/AdminControllers');
 const auth = require('../auth/UserAuth');
+const adminController = require('../controllers/AdminController');
 
 const router = express.Router();
 
-router.get("/doctorList", getAllDoctors);
-router.get("/patientList", getAllPatients);
-router.get("/getDoctorsDetails",  getDoctorsDetails);
+router.get("/doctorList", adminController.getAllDoctors);
+router.get("/patientList", adminController.getAllPatients);
+router.get("/getDoctorsDetails", adminController.getDoctorsDetails);
 module.exports = router;
