@@ -16,14 +16,17 @@ import { AppointmentDetail as ApptDetail} from './patientlayout/AppointmentDetai
 
 import { Routes, Route } from 'react-router-dom';
 import Search from './pages/Search.js';
-import Cookies from './Cookies.js';
+import PatientManageAccount from './patientlayout/account/ManageAccount.js';
+import DoctorManageAccount from './doctorlayout/account/ManageAccount.js';
+
 import './App.css';
 
 function App() {
+
   return (
     <div className="App">
       <Routes>
-        <Route index path="*" element={<Cookies />} />
+        <Route index path="*" element={<DoctorManageAccount />} />
         <Route path="/nav" element={<NavBar />}>
           <Route index element={<AppointmentSlots />}/>
         </Route>
@@ -33,9 +36,9 @@ function App() {
           <Route path='patients' element={<ViewAllPatients />} />
         </Route>
         <Route path="/doctor" element={<NavBar />}>
-          <Route index element={<AppointmentList />} />
+          <Route index element={<CustomTabPanel />} />
           <Route path="appointments/:id" element={<AppointmentDetail />} />
-          <Route path="appointments" element={<AppointmentList />} />
+          <Route path="appointments" element={<CustomTabPanel />} />
           <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
           <Route path="appointmentSlots" element={<AppointmentSlots />} />
           <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />

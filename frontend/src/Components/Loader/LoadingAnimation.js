@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import React, {useEffect} from 'react';
 import LoadingGIF from './LoadingGIF.gif';
-import { Modal } from '@mui/material';
+import { motion, AnimatePresence, usePresence } from 'framer-motion';
 
-const LoadingAnimation = () => {
-    const [open, setOpen] = useState(true);
-    const handleOpen = () => setOpen(true);
+const LoadingAnimation = ({isVisible}) => { 
     return (
-        <Modal
-            open={open}
-            onClose={handleOpen}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
-            <div className="loading-animation" >
-                <img src={LoadingGIF} alt="Loading..." style={{ height: '200px', width: '200px', borderRadius: '100%' }} />
-            </div>
-        </Modal>
+        <AnimatePresence>
+            {isVisible && (
+                <motion.div
+                    className="loading-animation"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                >
+                     <img src={LoadingGIF} alt="Loading..." style={{ height: 'auto', width: 'auto', maxHeight: '500px', maxWidth: '500px', borderRadius: '100%' }} className='loadingGift' />
+                </motion.div>
+            )}
+        </AnimatePresence>
     )
 }
 

@@ -1,10 +1,14 @@
 import { Avatar, Button, Container, FormControl, InputLabel, Modal, NativeSelect, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from "dayjs";
+import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
+import AccountDetails from "../../components/user/Account/AccountDetails";
+import DoctorSpecializedDetails from "./DoctorSpecialized";
+import CertificateTable from "./tables/CertificateTable";
+import AddCertificate from "./modals/certificate/AddCertificate";
+import EditCertificate from "./modals/certificate/EditCertificate";
+import AddService from "./modals/services/AddService";
+import EditService from "./modals/services/EditService";
 
 
 const DoctorManageAccount = () => {
@@ -12,17 +16,12 @@ const DoctorManageAccount = () => {
     const [Changes, setChanges] = useState(false);
     const [DoctorData, setDoctorData] = useImmer({
         name: "John Doe",
-        Age: 20,
-        Address: "123, ABC Street, XYZ City",
-        Phone: 1234567890,
-        Email: "JohnDoe@Email",
-        History: [
-            {
-                Type: "Diabetes",
-                Description: "Since 2010",
-            }
-        ],
-        Picture: null,
+        dob: "2003-02-11",
+        country: "123, ABC Street, XYZ City",
+        phoneNumber: 1234567890,
+        email: "JohnDoe@Email",
+        gender: 'Male',
+        profilePicture: null,
         specialization: "Cardiologist",
         description: "I am a cardiologist",
         location: "ABC Hospital",
@@ -30,6 +29,16 @@ const DoctorManageAccount = () => {
         workingHours: "10:00 AM - 6:00 PM",
         fee: 500,
         availability: true,
+        session: [
+            {
+                type: "Online",
+                fee: 500,
+            },
+            {
+                type: "Clinic",
+                fee: 500,
+            },
+        ],
         certificates: [
             {
                 name: "Certificate 1",
@@ -40,17 +49,11 @@ const DoctorManageAccount = () => {
                 File: null,
             },
         ],
-    });
-    const [History, setHistory] = useImmer({
-
-    });
-    const [Certificates, setCertificates] = useImmer({
-        name: "",
-        description: "",
-        issueDate: "",
-        expiryDate: "",
-        approvedStatus: false,
-        File: null,
+        services: [
+            "Service 1",
+            "Service 2",
+            "Service 3"
+        ],
     });
 
     const [CertificateModal, setCertificateModal] = useState(false);
@@ -62,113 +65,36 @@ const DoctorManageAccount = () => {
     const [CertificateEditIndex, setCertificateEditIndex] = useState(-1);
 
     const CertificateEditModalOpen = () => { setCertificateEditModal(true); };
-    const CertificateEditModalClose = () => { setCertificateEditModal(false); };
+    const CertificateEditModalClose = () => { 
+        setCertificateEditIndex(-1);
+        setCertificateEditModal(false); 
+    };
 
-    const HandleProfilePicChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onloadend = () => {
-                setDoctorData(draft => {
-                    draft.Picture = reader.result;
-                })
-            };
-            setChanges(true);
-        }
-    }
+    const [ServicesModal, setServicesModal] = useState(false);
 
-    const HandleCertificateChange = () => {
-        if (Certificates.name.trim() === "" || Certificates.description.trim() === "" || Certificates.issueDate === "" || Certificates.expiryDate === "" || Certificates.File === null) {
-            alert("Please fill all the fields");
-            return;
-        }
-        const CheckIssueDate=Certificates.issueDate.split("-");
-        const CheckExpiryDate=Certificates.expiryDate.split("-");
-        if(CheckIssueDate[0]>CheckExpiryDate[0]){
-            alert("Issue Date cannot be greater than Expiry Date");
-            return;
-        }
-        else if(CheckIssueDate[0]===CheckExpiryDate[0]){
-            if(CheckIssueDate[1]>CheckExpiryDate[1]){
-                alert("Issue Date cannot be greater than Expiry Date");
-                return;
-            }
-            else if(CheckIssueDate[1]===CheckExpiryDate[1]){
-                if(CheckIssueDate[2]>=CheckExpiryDate[2]){
-                    alert("Issue Date cannot be greater than or Equal to Expiry Date");
-                    return;
-                }
-            }
-        }
-        setDoctorData(draft => {
-            draft.certificates.push(Certificates);
-        })
-        setCertificates(draft => {
-            draft.name = "";
-            draft.description = "";
-            draft.issueDate = "";
-            draft.expiryDate = "";
-            draft.approvedStatus = false;
-            draft.File = null;
-        })
-        CertificateModalClose();
-    }
+    const ServicesModalOpen = () => { setServicesModal(true); };
+    const ServicesModalClose = () => { setServicesModal(false); };
+
+    const [ServicesEditModal, setServicesEditModal] = useState(false);
+    const [ServicesEditIndex, setServicesEditIndex] = useState(-1);
+
+    const ServicesEditModalOpen = () => { 
+        setServicesEditModal(true); 
+    };
+    const ServicesEditModalClose = () => { 
+        setServicesEditIndex(-1);
+        setServicesEditModal(false); 
+    };
+
 
     const HandleCertificateEdit = (index) => {
         setCertificateEditIndex(index);
-        setCertificates(draft => {
-            draft.name = DoctorData.certificates[index].name;
-            draft.description = DoctorData.certificates[index].description;
-            draft.issueDate = DoctorData.certificates[index].issueDate;
-            draft.expiryDate = DoctorData.certificates[index].expiryDate;
-            draft.approvedStatus = DoctorData.certificates[index].approvedStatus;
-            draft.File = DoctorData.certificates[index].File;
-        })
         CertificateEditModalOpen();
     }
 
-    const HandleCertificateEditChange = () => {
-        if (Certificates.name.trim() === "" || Certificates.description.trim() === "" || Certificates.issueDate === "" || Certificates.expiryDate === "" || Certificates.File === null) {
-            alert("Please fill all the fields");
-            return;
-        }
-        const CheckIssueDate=Certificates.issueDate.split("-");
-        const CheckExpiryDate=Certificates.expiryDate.split("-");
-        if(CheckIssueDate[0]>CheckExpiryDate[0]){
-            alert("Issue Date cannot be greater than Expiry Date");
-            return;
-        }
-        else if(CheckIssueDate[0]===CheckExpiryDate[0]){
-            if(CheckIssueDate[1]>CheckExpiryDate[1]){
-                alert("Issue Date cannot be greater than Expiry Date");
-                return;
-            }
-            else if(CheckIssueDate[1]===CheckExpiryDate[1]){
-                if(CheckIssueDate[2]>=CheckExpiryDate[2]){
-                    alert("Issue Date cannot be greater than or Equal to Expiry Date");
-                    return;
-                }
-            }
-        }
-        setDoctorData(draft => {
-            draft.certificates[CertificateEditIndex].name = Certificates.name;
-            draft.certificates[CertificateEditIndex].description = Certificates.description;
-            draft.certificates[CertificateEditIndex].issueDate = Certificates.issueDate;
-            draft.certificates[CertificateEditIndex].expiryDate = Certificates.expiryDate;
-            draft.certificates[CertificateEditIndex].approvedStatus = Certificates.approvedStatus;
-            draft.certificates[CertificateEditIndex].File = Certificates.File;
-        })
-        setCertificates(draft => {
-            draft.name = "";
-            draft.description = "";
-            draft.issueDate = "";
-            draft.expiryDate = "";
-            draft.approvedStatus = false;
-            draft.File = null;
-        })
-        setChanges(true);
-        CertificateEditModalClose();
+    const HandleServicesEdit = (index) => {
+        setServicesEditIndex(index);
+        ServicesEditModalOpen();
     }
 
 
@@ -179,348 +105,103 @@ const DoctorManageAccount = () => {
     return (
         <Container style={{ marginBottom: '70px', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
             <div className="column211">
-                <Typography style={{ textAlign: 'center' }} variant="h4">Manage Account</Typography>
-                <div className="column123">
-                    <Avatar sx={{ width: 100, height: 100 }} src={DoctorData.Picture} />
-                    <div className="row-display">
-                        <input type="file"
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            onChange={(e) => { HandleProfilePicChange(e) }}
-                            id="profilePictureInput"
-                        />
-                        <label htmlFor="profilePictureInput">
-                            <Typography variant="contained" style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }} component="span">
-                                Change Profile Picture
-                            </Typography>
-                        </label>
-                    </div>
-                </div>
-                <TextField id="outlined-basic" label="Name" variant="outlined" value={DoctorData.name} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.name = e.target.value;
-                    })
-                    setChanges(true);
-                }} />
-                <TextField id="outlined-basic" label="Age" variant="outlined" value={DoctorData.Age} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.Age = e.target.value;
-                    })
-                    setChanges(true);
-                }} />
-                <TextField id="outlined-basic" label="Address" variant="outlined" value={DoctorData.Address} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.Address = e.target.value;
-                    })
-                    setChanges(true);
-                }} />
-                <TextField id="outlined-basic" label="Phone" variant="outlined" value={DoctorData.Phone} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.Phone = e.target.value;
-                    })
-                    setChanges(true);
-                }} />
-                <TextField id="outlined-basic" label="Email" variant="outlined" value={DoctorData.Email} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.Email = e.target.value;
-                    })
-                    setChanges(true);
-                }} />
-                <TextField id="outlined-basic" label="Specialization" variant="outlined" value={DoctorData.specialization} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.specialization = e.target.value;
-                    })
-                    setChanges(true);
-                }} />
-                <TextField id="outlined-basic" label="Description" variant="outlined" value={DoctorData.description} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.description = e.target.value;
-                    })
-                    setChanges(true);
-                }} />
-                <TextField id="outlined-basic" label="Location" variant="outlined" value={DoctorData.location} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.location = e.target.value;
-                    })
-                    setChanges(true);
-                }
-                } />
-                <TextField id="outlined-basic" label="Experience" variant="outlined" value={DoctorData.experience} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.experience = e.target.value;
-                    })
-                    setChanges(true);
-                }
-                } />
-                <TextField id="outlined-basic" label="Working Hours" variant="outlined" value={DoctorData.workingHours} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.workingHours = e.target.value;
-                    })
-                    setChanges(true);
-                }
-                } />
-                <TextField id="outlined-basic" label="Fee" variant="outlined" value={DoctorData.fee} onChange={(e) => {
-                    setDoctorData(draft => {
-                        draft.fee = e.target.value;
-                    })
-                    setChanges(true);
-                }
-                } />
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel htmlFor="uncontrolled-native">Availability</InputLabel>
-                    <NativeSelect
-                        value={DoctorData.availability}
-                        onChange={(e) => {
-                            setDoctorData(draft => {
-                                draft.availability = e.target.value;
-                            })
-                            setChanges(true);
-                        }}
-                        inputProps={{
-                            name: 'availability',
-                            id: 'uncontrolled-native',
-                        }}
-                    >
-                        <option value={true}>Available</option>
-                        <option value={false}>Not Available</option>
-                    </NativeSelect>
-                </FormControl>
+                <AccountDetails
+                    Data={DoctorData}
+                    setData={setDoctorData}
+                    setChanges={setChanges}
+                />
+
+                <DoctorSpecializedDetails
+                    DoctorData={DoctorData}
+                    setDoctorData={setDoctorData}
+                    setChanges={setChanges}
+                />
                 <Typography variant="h6">Certificates</Typography>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Description</TableCell>
-                            <TableCell>Issue Date</TableCell>
-                            <TableCell>Expiry Date</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {DoctorData.certificates.length > 0 ? DoctorData.certificates.map((certificate, index) => {
-                            return (
-                                <TableRow>
-                                    <TableCell>{certificate.name}</TableCell>
-                                    <TableCell>{certificate.description}</TableCell>
-                                    <TableCell>{certificate.issueDate}</TableCell>
-                                    <TableCell>{certificate.expiryDate}</TableCell>
-                                    <TableCell>{certificate.approvedStatus ? "Approved" : "Not Approved"}</TableCell>
-                                    <TableCell>
-                                        <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }}
-                                            onClick={() => { HandleCertificateEdit(index) }}
-                                        >
-                                            Edit
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }}
-                                            onClick={()=>{
-                                                setDoctorData(draft=>{
-                                                    draft.certificates.splice(index,1);
-                                                })
-                                                setChanges(true);
-                                            }}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        }) : <TableRow>
-                            <TableCell>No Certificates</TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                        </TableRow>
-                        }
-                    </TableBody>
-                </Table>
-                <Button variant="contained" style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px', width: 'fit-content' }}
+                <CertificateTable
+                    DoctorData={DoctorData}
+                    setDoctorData={setDoctorData}
+                    HandleCertificateEdit={HandleCertificateEdit}
+                    setChanges={setChanges}
+                />
+
+                {
+                    DoctorData.services.length > 0 ?
+                        <Container style={{ display: 'flex', flexDirection: 'row', width: '100%', padding: '10px', marginBottom: '0px', borderBottom: '1px solid rgba(224, 224, 224, 1)', paddingBottom: '5px' }}>
+                            <Container style={{ width: '100%', textAlign: 'left', padding: '5px', margin: '0px' }}>
+                                <Typography variant="h6" style={{ textAlign: 'left' }}>Services</Typography>
+                                {
+                                    DoctorData.services.map((service, index) => {
+                                        return (
+                                            <>
+                                                <Typography variant="p" style={{ textAlign: 'left' }}>{service}</Typography>
+                                                <Button
+                                                    style={{ backgroundColor: '#3f51b5', color: 'white', width: 'fit-content', fontWeight: 'bold', fontSize: '16px' }}
+                                                    onClick={() => {
+                                                        HandleServicesEdit(index);
+                                                    }}
+                                                    variant="contained"
+                                                >
+                                                    Edit
+                                                </Button>
+
+                                            </>
+
+
+                                        )
+                                    })
+                                }
+                            </Container>
+                        </Container>
+                        :
+                        null
+                }
+
+                <Button style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '-10px' }}
                     onClick={() => { CertificateModalOpen() }}
+                    startIcon={<AddCircleOutline />}
                 >
                     Add Certificate
                 </Button>
-            </div>
-            <Modal
-                open={CertificateModal}
-                onClose={CertificateModalClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Container className='model-container' style={{ width: 'fit-content' }}>
-                    <Typography variant="h4">Add Certificate</Typography>
-                    <TextField id="outlined-basic" label="Name" variant="outlined"
-                        style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
-                        value={Certificates.name} onChange={(e) => {
-                            setCertificates(draft => {
-                                draft.name = e.target.value;
-                            })
-                        }} />
-                    <TextField id="outlined-basic" label="Description" variant="outlined"
-                        style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
-                        value={Certificates.description} onChange={(e) => {
-                            setCertificates(draft => {
-                                draft.description = e.target.value;
-                            })
-                        }
-                        } />
-                    <div className="row-display">
-                        <div className="row-display" style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}>
-                            <Typography>Issue Date</Typography>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                    label="Date"
-                                    onChange={(newValue) => {
-                                        const formattedDate = dayjs(newValue).format("YYYY-MM-DD");
-                                        setCertificates(draft => {
-                                            draft.issueDate = formattedDate;
-                                        })
-                                    }}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
-                        </div>
-                        <div className="row-display" style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}>
-                            <Typography>Expiry Date</Typography>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                    label="Date"
-                                    onChange={(newValue) => {
-                                        const formattedDate = dayjs(newValue).format("YYYY-MM-DD");
-                                        setCertificates(draft => {
-                                            draft.expiryDate = formattedDate;
-                                        })
-                                    }}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
-                        </div>
-                    </div>
-                    <div className="row-display">
-                        <input type="file"
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            onChange={(e) => {
-                                setCertificates(draft => {
-                                    draft.File = e.target.files[0];
-                                })
-                            }}
-                            id="certificateInput"
-                        />
-                        <label htmlFor="certificateInput">
-                            <Typography variant="contained" style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }} component="span">
-                                Upload Certificate
-                            </Typography>
-                        </label>
-                        {
-                            Certificates.File !== null ? <Typography>{Certificates.File.name}</Typography> : null
-                        }
-                    </div>
-                    <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>
-                        <Button variant="contained"
-                            style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '10px' }}
-                            onClick={() => { HandleCertificateChange() }}
-                        >
-                            Add Certificate
-                        </Button>
-                    </Container>
-                </Container>
-            </Modal>
 
-            <Modal
-                open={CertificateEditModal}
-                onClose={CertificateEditModalClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Container className='model-container' style={{ width: 'fit-content' }}>
-                    <Typography variant="h4">Edit Certificate</Typography>
-                    <TextField id="outlined-basic" label="Name" variant="outlined"
-                        style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
-                        value={Certificates.name}
-                        onChange={(e) => {
-                            setCertificates(draft => {
-                                draft.name = e.target.value;
-                            })
-                        }} />
-                    <TextField id="outlined-basic" label="Description" variant="outlined"
-                        style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
-                        value={Certificates.description} 
-                        onChange={(e) => {
-                            setCertificates(draft => {
-                                draft.description = e.target.value;
-                            })
-                        }
-                        } />
-                    <div className="row-display">
-                        <div className="row-display" style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}>
-                            <Typography>Issue Date</Typography>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                    label="Date"
-                                    defaultValue={dayjs(Certificates.issueDate)}
-                                    onChange={(newValue) => {
-                                        const formattedDate = dayjs(newValue).format("YYYY-MM-DD");
-                                        setCertificates(draft => {
-                                            draft.issueDate = formattedDate;
-                                        })
-                                    }}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
-                        </div>
-                        <div className="row-display" style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}>
-                            <Typography>Expiry Date</Typography>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker
-                                    label="Date"
-                                    defaultValue={dayjs(Certificates.expiryDate)}
-                                    onChange={(newValue) => {
-                                        const formattedDate = dayjs(newValue).format("YYYY-MM-DD");
-                                        setCertificates(draft => {
-                                            draft.expiryDate = formattedDate;
-                                        })
-                                    }}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
-                        </div>
-                    </div>
-                    <div className="row-display">
-                        <input type="file"
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            onChange={(e) => {
-                                setCertificates(draft => {
-                                    draft.File = e.target.files[0];
-                                })
-                            }}
-                            id="certificateInput"
-                        />
-                        <label htmlFor="certificateInput">
-                            <Typography variant="contained" style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }} component="span">
-                                Upload Certificate
-                            </Typography>
-                        </label>
-                        {
-                            Certificates.File !== null ? <Typography>{Certificates.File.name}</Typography> : null
-                        }
-                    </div>
-                    <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>
-                        <Button variant="contained"
-                            style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '10px' }}
-                            onClick={() => { HandleCertificateEditChange() }}
-                        >
-                            Edit Certificate
-                        </Button>
-                    </Container>
-                </Container>
-            </Modal>
+                <Button style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '-10px' }}
+                    onClick={() => { ServicesModalOpen() }}
+                    startIcon={<AddCircleOutline />}
+                >
+                    Add Service
+                </Button>
+            </div>
+
+            <AddCertificate
+                setDoctorData={setDoctorData}
+                CertificateModal={CertificateModal}
+                CertificateModalClose={CertificateModalClose}
+                setChanges={setChanges}
+            />
+            <EditCertificate
+                DoctorData={DoctorData}
+                setDoctorData={setDoctorData}
+                CertificateEditModal={CertificateEditModal}
+                CertificateEditModalClose={CertificateEditModalClose}
+                CertificateIndex={CertificateEditIndex}
+                setChanges={setChanges}
+            />
+
+            <AddService
+                setDoctorData={setDoctorData}
+                ServiceModal={ServicesModal}
+                ServiceModalClose={ServicesModalClose}
+                setChanges={setChanges}
+            />
+
+            <EditService
+                DoctorData={DoctorData}
+                setDoctorData={setDoctorData}
+                ServicesEditModal={ServicesEditModal}
+                ServiceModalClose={ServicesEditModalClose}
+                ServiceIndex={ServicesEditIndex}
+                setChanges={setChanges}
+            />
+
             <Container style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <Button variant="contained"
                     style={{ backgroundColor: 'red', color: 'white', marginTop: '20px' }}

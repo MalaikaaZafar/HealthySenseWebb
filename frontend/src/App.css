@@ -81,15 +81,6 @@
   font-size: large !important;
 }
 
-
-.loading-animation{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-  width: 100%;
-}
-
 .Diagnosis-Diag{
   width: 100%;
   display: flex !important;
@@ -147,13 +138,28 @@
   border-radius: 8px;
 }
 .column123 .MuiAvatar-root{
-  width: 100px;
-  height: 100px;
+  width: 180px;
+  height: 180px;
+  min-height: 180px;
+  min-width: 180px;
   align-self: center;
 }
 
 .row-display span{
   padding: 8px;  
-  border-radius: 8px;
+  border-radius: 8px; 
 }
+
+
+.loading-animation{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: white;
+  z-index: 1000;
+}
+
 

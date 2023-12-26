@@ -3,9 +3,9 @@ import { Box, Button, TextField, IconButton } from '@mui/material';
 import TextRotationNoneIcon from '@mui/icons-material/TextRotationNone';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-import DoctorCard from '../Components/DoctorCard';
+import DoctorCard from '../components/DoctorCard';
 import searchDoctors from '../services/searchDoctors';
-import FilterPopover from '../Components/FilterPopover';
+import FilterPopover from '../components/FilterPopover';
 import './Search.css';
 import styles from '../styles/searchStyles';
 
