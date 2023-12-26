@@ -61,8 +61,8 @@ const doctorController = {
     consultations: async (req, res) => {
         const UserId = "658546f9e3b8a4d7e100aa68";
         try {
-            const apptList= await Appointment.find({doctorId: UserId}).populate({path:'doctorId', populate:{path:'user'}}).exec();
-            return res.status(200).json( apptList );
+            const apptList = await Appointment.find({ doctorId: UserId }).populate({ path: 'doctorId', populate: { path: 'user' } }).exec();
+            return res.status(200).json(apptList);
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -186,7 +186,7 @@ const doctorController = {
     },
 
     searchDoctors: async (req, res) => {
-        const { query, sort, sortOrder, specialty, minRating } = req.query;
+        const { query, sort, sortOrder, specialty, minRating, skip } = req.query;
 
         try {
             const users = await User.find({ name: { $regex: query, $options: 'i' } });
@@ -202,7 +202,7 @@ const doctorController = {
             //     filter.rating = { $gte: minRating };
             // }
 
-            let doctors = await Doctor.find(filter).populate('user');
+            let doctors = await Doctor.find(filter).populate('user').skip(parseInt(skip)).limit(6);
 
             if (doctors.length !== 0) {
 

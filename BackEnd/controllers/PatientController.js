@@ -147,36 +147,41 @@ const patientController = {
     }
   },
   getFavorites: async (req, res) => {
-    const patient = await Patient.findOne({ id: req.userId });
+    const patient = await Patient.findOne({ user: req.userId });
     if (!patient)
       return res.status(404).json({ message: "Patient not found" });
-    const doctors = await Doctor.find({ _id: { $in: patient.favoriteDoctors } });
-    return res.status(200).json(doctors);
+    const doctors = await Doctor.find({ 'user': { $in: patient.favoriteDoctors } }).populate("user").select("-password").exec(); 
+    console.log(doctors);
+    return res.status(200).json(doctors);   
   },
   addFavorite: async (req, res) => {
-    const { doctorId } = req.body;
+    const { id: doctorId } = req.params;
+
     if (!doctorId)
       return res.status(400).json({ message: "Doctor ID not provided" });
-    const patient = await Patient.findOne({ id: req.userId });
+    const patient = await Patient.findOne({ user: req.userId });
     if (!patient)
       return res.status(404).json({ message: "Patient not found" });
-    const doctor = await Doctor.findOne({ _id: doctorId });
+    const doctor = await Doctor.findOne({ user: doctorId });
 
     if (!doctor)
       return res.status(404).json({ message: "Doctor not found" });
 
-    if (patient.favoriteDoctors.includes(doctor._id))
+    if (patient.favoriteDoctors.includes(doctor.user.toString())){
+      console.log("Doctor already in favorites");
       return res.status(400).json({ message: "Doctor already in favorites" });
-
-    patient.favoriteDoctors.push(doctor._id);
+    }
+    patient.favoriteDoctors.push(doctor.user.toString());
     await patient.save();
     return res.status(200).json({ message: "Doctor added to favorites" });
   },
   removeFavorite: async (req, res) => {
-    const { doctorId } = req.body;
+    const { id } = req.params;
+    const doctorId = id;
+    console.log(doctorId);
     if (!doctorId)
       return res.status(400).json({ message: "Doctor ID not provided" });
-    const patient = await Patient.findOne({ id: req.userId });
+    const patient = await Patient.findOne({ user: req.userId });
     if (!patient)
       return res.status(404).json({ message: "Patient not found" });
 
@@ -188,6 +193,20 @@ const patientController = {
     await patient.save();
     return res.status(200).json({ message: "Doctor removed from favorites" });
   },
+  getPatient: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const user = await User.findById(id);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      const patient = await Patient.findOne({ user: id })
+        .populate("user").select("-password").exec();
+      return res.status(200).json(patient);
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+
+  }
 
 };
 
