@@ -4,44 +4,53 @@ import StarIcon from '@mui/icons-material/StarBorderOutlined';
 import Button from '@mui/material/Button';
 import "@fontsource/roboto";
 
-import Avatar from '@mui/material/Avatar';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-import UserCard from '../Components/UserCard';
 import './AppointmentDetail.css';
 import DetailComponent from './DetailComponent';
+import AppointmentCard from '../components/AppointmentCard';
 
-function AppointmentDetail() {
+export const AppointmentDetail = () => {
+  const [appointment, setAppointment] = useState(null);
+  const { id } = useParams();
+
+  const fetchAppointment = async () => {
+    try{
+      const formattedStr = `http://localhost:3000/patient/consultations/${id}`;
+      const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
+      setAppointment(appoinmentList);
+    }
+    catch(err)
+    {
+      alert(err);
+    }
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchAppointment();
+    };
+    fetchData();
+  }, []);
+
+
   return (
     <div className="appointmentDetailsScreen">
-      <div className="ScreenBody">
-       <div className="half">
-        <UserCard type='doctor' width='100%'/>
-        <DetailComponent timing={'10:30 am - 11:30 am'} problem={'I am also dying'} fee={'1000 Rs.'} feeStatus={'Paid'}/>
-        </div>
-
-      <div className="half">
-       <div className="infoCard">
-         <div className="information">
-        <PatientIcon fontSize='large' ></PatientIcon>
-          <p><p style={{color: "#f9f9f9", margin: "0px", fontWeight:"bold"}}>90+</p>Patients</p>
-         </div>
-         <div className="information">
-        <ExperienceIcon fontSize='large' ></ExperienceIcon>
-         <p><p style={{color: "#f9f9f9", margin: "0px", fontWeight:"bold"}}>90+</p>Patients</p>
-         </div>
-         <div className="information">
-            <StarIcon fontSize='large' ></StarIcon>
-         <p><p style={{color: "#f9f9f9", margin: "0px", fontWeight:"bold"}}>90+</p>Patients</p>
-         </div>
-        </div>
-        <div className='appointmentBtns'>
-            <Button variant="contained" color="primary" style={{background: '#2854c3', marginBottom:'10px', width: '50%', textTransform: 'none'}}>Reschedule Appointment</Button>
-            <Button variant="contained" color="primary" style={{background: '#2854c3', width: '50%', textTransform: 'none'}}>Cancel Appointment</Button>
-        </div>
+        <div className="appointmentDetailsScreenBody">
+          <div className="left">
+          {appointment && <AppointmentCard appt={appointment}/>}
+          {appointment && <DetailComponent appt={appointment}/>}
+          </div>
+          <div className="right">
+            <div className='docInfo'>
+              <div className='docInfo1'>
+                
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+    </div>
   );
 }
-
-export default AppointmentDetail;

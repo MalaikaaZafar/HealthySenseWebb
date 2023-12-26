@@ -1,21 +1,43 @@
-import * as React from 'react';
+import {React, useEffect, useState} from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
-import AppointmentCard from '../Components/AppointmentCard';
+import ApptCardForList from '../components/ApptCardForList';
+import './ViewApptList.css';
+
+async function fetchAppointments() {
+    const appoinmentList= await fetch(`http://localhost:3000/doctor/consultations`,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response =>  response.json());
+    console.log(appoinmentList);
+    return appoinmentList;
+}
 
  function AppointmentList() {
-  const [value, setValue] = React.useState('Scheduled');
-
+  const [value, setValue] = useState('Booked');
+  const [appointmentList, setAppointmentList] = useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
     console.log(newValue);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchAppointments();
+      if (data) {
+        setAppointmentList(data);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
-    <Box sx={{width: '100%'}} style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-   <Box >
+<div className="apptListScreen">
+     <Box sx={{justifyContent:'center', width:'100%'}} >
       <Tabs
         value={value}
         onChange={handleChange}
@@ -23,17 +45,20 @@ import AppointmentCard from '../Components/AppointmentCard';
         indicatorColor="primary"
         aria-label="secondary tabs example"
       >
-        <Tab value="Scheduled" label="Scheduled" style={{textTransform:'none'}} />
+        <Tab value="Booked" label="Scheduled" style={{textTransform:'none'}} />
         <Tab value="Completed" label="Completed" style={{textTransform:'none'}} />
         <Tab value="Cancelled" label="Cancelled" style={{textTransform:'none'}} />
       </Tabs>
     </Box>
-    <Box style={{display: 'flex', flexDirection: 'row', flexWrap:'wrap', width: '80%'}}>
-    {Array.from({ length: 5 }).map((_, index) => (
-    <AppointmentCard key={index} type='doctor' status={value}/>
-  ))}
-    </Box>
-    </Box>
+      <div className="apptListBody">
+          <div className="apptList">
+    {appointmentList && appointmentList.map((app, index) => 
+        app.consult.status === value ? <div style={{ margin:'10px', width:'45%'}}><ApptCardForList key={index} type="patient" appt={app}/></div> : null
+  )}
+    </div>
+    </div>
+    </div>
+    
  
   );
 }
