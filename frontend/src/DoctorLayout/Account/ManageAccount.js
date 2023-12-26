@@ -7,7 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
 
 
-const ManageAccount = () => {
+const DoctorManageAccount = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [Changes, setChanges] = useState(false);
     const [DoctorData, setDoctorData] = useImmer({
@@ -544,4 +544,4 @@ const ManageAccount = () => {
     )
 }
 
-export default ManageAccount;
+export default DoctorManageAccount;

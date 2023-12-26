@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
 
 
-const ManageAccount = () => {
+const PatientManageAccount = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [Changes, setChanges] = useState(false);
     const [PatientData, setPatientData] = useImmer({
@@ -333,4 +333,4 @@ const ManageAccount = () => {
     )
 }
 
-export default ManageAccount;
+export default PatientManageAccount;
