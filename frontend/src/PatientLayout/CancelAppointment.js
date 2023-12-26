@@ -11,25 +11,30 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import {useImmer} from 'use-immer';
 
+
 import "./CancelAppointment.css";
 import AppointmentCard from "../components/AppointmentCard";
 
 
-const CancelAppointment = () => {
+export const CancelAppointment = () => {
     const [reason, setReason]= useState("Something urgent came up");
     const [appointment, setAppointment] = useImmer(null);
     const {id}= useParams();
     const fetchAppointment=async ()=>{
-      const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
-      const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
+      const formattedStr = `http://localhost:3000/patient/consultations/${id}`;
+      const appoinmentList = await fetch(formattedStr, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((response) => response.json());
       setAppointment(appoinmentList);
     }
 
     const cancelAppointment=async ()=>{
-      const formattedStr = `http://localhost:3000/doctor/consultations/cancel`;
-      const body=JSON.stringify({id: id, reason: reason});
-      const appoinmentList = await axios.put(formattedStr,body).then((response) => response.data);
-      if (appoinmentList.message==="Success")
+      const formattedStr = `http://localhost:3000/patient/consultations/cancel`;
+      const appointmentList= await axios.put(formattedStr, {id: id, reason: reason}).then((response) => response.data);
+      if (appointmentList.message==="Success")
       {
         alert("Appointment Cancelled");
         setAppointment(draft=>{
@@ -119,5 +124,3 @@ const CancelAppointment = () => {
     </div>
   );
 }
-
-export default CancelAppointment;

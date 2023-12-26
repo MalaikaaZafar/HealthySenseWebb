@@ -7,7 +7,7 @@ const patientHistorySchema = new mongoose.Schema({
 });
 
 const patientSchema = new mongoose.Schema({
-    id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     bloodGroup: { type: String, required: true },
     history: [patientHistorySchema],
     favoriteDoctors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' }],

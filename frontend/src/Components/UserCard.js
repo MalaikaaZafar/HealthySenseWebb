@@ -13,7 +13,6 @@ function UserCard({user})
             width: '100%',
             background: '#F4F9FB', // Set your desired background color
             borderRadius: '10px',
-            margin: '10px',
             '&:hover': {
                 cursor:'pointer',
                 background: '#F4F8FB', // Set your desired background color
@@ -23,7 +22,7 @@ function UserCard({user})
         >
             <div className='user-card-img'>
             <Avatar style={{ margin:'1%',marginLeft:'5%',marginRight:'5%', height: '75px', width: '75px', float: 'left' }}>
-                {user?.user?.profilePicture? user.profilePicture: "H"}</Avatar>
+                {user?.profilePicture? user.profilePicture: "H"}</Avatar>
                 <userContext.Provider value={user}>
                 {user?.user?.type==='Doctor' ? <DoctorDetails/> : <PatientDetails/>}
                 </userContext.Provider>
@@ -57,8 +56,8 @@ function DoctorDetails()
             <div className="patientDetails" style={{margin:'3%'}}>
             <div className="docDetailLeft">
                 <div className="docName"><p>Dr. {user.user.name}</p></div>
-                <div className="docSpeciality"><p>{user.details.specialization}</p></div>
-                <div className="docExperience"><p>5+ Years of Experience</p></div>
+                <div className="docSpeciality"><p>{user.specialization}</p></div>
+                <div className="docExperience"><p>{user.experience} Years of Experience</p></div>
             </div>
             <div className="docDetailRight">
                 {user.details.availability ? 

@@ -1,24 +1,18 @@
 import { React, useEffect, useState } from "react";
+import axios from "axios";
 
 import "./ViewAllPatients.css";
-import UserCard from "../Components/UserCard";
+import UserCard from "../components/UserCard";
 
 function ViewAllPatients() {
   const [patientList, setPatientList] = useState([]);
 
   async function fetchUsers() {
-    const docList = await fetch(
-      `http://localhost:3000/admin/patientList`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).then((response) => response.json());
-    setPatientList(docList);
+    const patients = await axios
+      .get("http://localhost:3000/admin/patientList")
+      .then((response) => response.data);
+    setPatientList(patients);
   }
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,9 +26,14 @@ function ViewAllPatients() {
       <div className="screenBodyUserList">
         <div className="halfUserScreen">
           <div className="userList">
-            {patientList && patientList.map((patient) => {
-               return <UserCard user={patient}/>;
-            })}
+            {patientList &&
+              patientList.map((patient) => {
+                return (
+                  <div className="userCard">
+                    <UserCard user={patient} />
+                  </div>
+                );
+              })}
           </div>
         </div>
       </div>

@@ -1,8 +1,9 @@
 import "@fontsource/roboto";
 import "./AppointmentSlots.css";
 import { React, useState, createContext, useContext } from "react";
-import { format } from "date-fns";
+import axios from "axios";  
 
+import { format } from "date-fns";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -163,7 +164,7 @@ const slotContext = createContext({
   setSlotList: () => {},
 });
 
-function AddSlotDialog({ open, setOpen }) {
+const AddSlotDialog = ({ open, setOpen }) => {
   const [timeRangeFields, setTimeRangeFields] = useState([]);
   const [date, setDate] = useState();
   const [timeList, setTimeList] = useState([]);
@@ -173,14 +174,8 @@ function AddSlotDialog({ open, setOpen }) {
   };
 
   const handleSave = async () => {
-
-    const responseObj=await fetch ('http://localhost:3000/doctor/addSlots', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({slots: timeList}),
-    }).then(response => response.json())
+    const responseObj=await axios.put(`http://localhost:3000/doctor/addSlots`,JSON.stringify({slots: timeList}))
+                      .then(response=>response.data);
 
     if (responseObj.message === "Success") {
       alert("Slots added successfully!");

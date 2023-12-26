@@ -1,6 +1,5 @@
 import Card from "@mui/material/Card";
 import Avatar from "@mui/material/Avatar";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import {createContext, useContext} from 'react';
@@ -14,9 +13,9 @@ function AppointmentCard({ type, appt }) {
   const goToDetails = (event) => {
     event.preventDefault();
     if (type === "doctor") {
-       Navigate(`/patient/appointments/${appt.consult._id}`);
+       Navigate(`/patient/appointments/${appt._id}`);
     } else {
-      Navigate(`/doctor/appointments/${appt.consult._id}`);
+      Navigate(`/doctor/appointments/${appt._id}`);
     }
   }
   return (
@@ -50,8 +49,8 @@ function AppointmentCard({ type, appt }) {
             <p>Online Session</p>
           </div>
           <div className="docExperience">
-            <p style={{display:'flex', alignItems:'center'}}><TimeIcon sx={{margin: '2%'}}/>{appt.consult.time} </p>
-            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.consult.date), "yyyy-MM-dd")}</p>
+            <p style={{display:'flex', alignItems:'center'}}><TimeIcon sx={{margin: '2%'}}/>{appt.time} </p>
+            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.date), "yyyy-MM-dd")}</p>
           </div>
         </div>
       </div>
@@ -64,8 +63,8 @@ function PatientDetails() {
   const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Name: {appt.user?.name}</p>
-      <p>Status: <b>{appt.consult?.status}</b></p>
+      <p>Name: {appt.patientId?.user?.name}</p>
+      <p>Status: <b>{appt.status}</b></p>
     </div>
   );
 }
@@ -74,9 +73,8 @@ function DoctorDetails() {
   const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Dr. {appt.user?.name}</p>
-      <span>{appt.details?.specialization}</span>
-      <p>Status:  {appt.consult?.status}</p>
+      <p>Dr. {appt.doctorId?.user?.name}</p>
+      <p>Status:  {appt.status}</p>
     </div>
   );
 }
