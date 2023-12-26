@@ -22,7 +22,6 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Search />} />
         <Route path="/admin" element={<NavBar />}>
           <Route index element={<ViewAllPatients />} />
           <Route path="doctors" element={<ViewAllDoctors />} />
@@ -53,5 +52,7 @@ function App() {
     </div >
   );
 }
+
+import { Routes, Route } from 'react-router-dom';
 
 export default App;
