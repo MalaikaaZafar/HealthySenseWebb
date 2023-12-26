@@ -1,17 +1,17 @@
-import NavBar from './Components/NavBar';
-import AppointmentList from './Doctorlayout/ViewAppointmentList';
-import CancelAppointment from './Doctorlayout/CancelAppointment';
-import AppointmentSlots from './Doctorlayout/AppointmentSlots';
-import RescheduleAppointment from './Doctorlayout/RescheduleAppointment';
-import AppointmentDetail from './Doctorlayout/AppointmentDetail.js';
+import NavBar from './components/NavBar.js';
+import CustomTabPanel from './doctorlayout/ViewAppointmentList.js';
+import CancelAppointment from './doctorlayout/CancelAppointment.js';
+import AppointmentSlots from './doctorlayout/AppointmentSlots.js';
+import RescheduleAppointment from './doctorlayout/RescheduleAppointment.js';
+import AppointmentDetail from './doctorlayout/AppointmentDetail.js';
 
-import ViewAllDoctors from './Adminlayout/ViewAllDoctors';
-import ViewAllPatients from './Adminlayout/ViewAllPatients';
+import ViewAllDoctors from './adminlayout/ViewAllDoctors.js';
+import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
-import {RescheduleAppointment as ReschedulePatient} from './Patientlayout/RescheduleAppointment';
-import {AppointmentList as AppointmentListPatient} from './Patientlayout/ViewAppointmentList';
-import { CancelAppointment as CancelPatientAppt } from './Patientlayout/CancelAppointment';
-import { AppointmentDetail as ApptDetail} from './Patientlayout/AppointmentDetail';
+import {RescheduleAppointment as ReschedulePatient} from './patientlayout/RescheduleAppointment.js';
+import {AppointmentList as AppointmentListPatient} from './patientlayout/ViewAppointmentList.js';
+import { CancelAppointment as CancelPatientAppt } from './patientlayout/CancelAppointment.js';
+import { AppointmentDetail as ApptDetail} from './patientlayout/AppointmentDetail.js';
 
 
 import { Routes, Route } from 'react-router-dom';
