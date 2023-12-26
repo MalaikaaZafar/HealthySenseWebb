@@ -1,4 +1,4 @@
-import NavBar from './components/NavBar.js';
+import NavBar from './Components/NavBar.js';
 import CustomTabPanel from './doctorlayout/ViewAppointmentList.js';
 import CancelAppointment from './doctorlayout/CancelAppointment.js';
 import AppointmentSlots from './doctorlayout/AppointmentSlots.js';
