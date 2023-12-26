@@ -1,0 +1,100 @@
+body{
+  margin: 0px;
+  padding: 0px;
+  background: #f7f7f7;
+  font-family: Roboto;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+}
+.viewApptScreen{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.viewApptScreenBody{
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+  width: 60%;
+  height: 100%;
+}
+
+.viewApptTop {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  /* background: #FFFFFF; */
+  /* padding: 1%; */
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
+}
+
+.viewAppt{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.viewApptTopLeft{
+  width: 100%;
+  height: 60%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewApptTopRight{
+  width: 100%;
+  height: 150px;
+  margin-top:2%;
+  display: flex;
+  flex-direction: row;
+}
+
+.viewApptRight
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 50%;
+  margin: 10px;
+  padding-top: 2%;
+  padding-bottom: 2%;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.viewApptRight p{
+  margin: 5px;
+}
+
+.viewApptBottom{
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center; */
+  /* align-items: center; */
+  width: 100%;
+}
+.viewApptDetails{
+  width: 100%;
+  margin-left: 1%;
+}
+
+.viewApptDetailsLeft{
+  width: 100%;
+}
+
+.viewApptBottomRight{
+  width: 100%;
+  margin-left: 3%;
+  display: flex;
+  flex-direction: column;
+}

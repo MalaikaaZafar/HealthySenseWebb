@@ -50,8 +50,8 @@ function AppointmentCard({ type, appt }) {
             <p>Online Session</p>
           </div>
           <div className="docExperience" style={{width:'100%'}}> 
-            <p style={{display:'flex', alignItems:'center', width: '100%'}}><TimeIcon sx={{margin: '2%'}}/>{appt.time} </p>
-            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.date), "yyyy-MM-dd")}</p>
+            <p style={{display:'flex', alignItems:'center', width: '100%'}}><TimeIcon sx={{margin: '2%'}}/>{appt?.time} </p>
+            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{appt?.date?  format(appt.date,'yyyy-MM-dd'):null}</p>
           </div>
         </div>
       </div>
@@ -64,8 +64,8 @@ function PatientDetails() {
   const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Name: {appt.patientId?.user?.name}</p>
-      <p>Status: <b>{appt.status}</b></p>
+      <p>Name: {appt?.patientId?.user?.name}</p>
+      <p>Status: <b>{appt?.status}</b></p>
     </div>
   );
 }
@@ -75,7 +75,7 @@ function DoctorDetails() {
   return (
     <div className="docName">
       <p>Dr. {appt?.doctorId?.user?.name}</p>
-      <p>Status:  {appt.status}</p>
+      <p>Status:  {appt?.status}</p>
     </div>
   );
 }

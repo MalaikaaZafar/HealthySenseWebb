@@ -19,7 +19,7 @@ const DetailComponent = ({appt}) => {
        <p className="heading"><TimeIcon/> Appointment Timing</p>
     <div className="detail">
       <p>{format(appt.date,'yyyy-MM-dd')}</p>
-      <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt.time}</p>
+      <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt?.time}</p>
       </div>
       <div >
        <p className="heading"><PatientIcon/> Patient information </p>
@@ -39,8 +39,14 @@ const DetailComponent = ({appt}) => {
       <p className="heading"><FeeIcon/> Fee information </p>
       <div className="detail" style={{marginBottom: '0px'}}>
        
-              <p style={{color: "#2854C3", fontWeight: "bold"}}>Paid</p>
-              <p>{appt.doctorId.fee}</p>
+              <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt.paymentStatus}</p>
+              {
+                appt.doctorId.session.map((sess) => {
+                  if (sess.type===appt.type){
+                    return <p>Rs. {sess.fee}</p>
+                  }
+                })
+              }
         </div>
       </div>
     </div>

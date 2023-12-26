@@ -1,5 +1,5 @@
 import NavBar from './components/NavBar.js';
-import CustomTabPanel from './doctorlayout/ViewAppointmentList.js';
+import CustomTabPanel from './doctorlayout/ViewAppointmentList.js'
 import CancelAppointment from './doctorlayout/CancelAppointment.js';
 import AppointmentSlots from './doctorlayout/AppointmentSlots.js';
 import RescheduleAppointment from './doctorlayout/RescheduleAppointment.js';
@@ -8,20 +8,21 @@ import AppointmentDetail from './doctorlayout/AppointmentDetail.js';
 import ViewAllDoctors from './adminlayout/ViewAllDoctors.js';
 import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
-import {RescheduleAppointment as ReschedulePatient} from './patientlayout/malaika/RescheduleAppointment.js';
-import {AppointmentList as AppointmentListPatient} from './patientlayout/malaika/ViewAppointmentList.js';
-import { CancelAppointment as CancelPatientAppt } from './patientlayout/malaika/CancelAppointment.js';
-import { AppointmentDetail as ApptDetail} from './patientlayout/malaika/AppointmentDetail.js';
-import { BookAppointment } from './patientlayout/malaika/BookAppointment.js';
+import { RescheduleAppointment as ReschedulePatient } from './patientlayout/reschedule_appointment/RescheduleAppointment.js';
+import { AppointmentList as AppointmentListPatient } from './patientlayout/view_appointment_list/ViewAppointmentList.js';
+import { CancelAppointment as CancelPatientAppt } from './patientlayout/cancel_appointment/CancelAppointment.js';
+import { AppointmentDetail as ApptDetail } from './patientlayout/view_appointment/AppointmentDetail.js';
+import { BookAppointment } from './patientlayout/book_appointment/BookAppointment.js';
 
 import { Routes, Route } from 'react-router-dom';
-import Search from './pages/Search.js';
+
+
 function App() {
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<NavBar />}>
-          <Route index element={<BookAppointment />}/>
+          <Route index element={<AppointmentListPatient />}/>
         </Route>
         <Route path="/admin" element={<NavBar />}>
           <Route index element={<ViewAllPatients />} />

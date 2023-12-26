@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const appointmentSlotsSchema=new mongoose.Schema({
     date:{type:Date,required:true},
     time:{type:String,required:true},
+    type:{type:String,enum:['Online','Clinic'],required:true},
     availability:{type:Boolean, default:true}
 });
 
@@ -22,7 +23,16 @@ const doctorSchema = new mongoose.Schema({
     location: { type: String, required: true },
     experience: { type: Number, required: true },
     workingHours: { type: String, required: true },
-    fee: { type: Number, required: true },
+    session: [{
+       type: {
+            type: String,
+            enum: ['Online', 'Clinic'],
+            required: true
+        },
+        fee: { 
+            type: Number, 
+            required: true }
+    }],
     availability: { type: Boolean, default: true },
     certificates: [certificateSchema],
     services: [{ type: String}],

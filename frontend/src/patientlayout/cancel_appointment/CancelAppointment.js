@@ -5,16 +5,13 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 
-
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import {useImmer} from 'use-immer';
 
-
 import "./CancelAppointment.css";
 import AppointmentCard from "../../components/AppointmentCard";
-
 
 export const CancelAppointment = () => {
     const [reason, setReason]= useState("Something urgent came up");
@@ -69,7 +66,7 @@ export const CancelAppointment = () => {
           {
             appointment && 
             <div className="user">
-              <AppointmentCard appt={appointment} />
+              <AppointmentCard type="doctor" appt={appointment} />
             </div>
           }
           
