@@ -8,18 +8,19 @@ import AppointmentDetail from './doctorlayout/AppointmentDetail.js';
 import ViewAllDoctors from './adminlayout/ViewAllDoctors.js';
 import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
-import {RescheduleAppointment as ReschedulePatient} from './patientlayout/RescheduleAppointment.js';
-import {AppointmentList as AppointmentListPatient} from './patientlayout/ViewAppointmentList.js';
+import { RescheduleAppointment as ReschedulePatient } from './patientlayout/RescheduleAppointment.js';
+import { AppointmentList as AppointmentListPatient } from './patientlayout/ViewAppointmentList.js';
 import { CancelAppointment as CancelPatientAppt } from './patientlayout/CancelAppointment.js';
-import { AppointmentDetail as ApptDetail} from './patientlayout/AppointmentDetail.js';
+import { AppointmentDetail as ApptDetail } from './patientlayout/AppointmentDetail.js';
 
 import { Routes, Route } from 'react-router-dom';
 import Search from './pages/Search.js';
+import Favorites from './pages/Favorites.js';
+
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Search />} />
         <Route path="/admin" element={<NavBar />}>
           <Route index element={<ViewAllPatients />} />
           <Route path="doctors" element={<ViewAllDoctors />} />
@@ -35,11 +36,16 @@ function App() {
         </Route>
 
         <Route path='/patient' element={<NavBar />}>
+          <Route index element={<Search />} />
           <Route index element={<AppointmentListPatient />} />
           <Route path='appointments' element={<AppointmentListPatient />} />
           <Route path='appointments/:id' element={<ApptDetail />} />
           <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
           <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
+        </Route>
+        <Route path="/" element={<NavBar />}>
+          <Route index element={<Search />} />
+          <Route path='favorites' element={<Favorites />} />
         </Route>
       </Routes>
     </div >

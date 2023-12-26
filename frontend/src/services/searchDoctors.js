@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-const searchDoctors = async (searchText, selectedButton, sortDirection, specialtyFilter, minRating) => {
+const searchDoctors = async (searchText, selectedButton, sortDirection, specialtyFilter, minRating, skip) => {
     try {
         const params = {
             query: searchText,
             sort: selectedButton,
             sortOrder: sortDirection,
+            skip: skip,
         };
         if (specialtyFilter !== '') {
             params.specialty = specialtyFilter;
