@@ -1,9 +1,11 @@
 const express = require('express');
-const auth = require('../auth/UserAuth');
 const patientController = require('../controllers/PatientController');
-
+const auth = require('../auth/UserAuth');
 const router = express.Router();
 
+
+router.get('/favorites', auth, patientController.getFavorites);
+router.post('/favorites', auth, patientController.addFavorite);
 router.get("/consultations", patientController.consultations);
 router.get("/consultations/:id", patientController.getConsultationById);
 router.post("/consultations/reschedule", patientController.rescheduleAppt);
