@@ -1,25 +1,30 @@
-import NavBar from './Components/NavBar.js';
-import CustomTabPanel from './doctorlayout/ViewAppointmentList.js';
-import CancelAppointment from './doctorlayout/CancelAppointment.js';
-import AppointmentSlots from './doctorlayout/AppointmentSlots.js';
-import RescheduleAppointment from './doctorlayout/RescheduleAppointment.js';
-import AppointmentDetail from './doctorlayout/AppointmentDetail.js';
+import NavBar from './Components/NavBar';
+import AppointmentList from './Doctorlayout/ViewAppointmentList';
+import CancelAppointment from './Doctorlayout/CancelAppointment';
+import AppointmentSlots from './Doctorlayout/AppointmentSlots';
+import RescheduleAppointment from './Doctorlayout/RescheduleAppointment';
+import AppointmentDetail from './Doctorlayout/AppointmentDetail.js';
 
-import ViewAllDoctors from './adminlayout/ViewAllDoctors.js';
-import ViewAllPatients from './adminlayout/ViewAllPatients.js';
+import ViewAllDoctors from './Adminlayout/ViewAllDoctors';
+import ViewAllPatients from './Adminlayout/ViewAllPatients';
 
-import {RescheduleAppointment as ReschedulePatient} from './patientlayout/RescheduleAppointment.js';
-import {AppointmentList as AppointmentListPatient} from './patientlayout/ViewAppointmentList.js';
-import { CancelAppointment as CancelPatientAppt } from './patientlayout/CancelAppointment.js';
-import { AppointmentDetail as ApptDetail} from './patientlayout/AppointmentDetail.js';
+import {RescheduleAppointment as ReschedulePatient} from './Patientlayout/RescheduleAppointment';
+import {AppointmentList as AppointmentListPatient} from './Patientlayout/ViewAppointmentList';
+import { CancelAppointment as CancelPatientAppt } from './Patientlayout/CancelAppointment';
+import { AppointmentDetail as ApptDetail} from './Patientlayout/AppointmentDetail';
+
 
 import { Routes, Route } from 'react-router-dom';
 import Search from './pages/Search.js';
+import Cookies from './Cookies.js';
+import './App.css';
+
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<NavBar />}>
+        <Route index path="*" element={<Cookies />} />
+        <Route path="/nav" element={<NavBar />}>
           <Route index element={<AppointmentSlots />}/>
         </Route>
         <Route path="/admin" element={<NavBar />}>
@@ -28,9 +33,9 @@ function App() {
           <Route path='patients' element={<ViewAllPatients />} />
         </Route>
         <Route path="/doctor" element={<NavBar />}>
-          <Route index element={<CustomTabPanel />} />
+          <Route index element={<AppointmentList />} />
           <Route path="appointments/:id" element={<AppointmentDetail />} />
-          <Route path="appointments" element={<CustomTabPanel />} />
+          <Route path="appointments" element={<AppointmentList />} />
           <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
           <Route path="appointmentSlots" element={<AppointmentSlots />} />
           <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
