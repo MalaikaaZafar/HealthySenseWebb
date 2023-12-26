@@ -1,6 +1,6 @@
 const Doctor = require('../models/Doctor');
 const User = require('../models/User');
-const Appointment=require('../models/Apointments');
+const Appointment = require('../models/Apointments');
 const Payment = require('../models/Payment');
 
 
@@ -193,6 +193,61 @@ const doctorController = {
             return res.status(500).json({ message: "Something went wrong" });
         }
     },
+
+    searchDoctors: async (req, res) => {
+        const { query, sort, sortOrder, specialty, minRating } = req.query;
+
+        try {
+            const users = await User.find({ name: { $regex: query, $options: 'i' } });
+            const userIds = users.map(user => user._id);
+
+            let filter = { user: { $in: userIds } };
+
+            if (specialty) {
+                filter.specialization = specialty;
+            }
+
+            // if (minRating) {
+            //     filter.rating = { $gte: minRating };
+            // }
+
+            let doctors = await Doctor.find(filter).populate('user');
+
+            if (doctors.length !== 0) {
+
+
+
+                if (sort === 'A-Z') {
+                    doctors = doctors.sort((a, b) => {
+                        const nameA = a.user.name.toUpperCase();
+                        const nameB = b.user.name.toUpperCase();
+
+                        if (nameA < nameB) {
+                            return sortOrder === 'asc' ? -1 : 1;
+                        }
+                        if (nameA > nameB) {
+                            return sortOrder === 'asc' ? 1 : -1;
+                        }
+
+                        return 0;
+                    });
+                }
+                else if (sort === 'Price') {
+                    doctors = doctors.sort((a, b) => {
+                        return sortOrder === 'asc' ? a.fee - b.fee : b.fee - a.fee;
+                    });
+                }
+                // else if(sort==='Rating'){
+                //     doctors = doctors.sort((a, b) => {
+                //         return direction === 'asc' ? a.rating - b.rating : b.rating - a.rating;
+                //     });
+                // }
+            }
+            res.json(doctors);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 
 
 };
