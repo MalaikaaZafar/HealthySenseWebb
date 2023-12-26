@@ -22,7 +22,7 @@ function UserCard({user})
         >
             <div className='user-card-img'>
             <Avatar style={{ margin:'1%',marginLeft:'5%',marginRight:'5%', height: '75px', width: '75px', float: 'left' }}>
-                {user?.profilePicture? user.profilePicture: "H"}</Avatar>
+                {user?.user.profilePicture? user.profilePicture: "H"}</Avatar>
                 <userContext.Provider value={user}>
                 {user?.user?.type==='Doctor' ? <DoctorDetails/> : <PatientDetails/>}
                 </userContext.Provider>
@@ -60,7 +60,7 @@ function DoctorDetails()
                 <div className="docExperience"><p>{user.experience} Years of Experience</p></div>
             </div>
             <div className="docDetailRight">
-                {user.details.availability ? 
+                {user.availability ? 
                 <Button 
                     variant="contained" 
                     style={{backgroundColor:'', color:'white', margin:'5%'}}>

@@ -8,6 +8,7 @@ import DateIcon from '@mui/icons-material/DateRangeOutlined';
 import TimeIcon from '@mui/icons-material/AccessTimeOutlined';
 
 const appointmentContext=createContext();
+
 function AppointmentCard({ type, appt }) {
   const Navigate = useNavigate();
   const goToDetails = (event) => {
@@ -43,13 +44,13 @@ function AppointmentCard({ type, appt }) {
         </Avatar>
         <div className="patientDetails" onClick={goToDetails} style={{ margin: "3%" }}>
           <appointmentContext.Provider value={appt}>
-          {type === "doctor" ? <DoctorDetails /> : <PatientDetails />}
+          {appt && type === "doctor" ? <DoctorDetails /> : <PatientDetails />}
           </appointmentContext.Provider>
           <div className="docSpeciality">
             <p>Online Session</p>
           </div>
-          <div className="docExperience">
-            <p style={{display:'flex', alignItems:'center'}}><TimeIcon sx={{margin: '2%'}}/>{appt.time} </p>
+          <div className="docExperience" style={{width:'100%'}}> 
+            <p style={{display:'flex', alignItems:'center', width: '100%'}}><TimeIcon sx={{margin: '2%'}}/>{appt.time} </p>
             <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.date), "yyyy-MM-dd")}</p>
           </div>
         </div>
@@ -73,7 +74,7 @@ function DoctorDetails() {
   const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Dr. {appt.doctorId?.user?.name}</p>
+      <p>Dr. {appt?.doctorId?.user?.name}</p>
       <p>Status:  {appt.status}</p>
     </div>
   );

@@ -5,7 +5,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
-import ApptCardForList from "../components/ApptCardForList";
+import ApptCardForList from "../../components/ApptCardForList";
 import "./ViewApptList.css";
 
 const fetchAppointments = async () => {

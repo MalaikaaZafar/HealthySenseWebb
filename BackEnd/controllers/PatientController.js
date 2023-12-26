@@ -90,6 +90,44 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+  getDoctors: async (req, res) => {
+    try{
+      const doctors = await Doctor.find().populate("user").exec();
+      return res.status(200).json({message: "Success", doctors});
+    }
+    catch(err){
+      console.log(err.message);
+      return res.status(500).json({message: "Something went wrong"});
+    }
+  },
+  getDoctorById:async (req, res) => {
+    const {id} = req.params;
+    try{
+      const doctor = await Doctor.findById(id).populate("user").exec();
+      return res.status(200).json({message: "Success", doctor});
+    }
+    catch(err){
+      console.log(err.message);
+      return res.status(500).json({message: "Something went wrong"});
+    }
+  },
+  bookAppointment: async (req, res) => {
+    const { patientId, doctorId, date, time, problem } = req.body;
+    try {
+      const appointment = new Appointment({
+        patientId,
+        doctorId,
+        date,
+        time,
+        problem,
+      });
+      await appointment.save();
+      return res.status(200).json({ message: "Success", id: appointment._id });
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+  }
 };
 
 module.exports = patientController;

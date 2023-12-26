@@ -13,7 +13,7 @@ import {useImmer} from 'use-immer';
 
 
 import "./CancelAppointment.css";
-import AppointmentCard from "../components/AppointmentCard";
+import AppointmentCard from "../../components/AppointmentCard";
 
 
 export const CancelAppointment = () => {

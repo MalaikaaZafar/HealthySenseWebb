@@ -29,7 +29,7 @@ function DoctorCard({user})
             padding: '2%',
             '&:hover': {
                 cursor:'pointer',
-                background: '#F4F8FB', // Set your desired background color
+                background: '#F4F8FB',
                 boxShadow: '10px 0px 10px 0px rgba(0, 0, 0, 0.10)',
             },
           }}

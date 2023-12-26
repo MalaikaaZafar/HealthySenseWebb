@@ -8,10 +8,11 @@ import AppointmentDetail from './doctorlayout/AppointmentDetail.js';
 import ViewAllDoctors from './adminlayout/ViewAllDoctors.js';
 import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
-import {RescheduleAppointment as ReschedulePatient} from './patientlayout/RescheduleAppointment.js';
-import {AppointmentList as AppointmentListPatient} from './patientlayout/ViewAppointmentList.js';
-import { CancelAppointment as CancelPatientAppt } from './patientlayout/CancelAppointment.js';
-import { AppointmentDetail as ApptDetail} from './patientlayout/AppointmentDetail.js';
+import {RescheduleAppointment as ReschedulePatient} from './patientlayout/malaika/RescheduleAppointment.js';
+import {AppointmentList as AppointmentListPatient} from './patientlayout/malaika/ViewAppointmentList.js';
+import { CancelAppointment as CancelPatientAppt } from './patientlayout/malaika/CancelAppointment.js';
+import { AppointmentDetail as ApptDetail} from './patientlayout/malaika/AppointmentDetail.js';
+import { BookAppointment } from './patientlayout/malaika/BookAppointment.js';
 
 import { Routes, Route } from 'react-router-dom';
 import Search from './pages/Search.js';
@@ -20,7 +21,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<NavBar />}>
-          <Route index element={<AppointmentSlots />}/>
+          <Route index element={<BookAppointment />}/>
         </Route>
         <Route path="/admin" element={<NavBar />}>
           <Route index element={<ViewAllPatients />} />
