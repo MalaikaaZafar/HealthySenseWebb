@@ -4,6 +4,7 @@ import StarIcon from '@mui/icons-material/StarBorderOutlined';
 import Button from '@mui/material/Button';
 import "@fontsource/roboto";
 
+import {format} from "date-fns"
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -18,13 +19,15 @@ export const AppointmentDetail = () => {
   const { id } = useParams();
 
   const Navigate = useNavigate();
-
+  console.log(appointment);
+  const date=appointment?.date;
   const fetchAppointment = async () => {
     try{
       const formattedStr = `http://localhost:3000/patient/consultations/${id}`;
       const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
-      setAppointment(appoinmentList);
-      console.log(appointment);
+      if (appoinmentList)
+        setAppointment(appoinmentList);
+     
     }
     catch(err)
     {

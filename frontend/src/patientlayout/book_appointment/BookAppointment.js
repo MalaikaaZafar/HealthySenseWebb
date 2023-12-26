@@ -68,8 +68,6 @@ export const BookAppointment = () => {
     setType("Clinic");
   }
 
-  console.log(selectedDate);
-  console.log(selectedTime);
   
   const fetchAppointment = async () => {
     try {
@@ -214,7 +212,7 @@ export const BookAppointment = () => {
                 value={problem ? problem : ""}
                 disabled={(selectedDate && selectedTime )? false : true}
                 onChange={setReasonHandler}
-                style={{ borderRadius: "10px" }}
+                style={{ borderRadius: "10px", padding: "10px" }}
               ></textarea>
             </FormControl>
           </div>
@@ -241,8 +239,6 @@ export const BookAppointment = () => {
                     );
                   }
                 )}
-             
-            
             <Button
               onClick={bookAppt}
               variant="contained"
@@ -281,6 +277,7 @@ const styles = {
   selector: {
     width: "100%",
     marginTop: "5px",
+    marginBottom: "5px",
   },
   text: {
     width: "100%",

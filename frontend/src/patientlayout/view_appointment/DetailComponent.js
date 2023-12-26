@@ -15,29 +15,29 @@ const DetailComponent = ({appt}) => {
   }
 
   return (
-    <div className="appointmentDetails">
-       <p className="heading"><TimeIcon/> Appointment Timing</p>
-    <div className="detail">
-      <p>{format(appt.date,'yyyy-MM-dd')}</p>
+    <div className="appointmentDetailsPatient">
+       <p className="headingPatient"><TimeIcon/> Appointment Timing</p>
+    <div className="detailPatient">
+      <p>{format(new Date(appt.date),'yyyy-MM-dd')}</p>
       <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt?.time}</p>
       </div>
       <div >
-       <p className="heading"><PatientIcon/> Patient information </p>
-       <div className="detail">
+       <p className="headingPatient"><PatientIcon/> Patient information </p>
+       <div className="detailPatient">
               <p>Name: {appt.patientId.user.name}</p>
               <p>Age: {calcAge()}</p>
               <p>Phone: {appt.patientId.user.phoneNumber}</p>
         </div>
       </div>
       <div >
-       <p className="heading"><ProblemIcon/> Problem Description </p>
-       <div className="detail">
+       <p className="headingPatient"><ProblemIcon/> Problem Description </p>
+       <div className="detailPatient">
               <p>{appt.problem}</p>
         </div>
       </div>
       <div >
-      <p className="heading"><FeeIcon/> Fee information </p>
-      <div className="detail" style={{marginBottom: '0px'}}>
+      <p className="headingPatient"><FeeIcon/> Fee information </p>
+      <div className="detailPatient" style={{marginBottom: '0px'}}>
        
               <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt.paymentStatus}</p>
               {

@@ -1,6 +1,7 @@
 import Card from '@mui/material/Card';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import { createContext, useContext } from 'react';
 const userContext=createContext();
 
@@ -20,13 +21,13 @@ function UserCard({user})
             },
           }}
         >
-            <div className='user-card-img'>
+            <Box className='user-card-img'>
             <Avatar style={{ margin:'1%',marginLeft:'5%',marginRight:'5%', height: '75px', width: '75px', float: 'left' }}>
                 {user?.user.profilePicture? user.profilePicture: "H"}</Avatar>
                 <userContext.Provider value={user}>
                 {user?.user?.type==='Doctor' ? <DoctorDetails/> : <PatientDetails/>}
                 </userContext.Provider>
-            </div>
+            </Box>
         </Card>
     )
 }
@@ -41,11 +42,11 @@ function PatientDetails()
             return today.getFullYear() - birthDate.getFullYear();;
         }
         return (
-            <div className="patientDetails" style={{margin:'3%'}}>
-            <div className="docName"><p>Name: {user.user.name}</p></div>
-            <div className="docSpeciality"><p>Age: {calcAge()}</p></div>
-            <div className="docExperience"><p>Phone: {user.user.phoneNumber}</p></div>
-          </div>
+            <Box className="patientDetails" style={{margin:'3%'}}>
+            <Box className="docName"><p>Name: {user.user.name}</p></Box>
+            <Box className="docSpeciality"><p>Age: {calcAge()}</p></Box>
+            <Box className="docExperience"><p>Phone: {user.user.phoneNumber}</p></Box>
+          </Box>
         )
     }
 
@@ -53,13 +54,13 @@ function DoctorDetails()
     {
         const user=useContext(userContext);
         return (
-            <div className="patientDetails" style={{margin:'3%'}}>
-            <div className="docDetailLeft">
-                <div className="docName"><p>Dr. {user.user.name}</p></div>
-                <div className="docSpeciality"><p>{user.specialization}</p></div>
-                <div className="docExperience"><p>{user.experience} Years of Experience</p></div>
-            </div>
-            <div className="docDetailRight">
+            <Box className="patientDetails" style={{margin:'3%'}}>
+            <Box className="docDetailLeft">
+                <Box className="docName"><p>Dr. {user.user.name}</p></Box>
+                <Box className="docSpeciality"><p>{user.specialization}</p></Box>
+                <Box className="docExperience"><p>{user.experience} Years of Experience</p></Box>
+            </Box>
+            <Box className="docDetailRight">
                 {user.availability ? 
                 <Button 
                     variant="contained" 
@@ -69,8 +70,8 @@ function DoctorDetails()
                 variant="contained" 
                 style={{backgroundColor:'#F94144', color:'white', margin:'5%'}}>
                     Not Available</Button>}
-            </div>
-          </div>
+            </Box>
+          </Box>
         )
     }
 

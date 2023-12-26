@@ -3,7 +3,7 @@ import CustomTabPanel from './doctorlayout/ViewAppointmentList.js'
 import CancelAppointment from './doctorlayout/CancelAppointment.js';
 import AppointmentSlots from './doctorlayout/AppointmentSlots.js';
 import RescheduleAppointment from './doctorlayout/RescheduleAppointment.js';
-import AppointmentDetail from './doctorlayout/AppointmentDetail.js';
+import AppointmentDetail from './doctorlayout/view_appointment/AppointmentDetail.js';
 
 import ViewAllDoctors from './adminlayout/ViewAllDoctors.js';
 import ViewAllPatients from './adminlayout/ViewAllPatients.js';
@@ -43,6 +43,7 @@ function App() {
           <Route path='appointments/:id' element={<ApptDetail />} />
           <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
           <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
+          <Route path='book-appointment/:id' element={<BookAppointment />} />
         </Route>
         <Route path="/" element={<NavBar />}>
           <Route index element={<Search />} />

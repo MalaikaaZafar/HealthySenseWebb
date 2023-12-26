@@ -34,4 +34,22 @@ body {
     width:100%;
     overflow: hidden;
   }
-  
+
+  .apptCard{
+      margin: 10px;
+      width: 45%;
+    }
+
+  @media screen and (max-width: 950px) {
+    .apptListBody {
+      width: 90%;
+    }
+
+    .apptList {
+      width:100%;
+      flex-direction: column;
+    }
+    .apptCard{
+      width:100%;
+    }
+  }

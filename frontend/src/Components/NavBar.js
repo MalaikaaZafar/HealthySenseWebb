@@ -5,6 +5,7 @@ import './NavBar.css';
 import { ButtonGroup } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Outlet, useNavigate } from 'react-router-dom';
+import Box from '@mui/material/Box';
 
 
 
@@ -13,16 +14,16 @@ function NavBar() {
   return (
     <>
       <header>
-        <div className="top">
-          <div className="logo">
+        <Box className="top">
+          <Box className="logo">
             <img src={logo} className="healthySenseLogo" alt="logo" />
             <h2>HealthySense</h2>
-          </div>
-          <div className="pfp">
+          </Box>
+          <Box className="pfp">
             <Avatar style={{ marginRight: '5%', marginTop: '2%', height: '65px', width: '65px', float: 'right' }}>H</Avatar>
-          </div>
-        </div>
-        <div className="navBar">
+          </Box>
+        </Box>
+        <Box className="navBar">
           <ButtonGroup variant="text" aria-label="text button group">
             <Button style={{ color: "#979797", textTransform: 'none', borderRight: 'none' }}
             onClick={() => navigate('/')}
@@ -35,7 +36,7 @@ function NavBar() {
             <Button style={{ color: "#979797", textTransform: 'none', borderRight: 'none' }}>About Us</Button>
             <Button style={{ color: "#979797", textTransform: 'none', borderRight: 'none' }}>Contact Us</Button>
           </ButtonGroup>
-        </div>
+        </Box>
       </header>
       <Outlet />
     </>

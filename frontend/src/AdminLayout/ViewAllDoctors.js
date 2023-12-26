@@ -3,14 +3,15 @@ import "./ViewAllPatients.css";
 import DoctorCard from "../components/DoctorCard";
 import axios from "axios";
 
+import Box from '@mui/material/Box';
+
 function ViewAlldoctors() {
   const [doctorList, setDoctorList] = useState([]);
 
   async function fetchUsers() {
     const docList = await axios.get("http://localhost:3000/admin/doctorList")
       .then(response => response.data);
-    console.log(docList)
-    return docList;
+    setDoctorList(docList)
   }
 
 
@@ -24,18 +25,20 @@ function ViewAlldoctors() {
   }, []);
 
   return (
-    <div className="userListScreen">
-      <div className="screenBodyUserList">
-        <div className="halfUserScreen">
-          <div className="userList">
+    <Box className="userListScreen">
+      <Box className="screenBodyUserList">
+        <Box className="halfUserScreen">
+          <Box className="userList">
             {doctorList?.length > 0 && doctorList.map((doctor) => {
-              return <div className="docCard"><DoctorCard user={doctor} /></div>;
+              return <Box className="docCard"><DoctorCard user={doctor} /></Box>;
             })}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 }
+
+
 
 export default ViewAlldoctors;

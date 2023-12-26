@@ -79,6 +79,7 @@ body{
 .viewApptBottom{
   display: flex;
   flex-direction: row;
+  margin-bottom:20px;
   /* justify-content: center; */
   /* align-items: center; */
   width: 100%;
@@ -97,4 +98,78 @@ body{
   margin-left: 3%;
   display: flex;
   flex-direction: column;
+}
+
+@media only screen and (max-width: 950px)
+{
+  .viewApptScreenBody{
+    width: 90%;
+  }
+}
+
+
+.appointmentDetailsPatient{
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin-top: 3%;
+  padding: 5%;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.appointmentDetailsPatient p{
+  margin: 5px;
+  padding: 0px;
+  color: #8C8FA5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headingPatient{
+  display: flex;
+  flex-direction: row;
+  font-weight: bold;
+}
+
+
+@media screen and (max-width: 650px)
+{
+  .viewApptScreenBody{
+    width: 90%;
+  }
+
+  .viewApptTop{
+    flex-direction: column;
+  }
+
+  .viewAppt{
+    flex-direction: column;
+  }
+
+  
+  .viewApptBottomRight{
+    width: 100%;
+    margin-left: 3%;
+    display: flex;
+    flex-direction: column;
+  }
+  .viewApptTopRight{
+    padding:0px;
+    margin-bottom:0px;
+    background: #2854C3;
+    color: #ffffff;
+    border-radius: 20px;
+  }
+
+  .viewApptRight{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+    border-radius: 0px;
+    background:'none';
+  }
+  
 }

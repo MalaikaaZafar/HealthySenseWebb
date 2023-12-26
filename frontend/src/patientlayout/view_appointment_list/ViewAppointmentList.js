@@ -64,7 +64,7 @@ export const AppointmentList = () => {
           {appointmentList &&
             appointmentList.map((app, index) =>
               app.status === value ? (
-                <div style={{ margin: "10px", width: "45%" }}>
+                <div className="apptCard">
                   <ApptCardForList key={index} type="doctor" appt={app} />
                 </div>
               ) : null

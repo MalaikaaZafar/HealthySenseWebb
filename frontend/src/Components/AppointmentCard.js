@@ -51,7 +51,7 @@ function AppointmentCard({ type, appt }) {
           </div>
           <div className="docExperience" style={{width:'100%'}}> 
             <p style={{display:'flex', alignItems:'center', width: '100%'}}><TimeIcon sx={{margin: '2%'}}/>{appt?.time} </p>
-            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{appt?.date?  format(appt.date,'yyyy-MM-dd'):null}</p>
+            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{appt?.date?  format(new Date(appt.date),'yyyy-MM-dd'):null}</p>
           </div>
         </div>
       </div>

@@ -34,7 +34,7 @@ const groupSlotsByDate = (slotData) => {
   if (slotData && slotData.length !== 0) {
     slotData.forEach((slot) => {
       let date = slot.date;
-      date = format(date, "yyyy-MM-dd");
+      date = format(new Date(date), "yyyy-MM-dd");
       if (!groupedSlots[date]) {
         groupedSlots[date] = [];
       }
