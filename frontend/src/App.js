@@ -5,8 +5,8 @@ import AppointmentSlots from './DoctorLayout/appointment_slots/AppointmentSlots.
 import RescheduleAppointment from './DoctorLayout/reschedule_appointment/RescheduleAppointment.js';
 import AppointmentDetail from './DoctorLayout/view_appointment/AppointmentDetail.js';
 
-import ViewAllDoctors from './adminLayout/ViewAllDoctors.js';
-import ViewAllPatients from './adminLayout/ViewAllPatients.js';
+import ViewAllDoctors from './adminlayout/ViewAllDoctors.js';
+import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
 import { RescheduleAppointment as ReschedulePatient } from './patientlayout/reschedule_appointment/RescheduleAppointment.js';
 import { AppointmentList as AppointmentListPatient } from './patientlayout/view_appointment_list/ViewAppointmentList.js';

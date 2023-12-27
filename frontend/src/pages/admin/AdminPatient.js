@@ -9,7 +9,7 @@ import './Search.css';
 import styles from '../../styles/searchStyles';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import SearchErrorMessage from '../../components/SearchErrorMessage';
-import ViewAllPatients from '../../adminLayout/ViewAllPatients';
+import ViewAllPatients from '../../adminlayout/ViewAllPatients';
 import searchPatients from '../../services/admin/searchPatient';
 import PatientCard from '../../components/PatientCard';
 import { set } from 'date-fns';
