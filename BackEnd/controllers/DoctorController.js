@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Appointment = require('../models/Apointments');
 const Payment = require('../models/Payment');
 const { populate } = require('../models/Patient');
+const Chat = require('../models/Message');
 const Patient = require('../models/Patient');
 
 
@@ -208,6 +209,8 @@ const doctorController = {
         }
     },
 
+
+    //Abdullah's endpoints
     searchDoctors: async (req, res) => {
         const { query, sort, sortOrder, specialty, minRating, skip } = req.query;
 

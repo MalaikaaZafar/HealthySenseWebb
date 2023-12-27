@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const User = require('../models/User');
+const Doctor = require('../models/Doctor');
+const Chat = require('../models/Message');
 
 
 const secret = process.env.SECRET;
@@ -71,6 +73,37 @@ const userController = {
         }
     },
 
+    getMessages: async (req, res) =>{
+        try{
+            const userId = "658aeab2a07cfdec21fc4968";
+            const doctorChats = await Chat.find({ primary: userId })
+            .populate({ path: 'primary', populate: { path: 'user' } })
+            .populate({ path: 'secondary', populate: { path: 'user' } });
+            if (!doctorChats)
+                return res.status(404).json({ message: "Doctor not found" });
+            return res.status(200).json({ message: "Success", messages: doctorChats });
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
+
+    sendMessage: async (req, res) => {
+        try{
+            const {message, secondary}=req.body;
+            const userId = "658aeab2a07cfdec21fc4968";
+            const doctorChats = await Chat.findOneAndUpdate({primary: userId, secondary: secondary}, {$push: {messages: message}});
+            if (!doctorChats)
+                return res.status(404).json({ message: "Doctor not found" });
+            return res.status(200).json({ message: "Success", messages: doctorChats });
+        }
+        catch(err)
+        {
+            console.log(err);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
 
     getUser: async (req, res) => {
         const arr = await User.find({ type: 'Patient' });

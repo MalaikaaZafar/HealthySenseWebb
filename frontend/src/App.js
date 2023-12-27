@@ -13,6 +13,8 @@ import { AppointmentList as AppointmentListPatient } from './patientlayout/view_
 import { CancelAppointment as CancelPatientAppt } from './patientlayout/cancel_appointment/CancelAppointment.js';
 import { AppointmentDetail as ApptDetail } from './patientlayout/view_appointment/AppointmentDetail.js';
 import { BookAppointment } from './patientlayout/book_appointment/BookAppointment.js';
+import { Messages } from './pages/messages/Messages.js';
+import FAQ from './pages/faqs/FAQ.js';
 
 import Search from './pages/user/Search.js';
 import Favorites from './pages/patient/Favorites.js';
