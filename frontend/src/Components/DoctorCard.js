@@ -10,7 +10,6 @@ import axios from 'axios';
 import Box from '@mui/material/Box';
 
 import './DoctorCard.css';
-import { add } from 'date-fns';
 import useUserStore from '../stores/userStore';
 import { useNavigate } from 'react-router-dom';
 
@@ -54,14 +53,14 @@ function DoctorCard({ user, buttons, onFavChanged }) {
     const [favourite, setFavourite] = React.useState(false);
     const { user: loggedUser, updateUser } = useUserStore();
     const [actionCompleted, setActionCompleted] = React.useState(true);
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
     const goToUserPage = () => {
         //Navigate to user page
         alert("Navigate to user page");
     }
 
     const bookAppt = () => {
-        Navigate(`/patient/book-appointment/${user._id}`);
+        navigate(`/patient/book-appointment/${user._id}`);
     }
 
     const toggleFavourite = async (e) => {
@@ -106,7 +105,7 @@ function DoctorCard({ user, buttons, onFavChanged }) {
             onClick={goToUserPage}
             sx={{
                 minWidth: '300px',
-                maxWidth: '400px',
+                maxWidth: '100%',
                 width: '40%',
                 background: 'white', // Set your desired background color
                 borderRadius: '10px',

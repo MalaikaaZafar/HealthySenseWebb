@@ -1,6 +1,6 @@
 import "@fontsource/roboto";
 import "./AppointmentSlots.css";
-import { React, useState, createContext, useContext } from "react";
+import { React, useState, createContext, useContext, useEffect } from "react";
 import axios from "axios";  
 
 import { format } from "date-fns";
@@ -14,125 +14,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
+import {
+  Box,
+  Card,
+  CardContent,
+} from "@mui/material";
 
-const slotData = [
-  // Slots for date "2023-01-01"
-  {
-    time: "09:00 am - 10:00 am",
-    availability: true,
-    date: new Date("2023-01-01"),
-  },
-  {
-    time: "10:00 am - 11:00 am",
-    availability: true,
-    date: new Date("2023-01-01"),
-  },
-  {
-    time: "11:00 am - 12:00 pm",
-    availability: false,
-    date: new Date("2023-01-01"),
-  },
-  {
-    time: "12:00 pm - 01:00 pm",
-    availability: true,
-    date: new Date("2023-01-01"),
-  },
-
-  // Slots for date "2023-01-02"
-  {
-    time: "09:00 am - 10:00 am",
-    availability: true,
-    date: new Date("2023-01-02"),
-  },
-  {
-    time: "10:00 am - 11:00 am",
-    availability: true,
-    date: new Date("2023-01-02"),
-  },
-  {
-    time: "11:00 am - 12:00 pm",
-    availability: true,
-    date: new Date("2023-01-02"),
-  },
-  {
-    time: "12:00 pm - 01:00 pm",
-    availability: true,
-    date: new Date("2023-01-02"),
-  },
-
-  // Slots for date "2023-01-03"
-  {
-    time: "09:00 am - 10:00 am",
-    availability: true,
-    date: new Date("2023-01-03"),
-  },
-  {
-    time: "10:00 am - 11:00 am",
-    availability: true,
-    date: new Date("2023-01-03"),
-  },
-  {
-    time: "11:00 am - 12:00 pm",
-    availability: true,
-    date: new Date("2023-01-03"),
-  },
-  {
-    time: "12:00 pm - 01:00 pm",
-    availability: true,
-    date: new Date("2023-01-03"),
-  },
-
-  // Slots for date "2023-01-04"
-  {
-    time: "09:00 am - 10:00 am",
-    availability: true,
-    date: new Date("2023-01-04"),
-  },
-  {
-    time: "10:00 am - 11:00 am",
-    availability: true,
-    date: new Date("2023-01-04"),
-  },
-  {
-    time: "11:00 am - 12:00 pm",
-    availability: true,
-    date: new Date("2023-01-04"),
-  },
-  {
-    time: "12:00 pm - 01:00 pm",
-    availability: true,
-    date: new Date("2023-01-04"),
-  },
-
-  // Slots for date "2023-01-05"
-  {
-    time: "09:00 am - 10:00 am",
-    availability: true,
-    date: new Date("2023-01-05"),
-  },
-  {
-    time: "10:00 am - 11:00 am",
-    availability: true,
-    date: new Date("2023-01-05"),
-  },
-  {
-    time: "11:00 am - 12:00 pm",
-    availability: true,
-    date: new Date("2024-01-05"),
-  },
-  {
-    time: "12:00 pm - 01:00 pm",
-    availability: true,
-    date: new Date("2024-01-05"),
-  },
-];
-
-const groupSlotsByDate = () => {
+const groupSlotsByDate = (slotData) => {
   const groupedSlots = {};
 
   slotData.forEach((slot) => {
     let date = slot.date;
-    date = format(date, "yyyy-MM-dd");
+    date = format(new Date(date), "yyyy-MM-dd");
     if (!groupedSlots[date]) {
       groupedSlots[date] = [];
     }
@@ -141,6 +34,8 @@ const groupSlotsByDate = () => {
 
   return groupedSlots;
 };
+
+
 
 function findDayFromDate(inputDate) {
   const daysOfWeek = [
@@ -168,13 +63,14 @@ const AddSlotDialog = ({ open, setOpen }) => {
   const [timeRangeFields, setTimeRangeFields] = useState([]);
   const [date, setDate] = useState();
   const [timeList, setTimeList] = useState([]);
+  const [type, setType] = useState("Online");
   const { slotList, setSlotList } = useContext(slotContext);
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleSave = async () => {
-    const responseObj=await axios.put(`http://localhost:3000/doctor/addSlots`,JSON.stringify({slots: timeList}))
+    const responseObj=await axios.put(`http://localhost:3000/doctor/addSlots`,{slots: timeList})
                       .then(response=>response.data);
 
     if (responseObj.message === "Success") {
@@ -232,6 +128,7 @@ const AddSlotDialog = ({ open, setOpen }) => {
               time: timeStr,
               availability: true,
               date: format(new Date(date), "yyyy-MM-dd"),
+              type: type,
             };
             setTimeList([...timeList, timeObj]);
           }
@@ -295,6 +192,22 @@ const AddSlotDialog = ({ open, setOpen }) => {
             onChange={handleDateChange}
             dateAdapter={AdapterDayjs}
           />
+             <Box sx={styles.box}>
+        <Card
+          variant="outlined"
+          onClick={() => setType("Online")}
+          sx={type === "Online" ? styles.card1 : styles.card2}
+        >
+          <CardContent>Online</CardContent>
+        </Card>
+        <Card
+          variant="outlined"
+          onClick={() => setType("Clinic")}
+          sx={type === "Clinic" ? styles.card1 : styles.card2}
+        >
+          <CardContent>Clinic</CardContent>
+        </Card>
+      </Box>
           <h3 style={{ margin: "5px" }}>Add Time Slots</h3>
           {timeRangeFields.length === 0 && addAnotherSlot()}
           {timeRangeFields &&
@@ -323,10 +236,32 @@ const AddSlotDialog = ({ open, setOpen }) => {
 
 function AppointmentSlots() {
   const [open, setOpen] = useState(false);
-  const [slotList, setSlotList] = useState(groupSlotsByDate());
+  const [slotList, setSlotList] = useState([]);
+
+  console.log("slotList:", slotList);
+  const getSlots=async () =>{
+    try{
+      const list=await axios.get(`http://localhost:3000/doctor/slots`).then(response=>response.data);
+      if (list)
+        setSlotList(groupSlotsByDate(list.slots));
+      else
+        alert("Slots could not be fetched!");
+    }
+     catch(err){
+      console.log(err);
+      alert("Slots could not be fetched!");
+     }
+  }
   const handleClickOpen = () => {
     setOpen(true);
   };
+
+  useEffect(() => {
+    const fetch=async ()=>{
+      await getSlots();
+    }
+    fetch();
+  },[]);
 
   return (
     <div className="appointmentDetailsScreen">
@@ -337,7 +272,7 @@ function AppointmentSlots() {
               Object.keys(slotList).map((date) => {
                 return (
                   <slotContext.Provider value={{ slotList, setSlotList }}>
-                  <SlotList date={date} slotListByDate={slotList[date]} />
+                  <SlotList date={date}/>
                   </slotContext.Provider>
                   )
               })}
@@ -370,11 +305,12 @@ function AppointmentSlots() {
   );
 }
 
-const SlotList = ({ date, slotListByDate }) => {
+const SlotList = ({ date }) => {
   const [open, setOpen] = useState(false);
+  const { slotList, setSlotList } = useContext(slotContext);
   function checkDate(date) {
     const today = new Date();
-    const todayDate = format(today, "yyyy-MM-dd");
+    // const todayDate = format(today, "yyyy-MM-dd");
     if (date >= format(today.setDate(today.getDate() + 1), "yyyy-MM-dd")) {
       return true;
     } else {
@@ -387,6 +323,7 @@ const SlotList = ({ date, slotListByDate }) => {
       <table
         style={{
           width: "100%",
+          height: "100%",
           borderCollapse: "collapse",
           borderRadius: "10px",
           overflow: "hidden",
@@ -396,7 +333,7 @@ const SlotList = ({ date, slotListByDate }) => {
         <thead>
           <tr>
             <th
-              colSpan={3}
+              colSpan={4}
               style={{
                 background: "#2854C3",
                 color: "#ffff",
@@ -419,17 +356,21 @@ const SlotList = ({ date, slotListByDate }) => {
             <td style={{ padding: "10px", textAlign: "center" }}>
               Availability
             </td>
+            <td style={{ padding: "10px", textAlign: "right" }}>Session</td>
             <td style={{ padding: "10px", textAlign: "right" }}>Actions</td>
           </tr>
         </thead>
         <tbody>
-          {slotListByDate &&
-            slotListByDate.map((slot) => {
+          {slotList && Array.isArray(slotList[date]) &&
+            slotList[date].map((slot) => {
               return (
                 <tr>
                   <td style={{ padding: "10px" }}>{slot.time}</td>
                   <td style={{ padding: "10px" }}>
                     {slot.availability ? "Available" : "Unavailable"}
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "right" }}>
+                    {slot.type}
                   </td>
                   <td style={{ padding: "10px", textAlign: "right" }}>
                     <Button
@@ -441,7 +382,7 @@ const SlotList = ({ date, slotListByDate }) => {
                         color: "#ffffff",
                       }}
                     >
-                      Edit Slot
+                      Edit
                     </Button>
                   </td>
                 </tr>
@@ -451,6 +392,29 @@ const SlotList = ({ date, slotListByDate }) => {
       </table>
     </div>
   );
+};
+
+const styles = {
+  card1: {
+    background: "#2854c3",
+    color: "white",
+    width: "100%",
+    margin: "5px",
+    borderRadius: "10px",
+  },
+  card2: {
+    background: "white",
+    color: "black",
+    width: "100%",
+    margin: "5px",
+    borderRadius: "10px",
+  },
+  box: {
+    width: "90%",
+    display: "flex",
+    justifyContent: "center",
+    margin: "10px",
+  }
 };
 
 

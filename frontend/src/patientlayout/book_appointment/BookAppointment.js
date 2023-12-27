@@ -9,10 +9,9 @@ import "@fontsource/roboto";
 import { Form, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import  DoctorCard  from "../../components/DoctorCard";
 
 import "./BookAppointment.css";
-import UserCard from "../../components/UserCard";
-
 import Button from "@mui/material/Button";
 import "@fontsource/roboto";
 import FormControl from "@mui/material/FormControl";
@@ -22,6 +21,7 @@ import Select from "@mui/material/Select";
 import { format } from "date-fns";
 import Card from "@mui/material/Card";
 import { CardContent } from "@mui/material";
+
 
 export const BookAppointment = () => {
   const [doctor, setDoctor] = useState(null);
@@ -38,7 +38,7 @@ export const BookAppointment = () => {
     if (slotData && slotData.length !== 0) {
       slotData.forEach((slot) => {
         let date = slot.date;
-        date = format(date, "yyyy-MM-dd");
+        date = format(new Date(date), "yyyy-MM-dd");
         if (!groupedSlots[date]) {
           groupedSlots[date] = [];
         }
@@ -124,7 +124,7 @@ export const BookAppointment = () => {
         <div className="bookApptTop">
           {doctor && (
             <div className="bookApptTopLeft">
-              <UserCard user={doctor} />
+              <DoctorCard user={doctor} />
             </div>
           )}
           <div className="bookApptTopRight">

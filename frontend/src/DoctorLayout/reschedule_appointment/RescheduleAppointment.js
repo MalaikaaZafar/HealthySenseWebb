@@ -1,22 +1,32 @@
-import Button from "@mui/material/Button";
 import "@fontsource/roboto";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+
+import CalendarIcon from "@mui/icons-material/CalendarTodayOutlined";
+import TimeIcon from "@mui/icons-material/AccessTime";
 
 import { format } from "date-fns";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Box,
+  Card,
+  CardContent,
+} from "@mui/material";
+
+
 
 import { useImmer } from "use-immer";
 import { useState, useEffect, createContext, useContext } from "react";
@@ -24,16 +34,17 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import "./RescheduleAppointment.css";
-import  AppointmentCard from "../components/AppointmentCard";
+import AppointmentCard from "../../components/AppointmentCard";
 
 const apptContext = createContext();
-
+const newSlotContext = createContext();
+const groupContext = createContext();
 const groupSlotsByDate = (slotData) => {
   const groupedSlots = {};
   if (slotData && slotData.length !== 0) {
     slotData.forEach((slot) => {
       let date = slot.date;
-      date = format(date, "yyyy-MM-dd");
+      date = format(new Date(date), "yyyy-MM-dd");
       if (!groupedSlots[date]) {
         groupedSlots[date] = [];
       }
@@ -44,12 +55,18 @@ const groupSlotsByDate = (slotData) => {
   return groupedSlots;
 };
 
+
 function RescheduleAppointment() {
   const [reason, setReason] = useState("Something urgent came up");
   const [appointment, setAppointment] = useImmer(null);
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [type, setType] = useState("Online");
+  const [neww, setNew] = useState(false);
+
+
+
   function setReasonHandler(event) {
     setReason(event.target.value);
   }
@@ -61,33 +78,41 @@ function RescheduleAppointment() {
   const { id } = useParams();
   const getAppointment = async () => {
     const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
-    const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
+    const appoinmentList = await axios
+      .get(formattedStr)
+      .then((response) => response.data);
     setAppointment(appoinmentList);
+    if (appoinmentList.message !== "Success") {
+      alert(appoinmentList.message);
+    } else {
+      setAppointment(appoinmentList.consultation);
+    }
   };
 
   const rescheduleAppt = async () => {
-   try{ 
-      const reqBody= JSON.stringify({
-        id: id,
-        date: selectedDate,
-        time: selectedTime,
-        reason: reason,
-      });
-      const resched=await axios.post("http://localhost:3000/doctor/consultations/reschedule", reqBody).then(response=>response.data);
-      if (resched.message==="Success") {
-        alert("Appointment Rescheduled Successfully! Please check your email for further details.");
-        setAppointment(draft=>{
-          draft.consult=resched.appointment;
-      })
-      setAppointment(draft=>{
-        draft.docOrPatient.details.appointmentSlots=resched.docOrPatient.appointmentSlots;
-      })
-    } 
-    else {
-      alert("Something went wrong");
-    }}
-    catch(err)
-    {
+    try {
+      const resched = await axios
+        .post("http://localhost:3000/doctor/consultations/reschedule", {
+          id: id,
+          date: selectedDate,
+          time: selectedTime,
+          type: type,
+          reason: reason,
+          neww:neww,
+        })
+        .then((response) => response.data);
+      if (resched.message === "Success") {
+        alert(
+          "Appointment Rescheduled Successfully! Please check your email for further details."
+         
+        );
+        setAppointment((draft) => {
+          draft.appointment = resched.appointment;
+        });
+      } else {
+        alert("Something went wrong");
+      }
+    } catch (err) {
       alert(err);
     }
   };
@@ -98,22 +123,25 @@ function RescheduleAppointment() {
     };
     fetchData();
   }, []);
-  const groupedSlots = groupSlotsByDate(
-    appointment?.docOrPatient?.details?.appointmentSlots
-  );
+
   const setDate = (e) => {
     setSelectedDate(e.target.value);
-    console.log("e.target.value:", e.target.value);
   };
 
   const setTime = (e) => {
     setSelectedTime(e.target.value);
   };
+
+  const groupedSlots = groupSlotsByDate(appointment?.doctorId?.appointmentSlots);
   return (
     <div className="rescheduleAppointmentScreen">
       <div className="ScreenBody">
         <div className="halfra">
-          {appointment && <div className="appt"><AppointmentCard type="patient" appt={appointment} /></div>}
+          {appointment && (
+            <div className="appt">
+              <AppointmentCard type="patient" appt={appointment} />
+            </div>
+          )}
           <div className="reasonDiv">
             <h2 style={{ color: "#2854C3" }}>Reason for Rescheduling</h2>
             <FormControl>
@@ -150,17 +178,32 @@ function RescheduleAppointment() {
             ></textarea>
           </div>
         </div>
-        <div className="halfra">
+        <div className="halfra2">
           <div className="appointmentDetailsRA">
             <div className="apptResched">
               <h3>Reschedule Date and Time</h3>
               <div className="appointmentHours">
-                {appointment?.docOrPatient?.details?.appointmentSlots &&
-                appointment.docOrPatient.details.appointmentSlots.length !==
-                  0 ? (
+                {appointment?.doctorId?.appointmentSlots &&
+                appointment.doctorId.appointmentSlots.length !== 0 ? (
                   <div className="selectSlot">
+                    <Box sx={styles.box}>
+                      <Card
+                        variant="outlined"
+                        onClick={() => setType("Online")}
+                        sx={type === "Online" ? styles.card1 : styles.card2}
+                      >
+                        <CardContent>Online</CardContent>
+                      </Card>
+                      <Card
+                        variant="outlined"
+                        onClick={() => setType("Clinic")}
+                        sx={type === "Clinic" ? styles.card1 : styles.card2}
+                      >
+                        <CardContent>Clinic</CardContent>
+                      </Card>
+                    </Box>
                     <FormControl sx={{ width: "100%", margin: "10px" }}>
-                      <InputLabel id="date-label">YYYY - MM - DD</InputLabel>
+                      <InputLabel id="date-label" sx={styles.label}><CalendarIcon sx={styles.icon}/>YYYY - MM - DD</InputLabel>
                       <Select
                         labelId="date-label"
                         id="demo-simple-select-filled"
@@ -168,16 +211,23 @@ function RescheduleAppointment() {
                         onChange={setDate}
                         sx={{ width: "100%", margin: "5px" }}
                       >
-                        {Object.keys(groupedSlots).map((slot) => (
-                          <MenuItem key={slot} value={slot}>
+                        {Object.keys(groupedSlots).map((slot) => 
+                          {
+                          if (groupedSlots[slot].some((slot) => slot.availability === true && slot.type === type))
+                          {
+                            return (
+                            <MenuItem key={slot} value={slot}>
                             {slot}
                           </MenuItem>
-                        ))}
+                            )
+                          }
+                         }
+                        )}
                       </Select>
                     </FormControl>
 
                     <FormControl sx={{ width: "100%", margin: "10px" }}>
-                      <InputLabel id="time-label">HH:MM (AM/PM)</InputLabel>
+                      <InputLabel id="time-label" sx={styles.label}><TimeIcon sx={styles.icon}/>HH:MM (AM/PM)</InputLabel>
                       <Select
                         labelId="time-label"
                         value={selectedTime}
@@ -185,11 +235,13 @@ function RescheduleAppointment() {
                         sx={{ width: "100%" }}
                       >
                         {selectedDate &&
-                          groupedSlots[selectedDate].map((slot) => 
-                            slot.availability===true &&
-                            <MenuItem key={slot.time} value={slot.time}>
-                              {slot.time}
-                            </MenuItem>
+                          groupedSlots[selectedDate].map(
+                            (slot) =>
+                              slot.availability === true && slot.type === type && (
+                                <MenuItem key={slot.time} value={slot.time}>
+                                  {slot.time}
+                                </MenuItem>
+                              )
                           )}
                       </Select>
                     </FormControl>
@@ -202,7 +254,7 @@ function RescheduleAppointment() {
                 variant="contained"
                 onClick={addSlot}
                 className="addSlotBtn"
-                sx={{background: "#2854c3"}}
+                sx={{ background: "#2854c3" }}
               >
                 Add Slot
               </Button>
@@ -228,7 +280,9 @@ function RescheduleAppointment() {
       </div>
       {open && (
         <apptContext.Provider value={{ appointment, setAppointment }}>
+          <newSlotContext.Provider value={{ neww, setNew }}>
           <AddSlotDialog open={open} setOpen={setOpen} />
+          </newSlotContext.Provider>
         </apptContext.Provider>
       )}
     </div>
@@ -238,22 +292,33 @@ function RescheduleAppointment() {
 function AddSlotDialog({ open, setOpen }) {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
+  const [type, setType] = useState("Online");
+
   const { appointment, setAppointment } = useContext(apptContext);
+  const { neww, setNew } = useContext(newSlotContext);
 
   const handleClose = () => {
-    setOpen(false);
-    setAppointment((draft) => {
-      if (time && time.date && time.time && time.availability)
-        draft.docOrPatient.details.appointmentSlots.push({
-          date: time.date,
-          time: time.time,
-          availability: time.availability,
-        });
-    });
+    setOpen(false)
+   
   };
 
   const handleSave = () => {
-    handleClose();
+    setOpen(false);
+     setNew(true);
+    setAppointment((draft) => {
+      if (!draft.doctorId.appointmentSlots) {
+        draft.doctorId.appointmentSlots = [];
+      }
+      console.log(draft);
+      if (time && time.date && time.time && time.availability)
+        draft.doctorId.appointmentSlots.push({
+          date: time.date,
+          time: time.time,
+          type: type,
+          availability: time.availability,
+        });
+    });
+ 
   };
 
   const handleDateChange = (newDate) => {
@@ -286,11 +351,17 @@ function AddSlotDialog({ open, setOpen }) {
             " " +
             (endTime.getHours() >= 12 ? "PM" : "AM");
           const timeStr = startTimeStr + " - " + endTimeStr;
-          if (!timeStr.includes("NaN")) {
-            console.log("timeStr:", date);
+          if (
+            !timeStr.includes("NaN") &&
+            !appointment?.time?.includes(timeStr) &&
+            !appointment?.doctorId?.appointmentSlots?.some(
+              (slot) => slot.time === timeStr
+            )
+          ) {
             const timeObj = {
               time: timeStr,
               availability: true,
+              type: type,
               date: format(new Date(date), "yyyy-MM-dd"),
             };
             setTime(timeObj);
@@ -349,6 +420,22 @@ function AddSlotDialog({ open, setOpen }) {
           />
         </LocalizationProvider>
       </DialogContent>
+      <Box sx={styles.box}>
+        <Card
+          variant="outlined"
+          onClick={() => setType("Online")}
+          sx={type === "Online" ? styles.card1 : styles.card2}
+        >
+          <CardContent>Online</CardContent>
+        </Card>
+        <Card
+          variant="outlined"
+          onClick={() => setType("Clinic")}
+          sx={type === "Clinic" ? styles.card1 : styles.card2}
+        >
+          <CardContent>Clinic</CardContent>
+        </Card>
+      </Box>
       <DialogActions style={{ background: "#f4f9fb" }}>
         <Button onClick={handleClose} className="actionButton">
           Cancel
@@ -360,4 +447,35 @@ function AddSlotDialog({ open, setOpen }) {
     </Dialog>
   );
 }
+
+const styles = {
+  card1: {
+    background: "#2854c3",
+    color: "white",
+    width: "100%",
+    margin: "5px",
+    borderRadius: "10px",
+  },
+  card2: {
+    background: "white",
+    color: "black",
+    width: "100%",
+    margin: "5px",
+    borderRadius: "10px",
+  },
+  box: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    margin: "10px",
+  },
+  label:{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icon:{
+    marginRight: "5px",
+  }
+};
 export default RescheduleAppointment;

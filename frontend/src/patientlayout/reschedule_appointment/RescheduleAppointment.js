@@ -166,7 +166,7 @@ export const RescheduleAppointment = () => {
         <div className="reschedApptBottom">
           <div className="reschedAppt">
             <div className="reschedApptBottomLeft">
-             <h2 style={{ color: "#2854C3", margin:'0px' }}>Reason for Rescheduling</h2>
+             <h2 style={{ color: "#2854C3" }}>Reason for Rescheduling</h2>
              <FormControl>
                <RadioGroup
                  aria-labelledby="demo-radio-buttons-group-label"
@@ -201,7 +201,7 @@ export const RescheduleAppointment = () => {
              ></textarea>
           </div>
           <div className="reschedApptBottomRight">
-          <div className="bookApptSlotSelector">
+          <div className="reschedApptSlotSelector">
           <h2 style={{ color: "#2854C3" }}>Select a New Slot</h2>
             <div className="apptTypeSelect">
               <Card 
