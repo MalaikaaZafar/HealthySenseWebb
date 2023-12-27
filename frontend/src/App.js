@@ -36,6 +36,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <Routes>
+
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<RegisterDoctor />} />
@@ -46,6 +47,7 @@ function App() {
             <Route path='patients' element={<AdminPatient />} />
             <Route path='activity' element={<AdminActivity />} />
           </Route>
+
           <Route path="/doctor" element={<NavBar />}>
             <Route index element={<CustomTabPanel />} />
             <Route path="appointments/:id" element={<AppointmentDetail />} />
@@ -55,6 +57,7 @@ function App() {
             <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
             <Route path='patient-detail' element={<PatientDetail />} />
           </Route>
+
           <Route path='/patient' element={<NavBar />}>
             <Route index element={<Search />} />
             <Route index element={<AppointmentListPatient />} />
@@ -66,10 +69,12 @@ function App() {
             <Route path='review' element={<DoctorReview />} />
             <Route path='favorites' element={<Favorites />} />
           </Route>
+
           <Route path="/" element={<NavBar />}>
             <Route path='doctor-detail' element={<DoctorDeatil />} />
             <Route index element={<Search />} />
           </Route>
+
         </Routes>
       </div >
     </ThemeProvider>

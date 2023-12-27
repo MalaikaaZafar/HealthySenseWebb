@@ -5,6 +5,8 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
 import { styled } from '@mui/system';
 import styles from './Login.module.css';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -26,6 +28,32 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function Login() {
+
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const data = {
+            email: email,
+            password: password
+        }
+
+        axios.post('http://localhost:3000/login', data)
+            .then(res => {
+                console.log(res);
+                document.cookie = `token=${res.data.token}`;
+                navigate('/', { replace: true });
+            })
+            .catch(err => {
+                console.log(err);
+                alert(err.response.data.message);
+            })
+    }
+
     return (
         <div className={styles.Screen}>
             <div className={styles.Background}>
@@ -49,6 +77,8 @@ export default function Login() {
                             margin="normal"
                             required
                             fullWidth
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             id="email"
                             label="Email Address"
                             name="email"
@@ -71,6 +101,8 @@ export default function Login() {
                             label="Password"
                             type="password"
                             id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -79,12 +111,12 @@ export default function Login() {
                                 )
                             }}
                         />
-                        <StyledButton type="submit" fullWidth variant="contained" color="primary">
+                        <StyledButton type="submit" fullWidth variant="contained" color="primary" onClick={handleSubmit}>
                             Log In
                         </StyledButton>
                         <Typography component="p" variant="body2">
                             Don't have an account?&nbsp;
-                            <Link href="#" variant="body2">
+                            <Link href="" variant="body2" onClick={() => navigate('/signup', { replace: true })} underline='none'>
                                 {"Sign Up"}
                             </Link>
                         </Typography>
