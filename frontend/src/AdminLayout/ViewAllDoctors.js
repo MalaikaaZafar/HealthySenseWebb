@@ -4,8 +4,6 @@ import DoctorCard from "../components/DoctorCard";
 import axios from "axios";
 import { Box } from "@mui/system";
 
-import Box from '@mui/material/Box';
-
 function ViewAlldoctors() {
   const [doctorList, setDoctorList] = useState([]);
 

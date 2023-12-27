@@ -147,7 +147,7 @@ const AdminDoctor = () => {
                 </Box>
             </InfiniteScroll>
                 :
-                !notFound && !searched && !error ? <ViewAlldoctors /> : <SearchErrorMessage notFound={notFound} error={error} />
+                !notFound && !searched && !error ? <ViewAlldoctors /> : <SearchErrorMessage notFound={notFound} error={error} role='doctor' />
             }
         </div >
     );

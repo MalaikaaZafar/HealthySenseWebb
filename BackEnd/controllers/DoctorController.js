@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Appointment = require('../models/Apointments');
 const Payment = require('../models/Payment');
 const { populate } = require('../models/Patient');
+const Patient = require('../models/Patient');
 
 
 const doctorController = {
@@ -62,9 +63,9 @@ const doctorController = {
         const UserId = "658aeab2a07cfdec21fc4931";
         try {
             const apptList = await Appointment.find({ doctorId: UserId })
-            .populate({ path: 'doctorId', populate: { path: 'user' } })
-            .populate({path: 'patientId', populate: {path:'user'}}).exec();
-            return res.status(200).json({message: "Success", appList: apptList});
+                .populate({ path: 'doctorId', populate: { path: 'user' } })
+                .populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+            return res.status(200).json({ message: "Success", appList: apptList });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -76,11 +77,11 @@ const doctorController = {
         const { id } = req.params;
         try {
             const consultation = await Appointment.findById(id)
-            .populate({ path: 'doctorId', populate: { path: 'user' } })
-            .populate({path: 'patientId', populate: {path:'user'}}).exec();
+                .populate({ path: 'doctorId', populate: { path: 'user' } })
+                .populate({ path: 'patientId', populate: { path: 'user' } }).exec();
             if (!consultation)
                 return res.status(404).json({ message: "Consultation not found" });
-            return res.status(200).json({message:"Success", consultation: consultation});
+            return res.status(200).json({ message: "Success", consultation: consultation });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -120,26 +121,24 @@ const doctorController = {
     },
 
     rescheduleAppt: async (req, res) => {
-        const { id, date, time,type, reason, neww } = req.body;
+        const { id, date, time, type, reason, neww } = req.body;
         try {
             const appointment = await Appointment.findById(id)
-            .populate({ path: 'doctorId', populate: { path: 'user' } }).
-            populate({path: 'patientId', populate: {path:'user'}}).exec();
+                .populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
             console.log(appointment);
             if (!appointment)
                 return res.status(404).json({ message: "Appointment not found" });
             const doctor = appointment.doctorId;
             if (doctor) {
                 var slots = doctor.appointmentSlots.filter(slot => (slot.date !== appointment.date && slot.time !== appointment.time));
-                slots.push({ date: appointment.date, time: appointment.time,type:appointment.type, availability: true });
-                if (neww === true && !slots.find(slot => (slot.date === date && slot.time === time)))
-                {
-                    slots.push({ date, time,type, availability: false });
+                slots.push({ date: appointment.date, time: appointment.time, type: appointment.type, availability: true });
+                if (neww === true && !slots.find(slot => (slot.date === date && slot.time === time))) {
+                    slots.push({ date, time, type, availability: false });
                 }
-                else 
-                {
+                else {
                     const newSlots = slots.filter(slot => (slot.date !== date && slot.time !== time));
-                    newSlots.push({ date, time,type, availability: false });
+                    newSlots.push({ date, time, type, availability: false });
                     doctor.appointmentSlots = newSlots;
                 }
             }
@@ -148,7 +147,7 @@ const doctorController = {
             appointment.time = time;
             appointment.updateReason = reason;
             await appointment.save();
-            return res.status(200).json({ message: 'Success', appointment: appointment});
+            return res.status(200).json({ message: 'Success', appointment: appointment });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -158,16 +157,16 @@ const doctorController = {
     cancelAppt: async (req, res) => {
         const { id, reason } = req.body;
         try {
-           const appointment=await Appointment.findByIdAndUpdate(id, { status: "Cancelled", updateReason: reason }, { new: true })
-              .populate({ path: 'doctorId', populate: { path: 'user' } })
-              .populate({path: 'patientId', populate: {path:'user'}}).exec();
-              console.log(appointment);
-            const doc=appointment.doctorId;
+            const appointment = await Appointment.findByIdAndUpdate(id, { status: "Cancelled", updateReason: reason }, { new: true })
+                .populate({ path: 'doctorId', populate: { path: 'user' } })
+                .populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+            console.log(appointment);
+            const doc = appointment.doctorId;
             var slots = doc.appointmentSlots.filter(slot => (slot.date !== appointment.date && slot.time !== appointment.time));
-            slots.push({ date: appointment.date, time: appointment.time,type:appointment.type, availability: true });
+            slots.push({ date: appointment.date, time: appointment.time, type: appointment.type, availability: true });
             await doc.save();
             await appointment.save();
-            return res.status(200).json({ message: 'Success', appointment: appointment});
+            return res.status(200).json({ message: 'Success', appointment: appointment });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -282,6 +281,31 @@ const doctorController = {
             console.log(error);
             res.status(500).json({ message: error.message });
         }
+    },
+
+    addComplaint: async (req, res) => {
+        const { description } = req.body;
+        const patientId = req.params.id;
+        const doctorId = req.userId;
+
+        try {
+            const complaint = {
+                description: description,
+                doctorId: doctorId,
+            };
+            console.log(complaint); 
+            const patient = await Patient.findById(patientId);
+            if (!patient)
+                return res.status(404).json({ message: "Patient not found" });
+            patient.complaints.push(complaint);
+            await patient.save();
+
+            return res.status(200).json({ message: "Success", complaint });
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+
     }
 
 

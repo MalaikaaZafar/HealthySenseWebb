@@ -12,6 +12,7 @@ import useUserStore from '../stores/userStore';
 import { Box } from '@mui/system';
 import addFavorite from '../services/addFavorite';
 import removeFavorite from '../services/removeFavorite';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 function DoctorCard({ user, buttons, onFavChanged }) {
@@ -20,7 +21,11 @@ function DoctorCard({ user, buttons, onFavChanged }) {
     const [actionCompleted, setActionCompleted] = React.useState(true);
     const [clinicFee, setClinicFee] = React.useState(0);
     const [onlineFee, setOnlineFee] = React.useState(0);
-
+    const navigate = useNavigate();
+    const bookAppt = (e) => {
+        e.stopPropagation();
+        navigate(`/patient/book-appointment/${user._id}`);
+    }
     useEffect(() => {
         user.session.map((session) => {
             if (session.type == 'Clinic') {
@@ -36,9 +41,6 @@ function DoctorCard({ user, buttons, onFavChanged }) {
         alert("Navigate to user page");
     }
 
-    const bookAppt = () => {
-        Navigate(`/patient/book-appointment/${user._id}`);
-    }
 
     const toggleFavourite = async (e) => {
         e.stopPropagation();
@@ -144,7 +146,10 @@ function DoctorCard({ user, buttons, onFavChanged }) {
                         <Button variant="outlined" sx={{ flexGrow: 1, marginRight: '10px', padding: '6px 0', borderColor: 'black', color: 'black', textTransform: 'none', width: '50%' }}>
                             View Profile
                         </Button>
-                        <Button variant="contained" sx={{ flexGrow: 1, marginLeft: '10px', padding: '6px 0', backgroundColor: '#2854C3', color: 'white', textTransform: 'none', width: '50%' }}>
+                        <Button
+                            variant="contained" 
+                            onClick={bookAppt}
+                            sx={{ flexGrow: 1, marginLeft: '10px', padding: '6px 0', backgroundColor: '#2854C3', color: 'white', textTransform: 'none', width: '50%' }}>
                             Book Appointment
                         </Button>
                     </>
