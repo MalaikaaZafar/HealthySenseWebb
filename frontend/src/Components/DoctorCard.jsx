@@ -1,57 +1,36 @@
 import React, { useEffect } from 'react';
 import Card from '@mui/material/Card';
 import Avatar from '@mui/material/Avatar';
-import FeeIcon from '@mui/icons-material/AttachMoneyOutlined';
 import { Button, Divider } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import axios from 'axios';
-
+import NoteAltIcon from '@mui/icons-material/NoteAlt';
+import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
 import './DoctorCard.css';
-import { add } from 'date-fns';
 import useUserStore from '../stores/userStore';
-
-const removeFavorite = async (doctorId) => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await axios.delete(`http://localhost:3000/favorites/${doctorId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        if (response.status === 200) {
-            return true;
-        }
-        return false;
-    } catch (error) {
-        console.log(error);
-        return false;
-    }
-}
-
-const addFavorite = async (doctorId) => {
-    try {
-        console.log(doctorId);
-        const token = localStorage.getItem('token');
-        const response = await axios.post(`http://localhost:3000/favorites/${doctorId}`, {}, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        console.log(response);
-        return response;
-    } catch (error) {
-        console.log(error);
-        return false;
-    }
-}
+import { Box } from '@mui/system';
+import addFavorite from '../services/addFavorite';
+import removeFavorite from '../services/removeFavorite';
 
 
 function DoctorCard({ user, buttons, onFavChanged }) {
     const [favourite, setFavourite] = React.useState(false);
     const { user: loggedUser, updateUser } = useUserStore();
     const [actionCompleted, setActionCompleted] = React.useState(true);
+    const [clinicFee, setClinicFee] = React.useState(0);
+    const [onlineFee, setOnlineFee] = React.useState(0);
+
+    useEffect(() => {
+        user.session.map((session) => {
+            if (session.type == 'Clinic') {
+                setClinicFee(session.fee);
+            }
+            else {
+                setOnlineFee(session.fee);
+            }
+        })
+    }, [user]);
     const goToUserPage = () => {
         //Navigate to user page
         alert("Navigate to user page");
@@ -109,51 +88,58 @@ function DoctorCard({ user, buttons, onFavChanged }) {
                     background: '#F4F8FB', // Set your desired background color
                     boxShadow: '10px 0px 10px 0px rgba(0, 0, 0, 0.10)',
                 },
+                opacity: user.user.isBanned ? 0.5 : 1,
             }}
         >
 
             <div className='user-card-img'>
                 <Avatar style={{ margin: '1%', marginLeft: '5%', marginRight: '5%', height: '75px', width: '75px', float: 'left' }}>
-                    {user.profilePicture ? user.profilePicture : "H"}</Avatar>
-                <div className="docDetailTop" style={{}}>
+                    {user.profilePicture ? user.profilePicture : "H"}
+                </Avatar>
+                <div className="docDetailTop">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div className="docName">Dr. {user.user.name}</div>
-                        <IconButton
+                        {buttons && <IconButton
                             onClick={toggleFavourite}
                             disabled={!actionCompleted}
-                            sx={{ p: 0, color: '#2854C3' }}>
+                            sx={{ p: 0, color: '#2854C3', marginLeft: 'auto', float: 'right' }}>
                             {favourite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                         </IconButton>
+                        }
                     </div>
                     <div className="docSpeciality">{user.specialization}</div>
                     <div className="docAddress">{user.location}</div>
                 </div>
             </div>
-            <div className='user-card-details'>
-                <div style={{ display: 'block', alignItems: 'center', textAlign: 'center' }}>
-                    <p style={{ display: 'block', fontSize: 'medium', textAlign: 'center' }}>{user.experience}</p>
-                    <p style={{ display: 'block', fontSize: 'small', textAlign: 'center' }}>Years of Experience</p>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 0, width: `100%` }}>
+                <div style={{ width: '50%' }}>
+                    <p style={{ display: 'flex', fontSize: 'medium', textAlign: 'center', justifyContent: 'center', margin: '0px ' }}>{user.experience}</p>
+                    <p style={{ display: 'block', fontSize: 'small', textAlign: 'center', justifyContent: 'center', margin: '0px' }}>Years of Experience</p>
                 </div>
-                <Divider orientation='vertical' flexItem />
-                <div>
-                    <p style={{ display: 'block', fontSize: 'medium', textAlign: 'center' }}>4 out of 5</p>
-                    <p style={{ display: 'block', fontSize: 'small', textAlign: 'center' }}>Rating</p>
+                <Divider orientation='vertical' flexItem sx={{ marginTop: 1, height: 60 }} />
+                <div style={{ width: '50%' }}>
+                    <p style={{ display: 'block', fontSize: 'medium', textAlign: 'center', margin: '0px' }}>4 out of 5</p>
+                    <p style={{ display: 'block', fontSize: 'small', textAlign: 'center', margin: '0px' }}>Rating</p>
                 </div>
-            </div>
-            <div className='location-fee'>
-                <div className='location'>
-                    <p style={{ display: 'flex', alignItems: 'center' }}>
-                        <span><FeeIcon sx={{}} /></span>
-                        <span>{user.fee} Rs</span></p>
-                </div>
-            </div>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px', backgroundColor: 'aliceblue', borderColor: '#ededed', borderWidth: 1, borderRadius: 3, borderStyle: 'solid' }}>
+                <p style={{ display: 'flex', alignItems: 'center', width: '50%', justifyContent: 'center' }}>
+                    <span><VideoCameraFrontIcon style={{ color: '#2854c3', marginRight: 5 }} /></span>
+                    <span>Online:{onlineFee} Rs</span>
+                </p>
+                <Divider orientation='vertical' flexItem sx={{ margin: '0 10px' }} />
+                <p style={{ display: 'flex', alignItems: 'center', width: '50%', justifyContent: 'center' }}>
+                    <span><NoteAltIcon style={{ color: '#2854c3', marginRight: 5 }} /></span>
+                    <span>Clinic:{clinicFee} Rs</span>
+                </p>
+            </Box>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                 {buttons &&
                     <>
-                        <Button variant="outlined" sx={{ flexGrow: 1, marginRight: '10px', padding: '6px 0', borderColor: 'black', color: 'black', textTransform: 'none' }}>
+                        <Button variant="outlined" sx={{ flexGrow: 1, marginRight: '10px', padding: '6px 0', borderColor: 'black', color: 'black', textTransform: 'none', width: '50%' }}>
                             View Profile
                         </Button>
-                        <Button variant="contained" sx={{ flexGrow: 1, marginLeft: '10px', padding: '6px 0', backgroundColor: '#2854C3', color: 'white', textTransform: 'none' }}>
+                        <Button variant="contained" sx={{ flexGrow: 1, marginLeft: '10px', padding: '6px 0', backgroundColor: '#2854C3', color: 'white', textTransform: 'none', width: '50%' }}>
                             Book Appointment
                         </Button>
                     </>

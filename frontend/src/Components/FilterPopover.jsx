@@ -9,7 +9,7 @@ import styles from '../styles/searchStyles';
 
 
 
-const FilterPopover = ({ specialty, handleFilterChange, handleMinRating, minRating, onApply }) => {
+const FilterPopover = ({ specialty, handleFilterChange, handleMinRating, minRating, onApply, isPatient }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [specializations, setSpecializations] = React.useState([]);
 
@@ -19,7 +19,12 @@ const FilterPopover = ({ specialty, handleFilterChange, handleMinRating, minRati
             const specialties = await fetchSpecialties();
             setSpecializations(specialties);
         }
-        fetchData();
+        if (isPatient == undefined || isPatient == false) {
+            fetchData();
+        }
+        else {
+            setSpecializations(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
+        }
 
     }, []);
 
@@ -61,7 +66,7 @@ const FilterPopover = ({ specialty, handleFilterChange, handleMinRating, minRati
             >
                 <Box sx={{ ...styles.filterContainer }}>
                     <FormControl fullWidth>
-                        <InputLabel id="specialty-label">Specialization</InputLabel>
+                        <InputLabel id="specialty-label">{isPatient == undefined || isPatient == false ? "Specialty" : "Blood Group"}</InputLabel>
                         <Select
                             labelId="specialty-label"
                             id="specialty-select"
@@ -77,35 +82,37 @@ const FilterPopover = ({ specialty, handleFilterChange, handleMinRating, minRati
                             })}
                         </Select>
                     </FormControl>
-                    <FormControl fullWidth sx={{ marginTop: 2 }}>
-                        <Typography id="min-rating-label" gutterBottom sx={styles.label}>
-                            Minimum Rating
-                        </Typography>
-                        <Slider
-                            value={minRating}
-                            onChange={(e, value) => handleMinRating(value)}
-                            aria-labelledby="min-rating-label"
-                            valueLabelDisplay="auto"
-                            marks
-                            min={0}
-                            max={5}
-                            sx={{
-                                color: '#2854C3',
-                                '& .MuiSlider-thumb': {
-                                    backgroundColor: '#2854C3',
-                                },
-                                '& .MuiSlider-mark': {
-                                    backgroundColor: '#2854C3',
-                                },
-                                '& .MuiSlider-markActive': {
-                                    backgroundColor: '#2854C3',
-                                },
-                                '& .MuiSlider-valueLabel': {
-                                    color: '#fff',
-                                },
-                            }}
-                        />
-                    </FormControl>
+                    {minRating !== undefined && (
+                        <FormControl fullWidth sx={{ marginTop: 2 }}>
+                            <Typography id="min-rating-label" gutterBottom sx={styles.label}>
+                                Minimum Rating
+                            </Typography>
+                            <Slider
+                                value={minRating}
+                                onChange={(e, value) => handleMinRating(value)}
+                                aria-labelledby="min-rating-label"
+                                valueLabelDisplay="auto"
+                                marks
+                                min={0}
+                                max={5}
+                                sx={{
+                                    color: '#2854C3',
+                                    '& .MuiSlider-thumb': {
+                                        backgroundColor: '#2854C3',
+                                    },
+                                    '& .MuiSlider-mark': {
+                                        backgroundColor: '#2854C3',
+                                    },
+                                    '& .MuiSlider-markActive': {
+                                        backgroundColor: '#2854C3',
+                                    },
+                                    '& .MuiSlider-valueLabel': {
+                                        color: '#fff',
+                                    },
+                                }}
+                            />
+                        </FormControl>
+                    )}
                     <Button variant="contained" sx={styles.applyButton} onClick={onApply}>
                         Apply
                     </Button>

@@ -16,6 +16,9 @@ import { AppointmentDetail as ApptDetail } from './patientlayout/AppointmentDeta
 import { Routes, Route } from 'react-router-dom';
 import Search from './pages/Search.js';
 import Favorites from './pages/Favorites.js';
+import AdminDoctor from './pages/AdminDoctor.js';
+import AdminPatient from './pages/AdminPatient.js';
+import AdminActivity from './pages/AdminActivity.js';
 
 function App() {
   return (
@@ -23,8 +26,9 @@ function App() {
       <Routes>
         <Route path="/admin" element={<NavBar />}>
           <Route index element={<ViewAllPatients />} />
-          <Route path="doctors" element={<ViewAllDoctors />} />
-          <Route path='patients' element={<ViewAllPatients />} />
+          <Route path="doctors" element={<AdminDoctor />} />
+          <Route path='patients' element={<AdminPatient />} />
+          <Route path='activity' element={<AdminActivity />} />
         </Route>
         <Route path="/doctor" element={<NavBar />}>
           <Route index element={<CustomTabPanel />} />
