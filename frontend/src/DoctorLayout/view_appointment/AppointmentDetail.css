@@ -10,7 +10,7 @@
   }
   
   .halfAD{
-    width: 100%;
+    width: 80%;
     margin-top: 3%;
     display: flex;
     flex-direction: column;
@@ -104,7 +104,8 @@
     padding-right: 30px;
   }
   
-  .appointmentDetails{
+
+  .appointmentDetailsPatient{
     display: flex;
     flex-direction: column;
     width: 90%;
@@ -113,31 +114,25 @@
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.05);
   }
-
-  .heading{
+  
+  .appointmentDetailsPatient p{
+    margin: 5px;
+    padding: 0px;
+    color: #8C8FA5;
+    display: flex;
+  }
+  
+  .headingPatient{
     display: flex;
     flex-direction: row;
     font-weight: bold;
   }
-
-.appointmentDetails p{
-        margin: 0px;
-        padding: 0px;
-        color: #8C8FA5
-    }
-.detail{
-    margin-top: auto;
-    margin-bottom: 5%;
-    width: 100%;
-}
-.detail p{
-  margin-left: 3%;
-}
+  
 .appointmentBtns {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 50%;
   margin: 3%; /* Align to the bottom of the container */
 }

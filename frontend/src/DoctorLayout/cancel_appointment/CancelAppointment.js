@@ -12,7 +12,7 @@ import axios from "axios";
 import {useImmer} from 'use-immer';
 
 import "./CancelAppointment.css";
-import AppointmentCard from "../components/AppointmentCard";
+import AppointmentCard from "../../components/AppointmentCard";
 
 
 const CancelAppointment = () => {
@@ -22,13 +22,16 @@ const CancelAppointment = () => {
     const fetchAppointment=async ()=>{
       const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
       const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
-      setAppointment(appoinmentList);
+      if (appoinmentList.message==="Success")
+            setAppointment(appoinmentList.consultation);
     }
 
     const cancelAppointment=async ()=>{
       const formattedStr = `http://localhost:3000/doctor/consultations/cancel`;
-      const body=JSON.stringify({id: id, reason: reason});
-      const appoinmentList = await axios.put(formattedStr,body).then((response) => response.data);
+      const appoinmentList = await axios.put(formattedStr,{
+        id:id,
+        reason:reason,
+      }).then((response) => response.data);
       if (appoinmentList.message==="Success")
       {
         alert("Appointment Cancelled");
