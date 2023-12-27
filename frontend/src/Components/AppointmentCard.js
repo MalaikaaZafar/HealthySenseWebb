@@ -1,22 +1,29 @@
 import Card from "@mui/material/Card";
 import Avatar from "@mui/material/Avatar";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-function AppointmentCard({ type, status }) {
+import { format } from "date-fns";
+import {createContext, useContext} from 'react';
+
+import DateIcon from '@mui/icons-material/DateRangeOutlined';
+import TimeIcon from '@mui/icons-material/AccessTimeOutlined';
+
+const appointmentContext=createContext();
+
+function AppointmentCard({ type, appt }) {
   const Navigate = useNavigate();
   const goToDetails = (event) => {
     event.preventDefault();
     if (type === "doctor") {
-      Navigate(`/doctor/appointmentDetail`);
+       Navigate(`/patient/appointments/${appt._id}`);
     } else {
-      Navigate(`/patient/appointmentDetail`);
+      Navigate(`/doctor/appointments/${appt._id}`);
     }
   }
   return (
     <Card
       variant="outlined"
       style={{
-        width: "45%",
+        width: "100%",
         background: "#F4F9FB",
         borderRadius: "10px",
         margin: "10px",
@@ -36,79 +43,39 @@ function AppointmentCard({ type, status }) {
           H
         </Avatar>
         <div className="patientDetails" onClick={goToDetails} style={{ margin: "3%" }}>
-          {type === "doctor" ? <DoctorDetails /> : <PatientDetails />}
+          <appointmentContext.Provider value={appt}>
+          {appt && type === "doctor" ? <DoctorDetails /> : <PatientDetails />}
+          </appointmentContext.Provider>
           <div className="docSpeciality">
             <p>Online Session</p>
           </div>
-          <div className="docExperience">
-            <p>09:30 am - 10:30 am (Tomorrow)</p>
+          <div className="docExperience" style={{width:'100%'}}> 
+            <p style={{display:'flex', alignItems:'center', width: '100%'}}><TimeIcon sx={{margin: '2%'}}/>{appt?.time} </p>
+            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{appt?.date?  format(new Date(appt?.date),'yyyy-MM-dd'):null}</p>
           </div>
-          {status === "Completed" || status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} Navigate={Navigate}/>}
         </div>
       </div>
     </Card>
   );
 }
 
-function IsComplete({ type, Navigate }){
-  return (
-    <Button
-      style={{background: "#F4F9FB", color: "#3B86FF", textTransform: "none" }}>
-      Leave Review
-    </Button>
-  );
-}
 
-function IsNotComplete({type, Navigate}) {
-  return (
-    <div className="apptButtons">
-      <Button
-        onClick={(e) => {
-          Navigate(`/doctor/cancelAppointment`);
-          e.stopPropagation();
-        }}
-        variant="contained"
-        style={{
-          background: "#F4F9FB",
-          color: "#3B86FF",
-          border: "1px solid #3B86FF",
-          margin: "1%",
-          textTransform: "none",
-        }}
-      >
-        Cancel
-      </Button>
-      <Button
-        onClick={(e) => {
-          Navigate(`/doctor/rescheduleAppointment`);
-          e.stopPropagation();
-        }}
-        variant="contained"
-        style={{
-          background: "#2854c3",
-          color: "#f4f9fb",
-          border: "1px solid #3B86FF",
-          margin: "1%",
-          textTransform: "none",
-        }}
-      >
-        Reschedule
-      </Button>
-    </div>
-  );
-}
 function PatientDetails() {
+  const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Name: Patient name</p>
+      <p>Name: {appt?.patientId?.user?.name}</p>
+      <p>Status: <b>{appt?.status? appt.status: 'Pending'}</b></p>
     </div>
   );
 }
 
 function DoctorDetails() {
+  const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Dr. Amna Irum</p>
+      <p>Dr. {appt?.doctorId?.user?.name}</p>
+      <p>Status:  {appt?.status}</p>
     </div>
   );
 }

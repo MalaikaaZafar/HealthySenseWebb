@@ -1,0 +1,153 @@
+
+
+body {
+  background-color: #f7f7f7; /* Light background color */
+  font-family: 'Roboto', sans-serif; /* Use the Roboto font */
+  margin: 0;
+  padding: 0;
+}
+
+.appointmentDetailsScreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.ScreenBodyAppointment {
+  display: flex;
+  width: 80%;
+  margin: 20px;
+  background-color: #ffffff; /* Container background color */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+  padding: 20px;
+}
+
+
+.slotList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.slotDay {
+  
+  padding: 15px;
+}
+
+.slotDay table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+}
+
+.slotDay td {
+  padding: 10px;
+  text-align: center;
+}
+
+.slotDay td:first-child {
+  text-align: left;
+}
+
+.slotDay td:nth-child(2) {
+  text-align: right;
+}
+
+.slotDay td[colspan="3"] {
+  background: #2854c3;
+  color: #ffffff;
+}
+
+.slotDay td[colspan="3"]:nth-child(2) {
+  background: #f4f9fb;
+  color: #8c8fa5;
+}
+
+.slotDay td:last-child button {
+  background: #2854c3;
+  color: #ffffff;
+  text-transform: none;
+}
+
+.appointmentBtns {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.appointmentBtns button {
+  background: #2854c3;
+  color: #ffffff;
+  text-transform: none;
+  border-radius: 10px;
+  width: 50%;
+}
+
+/* AddSlotDialog Styles */
+
+MuiDialog-paper {
+  background: #f4f9fb;
+}
+
+MuiDialogTitle-root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f9fb;
+}
+
+MuiDialogContent-root {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  background: #f4f9fb;
+}
+
+MuiDialogActions-root {
+  background: #f4f9fb;
+}
+
+MuiButton-root {
+  text-transform: none;
+}
+
+/* Global Styles */
+
+.dialogTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f9fb;
+}
+
+.dialogContent {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  background: #f4f9fb;
+}
+
+.datePicker {
+  margin: 5px;
+}
+
+.timeRangeField {
+  margin: 5px;
+}
+
+.dialogActions {
+  background: #f4f9fb;
+}
+
+.actionButton {
+  text-transform: none;
+}
+
+

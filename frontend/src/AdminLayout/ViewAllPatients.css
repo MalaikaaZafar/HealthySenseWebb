@@ -1,0 +1,68 @@
+
+
+body {
+  background-color: #f7f7f7; /* Light background color */
+  font-family: 'Roboto', sans-serif; /* Use the Roboto font */
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  bottom: 0px;
+}
+
+.userListScreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  bottom:0px;
+}
+
+.screenBodyUserList {
+  display: flex;
+  width: 80%;
+  height: 100%;
+  margin-top: 2%;
+  margin-bottom: 0px;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff; /* Container background color */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+  padding: 20px;
+}
+
+
+.userList {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+
+@media screen and (max-width: 600px) {
+  .screenBodyUserList {
+    width: 90%;
+  }
+}
+
+.docCard{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  margin:2%;
+}
+
+.userCard{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  margin:10px;
+}

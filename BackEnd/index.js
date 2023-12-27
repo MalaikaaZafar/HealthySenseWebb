@@ -12,7 +12,10 @@ app.use(bodyParser.urlencoded({limit: "30mb", extended:true}));
 app.use(cors());
 
 app.use('/', require('./routes/UserRoutes'));
+app.use('/', require('./routes/PatientRoutes'));
 app.use('/doctor', require('./routes/DoctorRoutes'));
+app.use('/admin', require('./routes/AdminRoutes'));
+app.use('/patient', require('./routes/PatientRoutes'));
 
 const PORT =process.env.PORT || 3000;
 

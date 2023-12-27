@@ -1,0 +1,45 @@
+body {
+    background-color: #f7f7f7; /* Light background color */
+    font-family: 'Roboto', sans-serif; /* Use the Roboto font */
+    margin: 0;
+    padding: 0;
+  }
+  
+  .apptListScreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .apptListBody {
+    display: flex;
+    width: 80%;
+    margin: 20px;
+    background-color: #ffffff; 
+    border-radius: 10px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
+    padding: 20px;
+  }
+  
+  
+  .apptList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-radius: 10px;
+    width:100%;
+    overflow: hidden;
+  }
+
+  .listItem{
+      margin: 10px;
+      width: 45%;
+    }
+  
+@media screen and (max-width: 850px) {
+  .listItem{
+    width:100%;
+  }
+}
