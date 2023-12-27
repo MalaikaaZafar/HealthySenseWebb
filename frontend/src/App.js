@@ -12,6 +12,8 @@ import Login from './pages/auth/Login.js';
 import Signup from './pages/auth/Signup.js';
 import RegisterDoctor from './pages/doctor/Register.js';
 import Meet from './pages/meet/Meet.js';
+import DoctorReview from './pages/patient/DoctorReview.js';
+import DoctorDeatils from './pages/doctor/DoctorDetails.js';
 import theme from './Theme.js';
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
           <Route path="/" element={<Login />} />  
           <Route path="/signup" element={<Signup />} />
           <Route path="/doctor/register" element={<RegisterDoctor />} />
+          <Route path='/patient/review' element={<DoctorReview />} />
+          <Route path='/doctor-detail' element={<DoctorDeatils />} />
           <Route path="/meet" element={<Meet />} />
           <Route path="/doctor" element={<NavBar />}>
             <Route index element={<CustomTabPanel />} />
