@@ -13,6 +13,8 @@ import { AppointmentList as AppointmentListPatient } from './patientlayout/view_
 import { CancelAppointment as CancelPatientAppt } from './patientlayout/cancel_appointment/CancelAppointment.js';
 import { AppointmentDetail as ApptDetail } from './patientlayout/view_appointment/AppointmentDetail.js';
 import { BookAppointment } from './patientlayout/book_appointment/BookAppointment.js';
+import { Messages } from './pages/messages/Messages.js';
+import FAQ from './pages/faqs/FAQ.js';
 
 import { Routes, Route } from 'react-router-dom';
 import Search from './pages/Search.js';
@@ -22,6 +24,10 @@ function App() {
   return (
     <div className="App">
       <Routes>
+        <Route path="/" element={<NavBar />}>
+          <Route index element={<FAQ />} />
+          </Route>
+        
         <Route path="/admin" element={<NavBar />}>
           <Route index element={<ViewAllPatients />} />
           <Route path="doctors" element={<ViewAllDoctors />} />
