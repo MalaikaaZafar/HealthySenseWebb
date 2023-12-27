@@ -1,9 +1,9 @@
 import NavBar from './components/NavBar.js';
-import CustomTabPanel from './doctorlayout/view_appointment_list/ViewAppointmentList.js'
-import CancelAppointment from './doctorlayout/cancel_appointment/CancelAppointment.js';
-import AppointmentSlots from './doctorlayout/appointment_slots/AppointmentSlots.js';
-import RescheduleAppointment from './doctorlayout/reschedule_appointment/RescheduleAppointment.js';
-import AppointmentDetail from './doctorlayout/view_appointment/AppointmentDetail.js';
+import CustomTabPanel from './DoctorLayout/view_appointment_list/ViewAppointmentList.js'
+import CancelAppointment from './DoctorLayout/cancel_appointment/CancelAppointment.js';
+import AppointmentSlots from './DoctorLayout/appointment_slots/AppointmentSlots.js';
+import RescheduleAppointment from './DoctorLayout/reschedule_appointment/RescheduleAppointment.js';
+import AppointmentDetail from './DoctorLayout/view_appointment/AppointmentDetail.js';
 
 import ViewAllDoctors from './adminlayout/ViewAllDoctors.js';
 import ViewAllPatients from './adminlayout/ViewAllPatients.js';
