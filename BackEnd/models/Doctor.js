@@ -12,7 +12,7 @@ const certificateSchema = new mongoose.Schema({
     approvedStatus: { type: Boolean, default: false },
     description: { type: String, required: true },
     issueDate: { type: Date, required: true },
-    expiryDate: { type: Date, required: true },
+    expiryDate: { type: Date},
     file: { type: String, required: true },
 });
 
@@ -22,7 +22,7 @@ const doctorSchema = new mongoose.Schema({
     description: { type: String, required: true },
     location: { type: String, required: true },
     experience: { type: Number, required: true },
-    workingHours: { type: String, required: true },
+    workingHours: { type: String},
     session: [{
        type: {
             type: String,
@@ -38,6 +38,7 @@ const doctorSchema = new mongoose.Schema({
     services: [{ type: String}],
     appointmentSlots:[appointmentSlotsSchema],
     approvedStatus: { type: Boolean, default: false },
+    rating: { type: Number, default: 0 },
 });
 
 const Doctor = mongoose.model('Doctor', doctorSchema);

@@ -8,14 +8,11 @@ import {
     Typography,
     InputAdornment,
     Chip,
-    Select,
-    MenuItem,
-    FormControl,
-    InputLabel,
     Box,
     IconButton,
     Container,
     CssBaseline,
+    Paper,
 } from '@mui/material';
 import { TimePicker, DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -32,6 +29,8 @@ import CalendarToday from '@mui/icons-material/CalendarToday';
 import UploadFile from '@mui/icons-material/UploadFile';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import styles from './Register.module.css';
 
 const CustomTextField = styled(TextField)({
@@ -61,8 +60,7 @@ const RegisterDoctor = () => {
         description: '',
         location: '',
         experience: '',
-        workingHours: '',
-        fee: '',
+        session: [],
         services: [],
         appointmentSlots: [],
         certificates: [],
@@ -72,8 +70,9 @@ const RegisterDoctor = () => {
     const [showServiceInput, setShowServiceInput] = useState(false);
 
     const [showAppointmentInput, setShowAppointmentInput] = useState(false);
-    const [selectedDay, setSelectedDay] = useState('');
-    const [selectedTime, setSelectedTime] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(dayjs(new Date()));
+    const [selectedTime, setSelectedTime] = useState(new Date().setHours(0, 0, 0, 0));
+    const [selectedType, setSelectedType] = useState('Online');
 
     const [currentCertificate, setCurrentCertificate] = useState({
         name: '',
@@ -147,8 +146,8 @@ const RegisterDoctor = () => {
         setShowCertificateInput(false);
     };
 
-    const handleDayChange = (event) => {
-        setSelectedDay(event.target.value);
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
     };
 
     const handleTimeChange = (newValue) => {
@@ -160,24 +159,26 @@ const RegisterDoctor = () => {
             setShowAppointmentInput(true);
         } else {
             setShowAppointmentInput(false);
-            setSelectedDay('');
-            setSelectedTime(new Date());
+            setSelectedDate(dayjs(new Date()));
+            setSelectedTime(new Date().setHours(0, 0, 0, 0));
         }
     };
 
-    const checkAppointmentSlot = (appointmentSlot) => {
-        const [day, time] = appointmentSlot.split(' ');
+    const checkAppointmentSlot = (date, time) => {
         const [hours, minutes] = time.split(':');
         const appointmentSlotTime = parseInt(hours, 10) * 60 + parseInt(minutes, 10);
+        const formattedDate = dayjs(date).format('DD/MM/YYYY');
 
         for (let i = 0; i < doctor.appointmentSlots.length; i++) {
             const currentAppointmentSlot = doctor.appointmentSlots[i];
-            const [currentDay, currentTime] = currentAppointmentSlot.split(' ');
+            const currentDate = dayjs(currentAppointmentSlot.date).format('DD/MM/YYYY');
+            const currentTime = currentAppointmentSlot.time;
             const [currentHours, currentMinutes] = currentTime.split(':');
             const currentAppointmentSlotTime = parseInt(currentHours, 10) * 60 + parseInt(currentMinutes, 10);
+
             if (
-                (day === currentDay && Math.abs(appointmentSlotTime - currentAppointmentSlotTime) < 10) ||
-                (day !== currentDay && (1440 - Math.abs(appointmentSlotTime - currentAppointmentSlotTime)) < 10)
+                (formattedDate === currentDate && Math.abs(appointmentSlotTime - currentAppointmentSlotTime) < 10) ||
+                (formattedDate !== currentDate && (1440 - currentAppointmentSlotTime + appointmentSlotTime) < 10)
             ) {
                 return false;
             }
@@ -187,13 +188,18 @@ const RegisterDoctor = () => {
     };
 
     const handleAppointmentSlotSubmit = () => {
-        if (selectedDay && selectedTime) {
-            const formattedTime = format(selectedTime, 'HH:mm'); // Format time without seconds
-            if (checkAppointmentSlot(`${selectedDay} ${formattedTime}`)) {
-                const appointmentSlot = `${selectedDay} ${formattedTime}`;
+        if (selectedDate && selectedTime) {
+            const formattedTime = format(selectedTime, 'HH:mm');
+            if (checkAppointmentSlot(selectedDate, formattedTime)) {
+                const appointmentSlot = {
+                    date: selectedDate,
+                    time: formattedTime,
+                    type: selectedType,
+                }
                 setDoctor(prevDoctor => ({ ...prevDoctor, appointmentSlots: [...prevDoctor.appointmentSlots, appointmentSlot] }));
-                setSelectedDay('');
-                setSelectedTime(new Date());
+                setSelectedDate(dayjs(new Date()));
+                setSelectedTime(new Date().setHours(0, 0, 0, 0));
+                setSelectedType('Online');
             } else {
                 alert('Appointment slots cannot be less than 10 minutes apart.');
             }
@@ -414,29 +420,30 @@ const RegisterDoctor = () => {
                                 <Button onClick={handleAddAppointmentSlot} startIcon={<AddCircleOutline />}>Add Appointment Slots</Button>
                                 {showAppointmentInput && (
                                     <Grid container spacing={2}>
-                                        <Grid item xs={5}>
-                                            <FormControl fullWidth margin='normal'>
-                                                <InputLabel>Day</InputLabel>
-                                                <Select
-                                                    value={selectedDay}
-                                                    onChange={handleDayChange}
-                                                    label="Day"
-                                                    startAdornment={
-                                                        <InputAdornment position='start'>
-                                                            <CalendarToday />
-                                                        </InputAdornment>
-                                                    }
-                                                >
-                                                    <MenuItem value={'Monday'}>Monday</MenuItem>
-                                                    <MenuItem value={'Tuesday'}>Tuesday</MenuItem>
-                                                    <MenuItem value={'Wednesday'}>Wednesday</MenuItem>
-                                                    <MenuItem value={'Thursday'}>Thursday</MenuItem>
-                                                    <MenuItem value={'Friday'}>Friday</MenuItem>
-                                                    <MenuItem value={'Saturday'}>Saturday</MenuItem>
-                                                    <MenuItem value={'Sunday'}>Sunday</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <Grid item xs={5}>
+                                                <DatePicker
+                                                    name="date"
+                                                    value={selectedDate}
+                                                    onChange={handleDateChange}
+                                                    label="Date"
+                                                    maxDate={dayjs(new Date())}
+                                                    slotProps={{
+                                                        textField: {
+                                                            fullWidth: true,
+                                                            margin: 'normal',
+                                                            InputProps: {
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <CalendarToday />
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }
+                                                        },
+                                                    }}
+                                                />
+                                            </Grid>
+                                        </LocalizationProvider>
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                                             <Grid item xs={5}>
                                                 <TimePicker
@@ -452,6 +459,35 @@ const RegisterDoctor = () => {
                                                 />
                                             </Grid>
                                         </LocalizationProvider>
+                                        <Grid container spacing={2} p={3} pt={0}>
+                                            <Grid item xs={10}>
+                                                <Typography variant="subtitle1" color="grey" fontSize={14}>Slot Type</Typography>
+                                            </Grid>
+                                            <Grid item xs={5}>
+                                                <Paper
+                                                    elevation={selectedType === 'Online' ? 4 : 1}
+                                                    style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
+                                                    onClick={() => setSelectedType('Online')}
+                                                >
+                                                    <IconButton color={selectedType === 'Online' ? 'primary' : 'default'}>
+                                                        <VideoCallIcon fontSize="large" />
+                                                        <Typography variant="subtitle1">Online</Typography>
+                                                    </IconButton>
+                                                </Paper>
+                                            </Grid>
+                                            <Grid item xs={5}>
+                                                <Paper
+                                                    elevation={selectedType === 'Clinic' ? 4 : 1}
+                                                    style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
+                                                    onClick={() => setSelectedType('Clinic')}
+                                                >
+                                                    <IconButton color={selectedType === 'Clinic' ? 'primary' : 'default'}>
+                                                        <LocalHospitalIcon fontSize="large" />
+                                                        <Typography variant="subtitle1">Clinic</Typography>
+                                                    </IconButton>
+                                                </Paper>
+                                            </Grid>
+                                        </Grid>
                                         <Grid item xs={10}>
                                             <StyledButton onClick={handleAppointmentSlotSubmit} variant="contained" color="secondary" fullWidth> Add </StyledButton>
                                         </Grid>
@@ -461,10 +497,18 @@ const RegisterDoctor = () => {
                                     {doctor.appointmentSlots.map((appointment, index) => (
                                         <Grid item key={index}>
                                             <Chip
-                                                label={appointment}
                                                 onDelete={() => handleRemoveAppointment(appointment)}
                                                 color="primary"
                                                 variant="outlined"
+                                                label={
+                                                    <Box display="flex" alignItems="center">
+                                                        <Typography>{dayjs(appointment.date).format('DD/MM/YYYY')}</Typography>
+                                                        <Box mx={1}>|</Box>
+                                                        <Typography>{appointment.time}</Typography>
+                                                        <Box mx={1}>|</Box>
+                                                        <Typography>{appointment.type}</Typography>
+                                                    </Box>
+                                                }
                                             />
                                         </Grid>
                                     ))}

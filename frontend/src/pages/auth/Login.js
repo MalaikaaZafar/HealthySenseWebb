@@ -27,6 +27,14 @@ const StyledButton = styled(Button)(({ theme }) => ({
     margin: theme.spacing(3, 0, 2),
 }));
 
+const StyledTextField = styled(TextField)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '&:hover fieldset': {
+            borderColor: theme.palette.primary.main,
+        },
+    },
+}));
+
 export default function Login() {
 
     const [email, setEmail] = React.useState('');
@@ -72,7 +80,7 @@ export default function Login() {
                         Log in
                     </Typography>
                     <form noValidate autoComplete="off">
-                        <TextField
+                        <StyledTextField
                             variant="outlined"
                             margin="normal"
                             required
@@ -82,7 +90,6 @@ export default function Login() {
                             id="email"
                             label="Email Address"
                             name="email"
-                            autoComplete="off"
                             autoFocus
                             InputProps={{
                                 startAdornment: (
@@ -92,7 +99,7 @@ export default function Login() {
                                 ),
                             }}
                         />
-                        <TextField
+                        <StyledTextField
                             variant="outlined"
                             margin="normal"
                             required

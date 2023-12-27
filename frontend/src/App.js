@@ -1,10 +1,12 @@
 import NavBar from './components/NavBar.js';
+
 import CustomTabPanel from './DoctorLayout/view_appointment_list/ViewAppointmentList.js'
 import CancelAppointment from './DoctorLayout/cancel_appointment/CancelAppointment.js';
 import AppointmentSlots from './DoctorLayout/appointment_slots/AppointmentSlots.js';
 import RescheduleAppointment from './DoctorLayout/reschedule_appointment/RescheduleAppointment.js';
 import AppointmentDetail from './DoctorLayout/view_appointment/AppointmentDetail.js';
-import ViewAllPatients from './adminlayout/ViewAllPatients.js';
+
+import ViewAllPatients from './adminLayout/ViewAllPatients.js';
 
 import { RescheduleAppointment as ReschedulePatient } from './patientlayout/reschedule_appointment/RescheduleAppointment.js';
 import { AppointmentList as AppointmentListPatient } from './patientlayout/view_appointment_list/ViewAppointmentList.js';
@@ -12,13 +14,11 @@ import { CancelAppointment as CancelPatientAppt } from './patientlayout/cancel_a
 import { AppointmentDetail as ApptDetail } from './patientlayout/view_appointment/AppointmentDetail.js';
 import { BookAppointment } from './patientlayout/book_appointment/BookAppointment.js';
 
-import { Routes, Route } from 'react-router-dom';
 import Search from './pages/user/Search.js';
 import Favorites from './pages/patient/Favorites.js';
 import AdminDoctor from './pages/admin/AdminDoctor.js';
 import AdminPatient from './pages/admin/AdminPatient.js';
 import AdminActivity from './pages/admin/AdminActivity.js';
-
 import Login from './pages/auth/Login.js';
 import Signup from './pages/auth/Signup.js';
 import RegisterDoctor from './pages/auth/Register.js';
@@ -26,6 +26,7 @@ import DoctorDeatil from './pages/user/DoctorDetail.js';
 import PatientDetail from './pages/doctor/PatientDetail.js';
 import DoctorReview from './pages/patient/DoctorReview.js';
 
+import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
 import ViewAllPatients from './adminlayout/ViewAllPatients.js';

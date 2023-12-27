@@ -8,7 +8,6 @@ import {
     Paper,
     CircularProgress,
     LinearProgress,
-    Hidden,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -98,141 +97,134 @@ function DoctorDeatils() {
         <div>
             <Container>
                 <Box className={styles.bigPane} p={3}>
-                    <Hidden mdDown>
-                        <Grid container spacing={3} justifyContent={'center'}>
-                            <Grid item xs={12} sm={doctor.name.length > 20 || doctor.specialization.length > 20 ? 4 : 3}>
-                                <Paper className={styles.innerBigPane1}>
-                                    <Box display="flex" alignItems="center" marginLeft={2} height={100}>
-                                        <PersonIcon fontSize="large" color="black" />
-                                        <Box ml={2} mt={-2}>
-                                            <Box>
-                                                <Typography variant="h6" color={'black'} fontWeight={'bold'}>
-                                                    {doctor.name}
-                                                </Typography>
-                                            </Box>
-                                            <Typography variant="body2" fontSize={12} color="textSecondary">
-                                                {doctor.specialization}
+                    <Grid container spacing={3} justifyContent={'center'}>
+                        <Grid item xs={12} sm={6} md={doctor.name.length > 20 || doctor.specialization.length > 20 ? 4 : 3}>
+                            <Paper className={styles.innerBigPane1}>
+                                <Box display="flex" alignItems="center" marginLeft={2} height={100} pr={2} justifyContent={'center'} >
+                                    <PersonIcon fontSize="large" color="black" />
+                                    <Box ml={2} mt={-2}>
+                                        <Typography variant="h7" color={'black'} fontWeight={'bold'}>
+                                            {doctor.name}
+                                        </Typography>
+                                        <Typography variant="body2" fontSize={12} color="textSecondary" mt={1}>
+                                            {doctor.specialization}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={2}>
+                            <Paper className={styles.innerBigPane1}>
+                                <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
+                                    <PeopleIcon fontSize="large" color="black" />
+                                    <Typography variant="h7">{doctor.patients}</Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Patients
+                                    </Typography>
+                                </Box>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={2}>
+                            <Paper className={styles.innerBigPane1}>
+                                <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
+                                    <School fontSize="large" color="black" />
+                                    <Typography variant="h7">{doctor.experience}+ Years</Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Experience
+                                    </Typography>
+                                </Box>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={2}>
+                            <Paper className={styles.innerBigPane1}>
+                                <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
+                                    <StarRatings
+                                        rating={doctor.rating / 5}
+                                        starRatedColor="black"
+                                        numberOfStars={1}
+                                        name='rating'
+                                        starDimension="30px"
+                                    />
+                                    <Typography variant="h7">{doctor.rating}</Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Ratings
+                                    </Typography>
+                                </Box>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+                    <Grid container alignItems={'center'} mt={3} justifyContent={'center'}>
+                        <Grid item xs={12} sm={3}>
+                            <Grid container alignItems={'center'} spacing={1}>
+                                <Grid item xs={3}>
+                                    <Box position="relative" display="inline-flex">
+                                        <CircularProgress variant="determinate" value={ratingPercentage} style={{ color: 'black' }} size={50} />
+                                        <Box
+                                            top={0}
+                                            left={0}
+                                            bottom={0}
+                                            right={0}
+                                            position="absolute"
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            mr={1}
+                                        >
+                                            <Typography variant="subtitle1" fontWeight="bold" component="div" color="textSecondary">
+                                                {`${Math.round(ratingPercentage)}%`}
                                             </Typography>
                                         </Box>
                                     </Box>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={2}>
-                                <Paper className={styles.innerBigPane1}>
-                                    <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
-                                        <PeopleIcon fontSize="large" color="black" />
-                                        <Typography variant="h6">{doctor.patients}</Typography>
-                                        <Typography variant="body2" color="textSecondary">
-                                            Patients
-                                        </Typography>
-                                    </Box>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={2}>
-                                <Paper className={styles.innerBigPane1}>
-                                    <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
-                                        <School fontSize="large" color="black" />
-                                        <Typography variant="h6">{doctor.experience}+ Years</Typography>
-                                        <Typography variant="body2" color="textSecondary">
-                                            Experience
-                                        </Typography>
-                                    </Box>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={2}>
-                                <Paper className={styles.innerBigPane1}>
-                                    <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
-                                        <StarRatings
-                                            rating={doctor.rating / 5}
-                                            starRatedColor="black"
-                                            numberOfStars={1}
-                                            name='rating'
-                                            starDimension="30px"
-                                        />
-                                        <Typography variant="h6">{doctor.rating}</Typography>
-                                        <Typography variant="body2" color="textSecondary">
-                                            Ratings
-                                        </Typography>
-                                    </Box>
-                                </Paper>
+                                </Grid>
+                                <Grid item xs={12} md={9}>
+                                    <Typography variant="subtitle1" fontWeight="bold">Satisfied patients</Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Hidden>
-                    <Grid container spacing={3} mt={2}>
-                        <Grid item xs={12}>
-                            <Grid container spacing={3} alignItems={'center'}>
-                                <Grid item xs={12} sm={3}>
-                                    <Grid container spacing={3} alignItems={'center'}>
-                                        <Grid item xs={3}>
-                                            <Box position="relative" display="inline-flex">
-                                                <CircularProgress variant="determinate" value={ratingPercentage} style={{ color: 'black' }} size={50} />
-                                                <Box
-                                                    top={0}
-                                                    left={0}
-                                                    bottom={0}
-                                                    right={0}
-                                                    position="absolute"
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                >
-                                                    <Typography variant="subtitle1" fontWeight="bold" component="div" color="textSecondary">
-                                                        {`${Math.round(ratingPercentage)}%`}
-                                                    </Typography>
-                                                </Box>
-                                            </Box>
-                                        </Grid>
-                                        <Grid item xs={12} md={9}>
-                                            <Typography variant="subtitle1" fontWeight="bold">Satisfied patients</Typography>
-                                        </Grid>
+                        <Grid item xs={12} sm={8} mt={1} ml={1}>
+                            <Grid container alignItems={'center'}>
+                                <Grid item xs={12} md={3}>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Doctor Checkup
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8} md={6} mr={3}>
+                                    <Grid container direction="column">
+                                        <BlackLinearProgress value={checkupRating} variant="determinate" className={styles.linearProgress} />
                                     </Grid>
                                 </Grid>
-                                <Grid item xs={12} sm={9}>
-                                    <Grid container spacing={3}>
-                                        <Grid item xs={12} md={3}>
-                                            <Typography variant="subtitle1" color="textSecondary">
-                                                Doctor Checkup
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={10} md={7} >
-                                            <Grid container direction="column" justifyContent="center">
-                                                <BlackLinearProgress value={checkupRating} variant="determinate" className={styles.linearProgress} />
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={2} md={2}>
-                                            <Typography variant="subtitle1" color="textSecondary">{`${checkupRating}%`}</Typography>
-                                        </Grid>
+                                <Grid item xs={2} md={1}>
+                                    <Typography variant="body2" color="textSecondary">{`${checkupRating}%`}</Typography>
+                                </Grid>
+                            </Grid>
+                            <Grid container alignItems={'center'}>
+                                <Grid item xs={12} md={3} >
+                                    <Typography variant="body2" color="textSecondary">
+                                        Clinical facility
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8} md={6} mr={3}>
+                                    <Grid container direction="column">
+                                        <BlackLinearProgress value={clinicRating} variant="determinate" className={styles.linearProgress} />
                                     </Grid>
-                                    <Grid container spacing={3} alignItems={'center'}>
-                                        <Grid item xs={12} md={3} >
-                                            <Typography variant="subtitle1" color="textSecondary">
-                                                Clinic Environment
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={10} md={7}>
-                                            <Grid container direction="column" justifyContent="center">
-                                                <BlackLinearProgress value={clinicRating} variant="determinate" className={styles.linearProgress} />
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={2} md={2}>
-                                            <Typography variant="subtitle1" color="textSecondary">{`${clinicRating}%`}</Typography>
-                                        </Grid>
+                                </Grid>
+                                <Grid item xs={2} md={1}>
+                                    <Typography variant="body2" color="textSecondary">{`${clinicRating}%`}</Typography>
+                                </Grid>
+                            </Grid>
+                            <Grid container alignItems={'center'}>
+                                <Grid item xs={12} md={3}>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Staff Behaviour
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8} md={6} mr={3}>
+                                    <Grid container direction="column">
+                                        <BlackLinearProgress value={staffRating} variant="determinate" className={styles.linearProgress} />
                                     </Grid>
-                                    <Grid container spacing={3} alignItems={'center'}>
-                                        <Grid item xs={12} md={3}>
-                                            <Typography variant="subtitle1" color="textSecondary">
-                                                Staff Behaviour
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={10} md={7}>
-                                            <Grid container direction="column" justifyContent="center">
-                                                <BlackLinearProgress value={staffRating} variant="determinate" className={styles.linearProgress} />
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={2} md={2}>
-                                            <Typography variant="subtitle1" color="textSecondary">{`${staffRating}%`}</Typography>
-                                        </Grid>
-                                    </Grid>
+                                </Grid>
+                                <Grid item xs={2} md={1}>
+                                    <Typography variant="body2" color="textSecondary">{`${staffRating}%`}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -259,7 +251,7 @@ function DoctorDeatils() {
                             </TableContainer>
                         </DialogContent>
                     </Dialog>
-                    <Grid container spacing={2} p={2} bgcolor='#eff6fc' mt={3} borderRadius={2}>
+                    <Grid container p={3} bgcolor='#eff6fc' mt={3} borderRadius={2}>
                         <Grid item xs={12}>
                             <Typography variant="h6" color="text.secondary" gutterBottom fontWeight={'bold'} fontSize={18}>
                                 About Doctor
@@ -268,15 +260,15 @@ function DoctorDeatils() {
                                 Dr. Amna Irum is the top most dermatologist specialist in NUCES hospital at FAST. She achieved several awards for her wonderful contribution in her own field. She is available for private consultation.
                             </Typography>
                         </Grid>
-                        <Grid container spacing={2} alignItems="flex-end" p={2}>
-                            <Grid item xs={12} md={8}>
+                        <Grid container spacing={2} alignItems="flex-end">
+                            <Grid item xs={12} md={8} container spacing={3}>
                                 <Grid item xs={12}>
                                     <Typography variant="h6" color="text.secondary" gutterBottom fontWeight={'bold'} fontSize={18}>
                                         Services
                                     </Typography>
                                     {doctor.services.map((service, index) => (
                                         <Typography key={index} variant="body2" color="text.secondary" gutterBottom fontSize={14}>
-                                            - {service}
+                                            ✨ {service}
                                         </Typography>
                                     ))}
                                 </Grid>
@@ -288,48 +280,44 @@ function DoctorDeatils() {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Box p={2} bgcolor={'#ffffff'} borderRadius={2}>
-                                    <Grid container spacing={2} alignItems="center">
-                                        <Grid item xs={12}>
-                                            <Grid container spacing={2} alignItems="center">
-                                                <Grid item xs={2}>
-                                                    <Typography variant="h6" color="text.secondary" gutterBottom fontSize={14} fontWeight={'bold'}>
-                                                        Fee:
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={10}>
-                                                    <Typography variant="body2" color="text.secondary" gutterBottom fontSize={14} align='right'>
-                                                        Rs. 1000
-                                                    </Typography>
-                                                </Grid>
+                                    <Grid item xs={12}>
+                                        <Grid container alignItems="center" mt={1}>
+                                            <Grid item xs={2}>
+                                                <Typography variant="h6" color="text.secondary" gutterBottom fontSize={14} fontWeight={'bold'}>
+                                                    Fee:
+                                                </Typography>
                                             </Grid>
-                                            <Divider />
-                                            <Grid container mt={3}>
-                                                <Grid item xs={1}>
-                                                    <LocationOnIcon color="action" />
-                                                </Grid>
-                                                <Grid item xs={12} md={2}>
-                                                    <Typography variant="h6" color="text.secondary" gutterBottom fontSize={14} fontWeight={'bold'}>
-                                                        Address:
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={12}>
-                                                    <Typography variant="body2" color="text.secondary" gutterBottom fontSize={14} align='right'>
-                                                        NUCES Hospital, FAST, Karachi
-                                                    </Typography>
-                                                </Grid>
+                                            <Grid item xs={10}>
+                                                <Typography variant="body2" color="text.secondary" gutterBottom fontSize={14} align='right'>
+                                                    Rs. 1000
+                                                </Typography>
                                             </Grid>
-                                            <Divider />
-                                            <Grid container alignItems="center" mt={1} spacing={2}>
-                                                <Hidden mdDown>
-                                                    <Grid item md={1}>
-                                                        <CheckCircleIcon color="success" />
-                                                    </Grid>
-                                                </Hidden>
-                                                <Grid item xs={12} md={10} ml={1}>
-                                                    <Typography variant="h6" color="text.secondary" gutterBottom fontSize={14} fontWeight={'bold'}>
-                                                        <span style={{ color: '#26b937' }}>Available</span>
-                                                    </Typography>
-                                                </Grid>
+                                        </Grid>
+                                        <Divider />
+                                        <Grid container mt={3} alignItems="center">
+                                            <Grid item xs={1}>
+                                                <LocationOnIcon color="action" />
+                                            </Grid>
+                                            <Grid item xs={12} md={2} ml={1}>
+                                                <Typography variant="h6" color="text.secondary" gutterBottom fontSize={14} fontWeight={'bold'}>
+                                                    Address:
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <Typography variant="body2" color="text.secondary" gutterBottom fontSize={14} align='right'>
+                                                    NUCES Hospital, FAST, Karachi
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Divider />
+                                        <Grid container alignItems="center" mt={2}>
+                                            <Grid item md={1}>
+                                                <CheckCircleIcon color="success" />
+                                            </Grid>
+                                            <Grid item xs={12} md={10} ml={1}>
+                                                <Typography variant="h6" color="text.secondary" gutterBottom fontSize={14} fontWeight={'bold'}>
+                                                    <span style={{ color: '#26b937' }}>Available</span>
+                                                </Typography>
                                             </Grid>
                                         </Grid>
                                     </Grid>
