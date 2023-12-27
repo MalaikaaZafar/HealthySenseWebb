@@ -16,6 +16,7 @@ import {
     IconButton,
     Container,
     CssBaseline,
+    Paper,
 } from '@mui/material';
 import { TimePicker, DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -32,6 +33,9 @@ import CalendarToday from '@mui/icons-material/CalendarToday';
 import UploadFile from '@mui/icons-material/UploadFile';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+
 import styles from './Register.module.css';
 
 const CustomTextField = styled(TextField)({
@@ -61,8 +65,7 @@ const RegisterDoctor = () => {
         description: '',
         location: '',
         experience: '',
-        workingHours: '',
-        fee: '',
+        session: [],
         services: [],
         appointmentSlots: [],
         certificates: [],
@@ -74,6 +77,7 @@ const RegisterDoctor = () => {
     const [showAppointmentInput, setShowAppointmentInput] = useState(false);
     const [selectedDay, setSelectedDay] = useState('');
     const [selectedTime, setSelectedTime] = useState(new Date());
+    const [selectedType, setSelectedType] = useState('Online');
 
     const [currentCertificate, setCurrentCertificate] = useState({
         name: '',
@@ -452,6 +456,35 @@ const RegisterDoctor = () => {
                                                 />
                                             </Grid>
                                         </LocalizationProvider>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <Typography variant="subtitle1" color="grey"> Slot Type </Typography>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Paper
+                                                    elevation={selectedType === 'Online' ? 4 : 1}
+                                                    style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
+                                                    onClick={() => setSelectedType('Online')}
+                                                >
+                                                    <IconButton color={selectedType === 'Online' ? 'primary' : 'default'}>
+                                                    <VideoCallIcon fontSize="large" /> 
+                                                        <Typography variant="subtitle1">Online</Typography>
+                                                    </IconButton>
+                                                </Paper>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Paper
+                                                    elevation={selectedType === 'Clinic' ? 4 : 1}
+                                                    style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
+                                                    onClick={() => setSelectedType('Clinic')}
+                                                >
+                                                    <IconButton color={selectedType === 'Clinic' ? 'primary' : 'default'}>
+                                                    <LocalHospitalIcon fontSize="large" />
+                                                        <Typography variant="subtitle1">Clinic</Typography>
+                                                    </IconButton>
+                                                </Paper>
+                                            </Grid>
+                                        </Grid>
                                         <Grid item xs={10}>
                                             <StyledButton onClick={handleAppointmentSlotSubmit} variant="contained" color="secondary" fullWidth> Add </StyledButton>
                                         </Grid>
