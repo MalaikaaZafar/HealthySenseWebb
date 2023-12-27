@@ -1,0 +1,21 @@
+.bigPane {
+    background-color: #ffffff !important;
+    border-color: #ffffff;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 20px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 0 20px 0 !important;
+}
+
+.innerBigPane1 {
+    background-color: #f1f1f1 !important;
+    border-color: #f1f1f1;
+    border-width: 2px;
+    border-radius: 20px !important;
+    border-style: solid;
+}
+
+.radioButtons {
+    color: #8c8f85;
+}

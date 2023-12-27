@@ -1,7 +1,3 @@
-
-
-
-
 const searchStyles = {
     container: {
         display: 'flex',
