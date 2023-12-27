@@ -1,8 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const User = require('../models/User');
 const Doctor = require('../models/Doctor');
 const Chat = require('../models/Message');
+
 
 const secret = process.env.SECRET;
 
@@ -10,31 +12,44 @@ const userController = {
     signup: async (req, res) => {
         const { name, email, password, dob, country, phoneNumber, gender, type } = req.body;
 
-        // upload image to images folder
         const file = req.files.profilePicture;
-        const fileName = Date.now() + file.name;
-
-        file.mv(`../uploads/${fileName}`, async (err) => {
-            if (err) {
-                console.log(err);
-                return res.status(500).send({ msg: "Error occured" });
-            }
-        });
 
         try {
             const existingUser = await User.findOne({ email });
 
             if (existingUser) return res.status(400).json({ message: "User already exists" });
 
-            const hashedPassword = await bcrypt.hash(password, 12);
+            const fileName = Date.now() + file.md5 + path.extname(file.name);
 
-            const result = await User.create({ name, email, password: hashedPassword, dob, country, phoneNumber, gender, type, profilePicture: fileName });
+            const URL = './uploads/' + fileName;
 
-            const token = jwt.sign({ email: result.email, id: result._id }, secret);
+            file.mv(URL)
+                .then(
+                    async () => {
+                        const hashedPassword = await bcrypt.hash(password, 12);
 
-            return res.status(201).json({ result, token });
+                        const result = await User.create({ name, email, password: hashedPassword, dob, country, phoneNumber, gender, type, profilePicture: fileName });
+
+                        const token = jwt.sign({ email: result.email, id: result._id }, secret);
+
+                        const temp = {
+                            name: result.name,
+                            email: result.email,
+                            dob: result.dob,
+                            country: result.country,
+                            phoneNumber: result.phoneNumber,
+                            gender: result.gender,
+                            type: result.type,
+                            profilePicture: result.profilePicture,
+                        };
+
+                        return res.status(201).json({ result: temp, token });
+                    })
+                .catch((err) => console.log(err));
+
         } catch (error) {
-            return res.status(500).json({ message: "Something went wrong" });
+            console.log(error);
+            res.status(500).json({ message: "Something went wrong" });
         }
     },
 

@@ -20,7 +20,11 @@ function DoctorCard({ user, buttons, onFavChanged }) {
     const [actionCompleted, setActionCompleted] = React.useState(true);
     const [clinicFee, setClinicFee] = React.useState(0);
     const [onlineFee, setOnlineFee] = React.useState(0);
-
+    const navigate = useNavigate();
+    const bookAppt = (e) => {
+        e.stopPropagation();
+        navigate(`/patient/book-appointment/${user._id}`);
+    }
     useEffect(() => {
         user.session.map((session) => {
             if (session.type == 'Clinic') {
@@ -35,10 +39,7 @@ function DoctorCard({ user, buttons, onFavChanged }) {
         //Navigate to user page
         alert("Navigate to user page");
     }
-    const Navigate=useNavigate();   
-    const bookAppt = () => {
-        Navigate(`/patient/book-appointment/${user._id}`);
-    }
+
 
     const toggleFavourite = async (e) => {
         e.stopPropagation();

@@ -38,6 +38,8 @@ import PatientIcon from '@mui/icons-material/Person';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { styled } from '@mui/system';
 import styles from './Login.module.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -62,6 +64,30 @@ const StyledInput = styled(Input)(({ theme }) => ({
     display: 'none',
 }));
 
+const StyledTextField = styled(TextField)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '&:hover fieldset': {
+            borderColor: theme.palette.primary.main,
+        },
+    },
+}));
+
+const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '&:hover fieldset': {
+            borderColor: theme.palette.primary.main,
+        },
+    },
+}));
+
+const StyledSelect = styled(Select)(({ theme }) => ({
+    "&:hover": {
+        "&& fieldset": {
+            borderColor: theme.palette.primary.main,
+        }
+    }
+}));
+
 const Signup = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -71,23 +97,33 @@ const Signup = () => {
         country: '',
         phoneNumber: '',
         gender: '',
-        type: '',
     });
+
+    const [contryCode, setCountryCode] = useState('');
 
     const [accountType, setAccountType] = useState('Patient');
 
     const [profilePicture, setProfilePicture] = useState(null);
 
+    const [file, setFile] = useState(null);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const navigate = useNavigate();
+
     const handleProfilePictureChange = (event) => {
-        const file = event.target.files[0];
+        const f = event.target.files[0];
+
+        setFile(f);
+
         const reader = new FileReader();
 
         reader.onloadend = () => {
             setProfilePicture(reader.result);
         };
 
-        if (file) {
-            reader.readAsDataURL(file);
+        if (f) {
+            reader.readAsDataURL(f);
         } else {
             setProfilePicture(null);
         }
@@ -97,9 +133,47 @@ const Signup = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleCountryCodeChange = (e) => {
+        setCountryCode(e.target.value);
+    };
+
+    const formatPhoneNumber = (phoneNumberString) => {
+        const cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+        const number = contryCode + cleaned;
+        return number;
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add your signup logic here
+
+        if (isSubmitting)
+            return;
+
+        setIsSubmitting(s => !s);
+
+        const data = new FormData();
+        data.append('profilePicture', file);
+        data.append('name', formData.name);
+        data.append('email', formData.email);
+        data.append('password', formData.password);
+        data.append('dob', formData.dob);
+        data.append('country', formData.country);
+        data.append('phoneNumber', formatPhoneNumber(formData.phoneNumber));
+        data.append('gender', formData.gender);
+        data.append('type', accountType);
+
+        axios.post('http://localhost:3000/signup', data)
+            .then(res => {
+                console.log(res);
+                document.cookie = `token=${res.data.token}`;
+                navigate('/', { replace: true });
+            })
+            .catch(err => {
+                console.log(err);
+                alert(err.response.data.message);
+            });
+
+        setIsSubmitting(s => !s);
     };
 
     return (
@@ -120,7 +194,7 @@ const Signup = () => {
                         Sign Up
                     </Typography>
                     <form noValidate autoComplete='off' onSubmit={handleSubmit}>
-                        <TextField
+                        <StyledTextField
                             variant='outlined'
                             margin='normal'
                             required
@@ -144,7 +218,7 @@ const Signup = () => {
                                 id="icon-button-file"
                                 type="file"
                                 onChange={handleProfilePictureChange}
-                                inputProps={{accept:"image/png, image/jpeg , image/jpg"}}
+                                inputProps={{ accept: "image/png, image/jpeg , image/jpg" }}
                             />
                             <Grid container justifyContent="flex-start" alignItems="center" spacing={2}>
                                 <Grid item>
@@ -157,7 +231,7 @@ const Signup = () => {
                                 </Grid>
                             </Grid>
                         </FormControl>
-                        <TextField
+                        <StyledTextField
                             variant='outlined'
                             margin='normal'
                             required
@@ -175,7 +249,7 @@ const Signup = () => {
                                 ),
                             }}
                         />
-                        <TextField
+                        <StyledTextField
                             variant='outlined'
                             margin='normal'
                             required
@@ -194,19 +268,20 @@ const Signup = () => {
                             }}
                         />
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
+                            <StyledDatePicker
                                 margin='normal'
                                 id='dob'
                                 label='Date of Birth'
                                 name='dob'
                                 inputFormat='yyyy-MM-dd'
                                 fullWidth
+                                onChange={(date) => setFormData({ ...formData, dob: date })}
                                 maxDate={dayjs(new Date())}
                                 slotProps={{
                                     textField: {
                                         fullWidth: true,
                                         margin: 'normal',
-                                        name:'dob',
+                                        name: 'dob',
                                         required: true,
                                         InputProps: {
                                             startAdornment: (
@@ -221,11 +296,12 @@ const Signup = () => {
                         </LocalizationProvider>
                         <FormControl variant="outlined" margin='normal' required fullWidth>
                             <InputLabel id="country-label">Country</InputLabel>
-                            <Select
+                            <StyledSelect
                                 labelId="country-label"
                                 id="country"
                                 name="country"
                                 label="Country"
+                                value={formData.country}
                                 onChange={handleChange}
                                 startAdornment={
                                     <InputAdornment position='start'>
@@ -234,16 +310,18 @@ const Signup = () => {
                                 }
                             >
                                 <MenuItem value={'Pakistan'}>Pakistan</MenuItem>
-                            </Select>
+                            </StyledSelect>
                         </FormControl>
                         <Grid container spacing={2} >
                             <Grid item xs={12} sm={3}>
                                 <FormControl variant="outlined" margin='normal' required fullWidth>
                                     <InputLabel id="country-code-label">Country Code</InputLabel>
-                                    <Select
+                                    <StyledSelect
                                         labelId="country-code-label"
                                         id="country-code"
                                         label="Country Code"
+                                        value={contryCode}
+                                        onChange={handleCountryCodeChange}
                                         startAdornment={
                                             <InputAdornment position='start'>
                                                 <FlagIcon />
@@ -251,15 +329,16 @@ const Signup = () => {
                                         }
                                     >
                                         <MenuItem value={'+92'}>+92</MenuItem>
-                                    </Select>
+                                    </StyledSelect>
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={9}>
                                 <InputMask
                                     mask="9 9 9 - 9 9 9 9 9 9 9"
+                                    onChange={handleChange}
                                 >
                                     {() =>
-                                        <TextField
+                                        <StyledTextField
                                             variant='outlined'
                                             margin='normal'
                                             required
@@ -281,12 +360,13 @@ const Signup = () => {
                         </Grid>
                         <FormControl variant="outlined" margin='normal' required fullWidth>
                             <InputLabel id="gender-label">Gender</InputLabel>
-                            <Select
+                            <StyledSelect
                                 labelId="gender-label"
                                 id="gender"
                                 name="gender"
                                 label="gender"
                                 onChange={handleChange}
+                                value={formData.gender}
                                 startAdornment={
                                     <InputAdornment position='start'>
                                         <PersonOutlineOutlinedIcon />
@@ -296,7 +376,7 @@ const Signup = () => {
                                 <MenuItem value={'Male'}>Male</MenuItem>
                                 <MenuItem value={'Female'}>Female</MenuItem>
                                 <MenuItem value={'Other'}>Other</MenuItem>
-                            </Select>
+                            </StyledSelect>
                         </FormControl>
                         <Box margin='normal'>
                             <Grid container spacing={2}>
@@ -334,12 +414,13 @@ const Signup = () => {
                             fullWidth
                             variant='contained'
                             color='primary'
+                            disabled={isSubmitting}
                         >
                             Sign Up
                         </StyledButton>
                         <Typography component='p' variant='body2'>
                             Already have an account?&nbsp;
-                            <Link href='#' variant='body2'>
+                            <Link href="" variant="body2" onClick={() => navigate('/login', { replace: true })} underline='none'>
                                 {'Log In'}
                             </Link>
                         </Typography>

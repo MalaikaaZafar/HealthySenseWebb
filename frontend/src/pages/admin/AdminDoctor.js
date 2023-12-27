@@ -9,7 +9,7 @@ import './Search.css';
 import styles from '../../styles/searchStyles';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import SearchErrorMessage from '../../components/SearchErrorMessage';
-import ViewAlldoctors from '../../adminLayout/ViewAllDoctors';
+import ViewAlldoctors from '../../adminlayout/ViewAllDoctors';
 import searchDoctors from '../../services/admin/searchDoctor';
 
 
@@ -147,7 +147,7 @@ const AdminDoctor = () => {
                 </Box>
             </InfiniteScroll>
                 :
-                !notFound && !searched && !error ? <ViewAlldoctors /> : <SearchErrorMessage notFound={notFound} error={error} />
+                !notFound && !searched && !error ? <ViewAlldoctors /> : <SearchErrorMessage notFound={notFound} error={error} role='doctor' />
             }
         </div >
     );

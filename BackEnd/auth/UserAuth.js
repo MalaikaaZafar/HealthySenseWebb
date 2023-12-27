@@ -18,7 +18,8 @@ const auth = async (req, res, next) => {
     //     req.userId = decodedData?.id;
     //   });
     // }
-    req.userId="65854380aa6b07046cf14509";
+   // req.userId="65854380aa6b07046cf14509"; //patient
+    req.userId="658aeab2a07cfdec21fc4930"; //doctor
 
     next();
 

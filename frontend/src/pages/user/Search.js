@@ -174,7 +174,7 @@ const Search = () => {
                 </Box>
             </InfiniteScroll>
                 :
-                <SearchErrorMessage notFound={notFound} error={error} />
+                <SearchErrorMessage notFound={notFound} error={error} role={'doctor'}/>
             }
         </div >
     );

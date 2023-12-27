@@ -2,15 +2,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const dotenv = require('dotenv');
+const fileUpload = require('express-fileupload');
+require('dotenv').config();
 
 const app=express();
-dotenv.config();
 
 app.use(bodyParser.json({limit: "30mb", extended:true}));
 app.use(bodyParser.urlencoded({limit: "30mb", extended:true}));
+app.use(fileUpload({
+    createParentPath: true
+}));
 app.use(cors());
-
 app.use('/', require('./routes/UserRoutes'));
 app.use('/', require('./routes/PatientRoutes'));
 app.use('/doctor', require('./routes/DoctorRoutes'));
@@ -22,4 +24,3 @@ const PORT =process.env.PORT || 3000;
 mongoose.connect(process.env.CONNECTION_URL)
     .then(()=> app.listen(PORT, ()=> console.log('Server Running on port:', PORT)))
     .catch((error)=>console.log(error.message));
-
