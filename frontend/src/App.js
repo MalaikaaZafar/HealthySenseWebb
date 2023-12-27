@@ -18,6 +18,7 @@ import { Routes, Route } from 'react-router-dom';
 import Search from './pages/Search.js';
 import PatientManageAccount from './patientlayout/account/ManageAccount.js';
 import DoctorManageAccount from './doctorlayout/account/ManageAccount.js';
+import DiagnosisPage from './doctorlayout/diagnosis/DiagnosisPage.js';
 
 import './App.css';
 
@@ -26,7 +27,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route index path="*" element={<DoctorManageAccount />} />
+        <Route index path="*" element={<DiagnosisPage />} />
         <Route path="/nav" element={<NavBar />}>
           <Route index element={<AppointmentSlots />}/>
         </Route>

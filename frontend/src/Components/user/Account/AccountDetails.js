@@ -13,7 +13,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
             reader.readAsDataURL(file);
             reader.onloadend = () => {
                 setData(draft => {
-                    draft.profilePicture = reader.result;
+                    draft.users.profilePicture = reader.result;
                 })
             };
             setChanges(true);
@@ -50,7 +50,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
                 <TextField id="outlined-basic" label="Name" variant="outlined" value={Data.name}
                     onChange={(e) => {
                         setData(draft => {
-                            draft.name = e.target.value;
+                            draft.users.name = e.target.value;
                         })
                         setChanges(true);
                     }}
@@ -73,7 +73,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
                         onChange={(e) => {
                             const date = dayjs(e).format('YYYY-MM-DD');
                             setData(draft => {
-                                draft.dob = date;
+                                draft.users.dob = date;
                             })
                             setChanges(true);
                         }}
@@ -85,7 +85,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '20px' }}>
                 <TextField id="outlined-basic" label="Country" variant="outlined" value={Data.country} onChange={(e) => {
                     setData(draft => {
-                        draft.country = e.target.value;
+                        draft.users.country = e.target.value;
                     })
                     setChanges(true);
                 }}
@@ -97,7 +97,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
                     }
                     else if (isNumeric(e.target.value)) {
                         setData(draft => {
-                            draft.phoneNumber = e.target.value;
+                            draft.users.phoneNumber = e.target.value;
                         })
                         setChanges(true);
                     }
@@ -113,7 +113,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
                     value={Data.gender}
                     onChange={(e) => {
                         setData(draft => {
-                            draft.gender = e.target.value;
+                            draft.users.gender = e.target.value;
                         })
                         setChanges(true);
                     }}
@@ -126,7 +126,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
             </FormControl>
             <TextField id="outlined-basic" label="Email" variant="outlined" value={Data.email} onChange={(e) => {
                 setData(draft => {
-                    draft.email = e.target.value;
+                    draft.users.email = e.target.value;
                 })
                 setChanges(true);
             }} />

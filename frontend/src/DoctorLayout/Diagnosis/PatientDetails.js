@@ -4,8 +4,7 @@ import { useDiagnosis } from "./DiagnosisPage";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const PatientDetails = () => {
-    const { PatientData, DoctorData, AppointmentData, PageChange } = useDiagnosis();
-
+    const { AppointmentData, PageChange } = useDiagnosis();
 
     return (
         <Container style={{ marginTop: '50px' }}>
@@ -14,24 +13,25 @@ const PatientDetails = () => {
                 <Typography variant="h4" style={{ textAlign: 'center' }}>Appointment Details</Typography>
                 <div className="Column-display">
                     <div className="column1">
-                        <Avatar style={{ width: '130px', height: '130px', margin: 'auto' }} />
+                        <Avatar style={{ width: '130px', height: '130px', margin: 'auto' }} 
+                        />
                     </div>
                     <div className="column2">
                         <div className="row-display">
                             <Typography variant="h6" style={{ fontWeight: 'bold' }}>Doctor: </Typography>
-                            <Typography variant="h6">{DoctorData.name} </Typography>
+                            <Typography variant="h6">{AppointmentData.doctorId.user.name} </Typography>
                         </div>
                         <div className="row-display">
                             <Typography variant="h6" style={{ fontWeight: 'bold' }}>Specialization: </Typography>
-                            <Typography variant="h6">{DoctorData.Specialization} </Typography>
+                            <Typography variant="h6">{AppointmentData.doctorId.specialization} </Typography>
                         </div>
                         <div className="row-display">
                             <Typography variant="h6" style={{ fontWeight: 'bold' }}>Date: </Typography>
-                            <Typography variant="h6">{AppointmentData.Date} </Typography>
+                            <Typography variant="h6">{AppointmentData.date} </Typography>
                         </div>
                         <div className="row-display">
                             <Typography variant="h6" style={{ fontWeight: 'bold' }}>Time: </Typography>
-                            <Typography variant="h6">{AppointmentData.Time} </Typography>
+                            <Typography variant="h6">{AppointmentData.time} </Typography>
                         </div>
 
                     </div>
@@ -42,28 +42,25 @@ const PatientDetails = () => {
                 <Typography variant="h4" style={{ textAlign: 'center' }}>Patient Details</Typography>
                 <div className="Column-display">
                     <div className="column1">
-                        <Avatar style={{ width: '150px', height: '150px', margin: 'auto' }} />
+                        <Avatar style={{ width: '150px', height: '150px', margin: 'auto' }}
+                        />
                     </div>
                     <div className="column2">
                         <div className="row-display">
                             <Typography variant="h6" style={{ fontWeight: 'bold' }}>Name: </Typography>
-                            <Typography variant="h6">{PatientData.name} </Typography>
+                            <Typography variant="h6">{AppointmentData.patientId.user.name} </Typography>
                         </div>
                         <div className="row-display">
-                            <Typography variant="h6" style={{ fontWeight: 'bold' }}>Age: </Typography>
-                            <Typography variant="h6">{PatientData.Age} </Typography>
+                            <Typography variant="h6" style={{ fontWeight: 'bold' }}>Date of Birth: </Typography>
+                            <Typography variant="h6">{AppointmentData.patientId.user.dob} </Typography>
                         </div>
                         <div className="row-display">
-                            <Typography variant="h6" style={{ fontWeight: 'bold' }}>Address: </Typography>
-                            <Typography variant="h6">{PatientData.Address} </Typography>
+                            <Typography variant="h6" style={{ fontWeight: 'bold' }}>Blood Group: </Typography>
+                            <Typography variant="h6">{AppointmentData.patientId.bloodGroup} </Typography>
                         </div>
                         <div className="row-display">
                             <Typography variant="h6" style={{ fontWeight: 'bold' }}>Phone: </Typography>
-                            <Typography variant="h6">{PatientData.Phone} </Typography>
-                        </div>
-                        <div className="row-display">
-                            <Typography variant="h6" style={{ fontWeight: 'bold' }}>Email: </Typography>
-                            <Typography variant="h6">{PatientData.Email} </Typography>
+                            <Typography variant="h6">{AppointmentData.patientId.user.phoneNumber} </Typography>
                         </div>
                     </div>
                 </div>
@@ -86,15 +83,19 @@ const PatientDetails = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {PatientData.History.map((item, index) => {
-                                        return (
-                                            <TableRow key={index}>
-                                                <TableCell style={{ width: '20%' }}>{item.Type}</TableCell>
-                                                <TableCell>{item.Description}</TableCell>
+                                    {
+                                        AppointmentData.patientId.history.length > 0 ?
+                                            AppointmentData.patientId.history.map((row) => (
+                                                <TableRow key={row._id}>
+                                                    <TableCell style={{ width: '20%' }}>{row.type}</TableCell>
+                                                    <TableCell>{row.description}</TableCell>
+                                                </TableRow>
+                                            ))
+                                            :
+                                            <TableRow>
+                                                <TableCell colSpan={2} style={{ textAlign: 'center' }}>No History</TableCell>
                                             </TableRow>
-                                        )
                                     }
-                                    )}
                                 </TableBody>
                             </Table>
                         </AccordionDetails>
@@ -102,8 +103,8 @@ const PatientDetails = () => {
                 </Container>
             </Container>
             <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>
-                <Button 
-                    variant="contained" 
+                <Button
+                    variant="contained"
                     style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }}
                     onClick={() => PageChange(2)}
                 >

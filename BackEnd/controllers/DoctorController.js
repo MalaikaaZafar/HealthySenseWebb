@@ -61,8 +61,8 @@ const doctorController = {
     consultations: async (req, res) => {
         const UserId = "658546f9e3b8a4d7e100aa68";
         try {
-            const apptList= await Appointment.find({doctorId: UserId}).populate({path:'doctorId', populate:{path:'user'}}).exec();
-            return res.status(200).json( apptList );
+            const apptList = await Appointment.find({ doctorId: UserId }).populate({ path: 'doctorId', populate: { path: 'user' } }).exec();
+            return res.status(200).json(apptList);
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -238,9 +238,41 @@ const doctorController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
-    }
+    },
 
+    getAppintmentDetails: async (req, res) => {
+        const { id } = req.params;
+        console.log(id);
+        try {
+            const AppointmentDetail = await Appointment.findById(id).populate(
+                { path: 'doctorId', populate: { path: 'user' } }
+            )
+            .populate(
+                { path: 'patientId', populate: { path: 'user' } }
+            ).exec();
 
+            if (!AppointmentDetail){
+                return res.status(402).json({ message: "Appointment not found" });
+            }
+            console.log(AppointmentDetail);
+
+            AppointmentDetail.doctorId.appointmentSlots = undefined;
+            AppointmentDetail.doctorId.services = undefined;
+            AppointmentDetail.doctorId.user.profilePicture = undefined;
+            AppointmentDetail.doctorId.user.password = null;
+
+            AppointmentDetail.patientId.user.password = undefined;
+            AppointmentDetail.patientId.user.profilePicture = null;
+
+            AppointmentDetail.doctorId.certificates = undefined;
+
+            return res.status(200).json({ AppointmentDetail });
+        } catch (error) {
+            console.log(error.message);
+            return res.status(502).json({ message: "Something went wrong" });
+        }
+
+    },
 };
 
 module.exports = doctorController;

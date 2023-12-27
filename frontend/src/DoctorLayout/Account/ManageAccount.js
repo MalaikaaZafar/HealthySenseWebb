@@ -1,4 +1,4 @@
-import { Avatar, Button, Container, FormControl, InputLabel, Modal, NativeSelect, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Button, Container, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
@@ -9,19 +9,67 @@ import AddCertificate from "./modals/certificate/AddCertificate";
 import EditCertificate from "./modals/certificate/EditCertificate";
 import AddService from "./modals/services/AddService";
 import EditService from "./modals/services/EditService";
-
+import DoctorServices from "./tables/ServiceTable";
+import LoadingAnimation from "../../components/loader/LoadingAnimation";
 
 const DoctorManageAccount = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [Changes, setChanges] = useState(false);
     const [DoctorData, setDoctorData] = useImmer({
-        name: "John Doe",
-        dob: "2003-02-11",
-        country: "123, ABC Street, XYZ City",
-        phoneNumber: 1234567890,
-        email: "JohnDoe@Email",
-        gender: 'Male',
-        profilePicture: null,
+        users: {
+            _id: "",
+            name: "John Doe",
+            dob: "2003-02-11",
+            country: "123, ABC Street, XYZ City",
+            phoneNumber: 1234567890,
+            email: "JohnDoe@Email",
+            gender: 'Male',
+            profilePicture: null,
+        },
+        specialization: "Cardiologist",
+        description: "I am a cardiologist",
+        location: "ABC Hospital",
+        experience: 10,
+        workingHours: "10:00 AM - 6:00 PM",
+        availability: true,
+        session: [
+            {
+                type: "Online",
+                fee: 500,
+            },
+            {
+                type: "Clinic",
+                fee: 500,
+            },
+        ],
+        certificates: [
+            {
+                name: "Certificate 1",
+                description: "Certificate 1 Description",
+                issueDate: "2021-10-10",
+                expiryDate: "2021-10-10",
+                approvedStatus: true,
+                File: null,
+            },
+        ],
+        services: [
+            "Service 1",
+            "Service 2",
+            "Service 3"
+        ],
+    });
+
+    const [History, setHistory] = useImmer({
+        users: {
+            _id: "",
+            name: "John Doe",
+            dob: "2003-02-11",
+            country: "123, ABC Street, XYZ City",
+            phoneNumber: 1234567890,
+            email: "JohnDoe@Email",
+            gender: 'Male',
+            profilePicture: null,
+        },
         specialization: "Cardiologist",
         description: "I am a cardiologist",
         location: "ABC Hospital",
@@ -65,9 +113,9 @@ const DoctorManageAccount = () => {
     const [CertificateEditIndex, setCertificateEditIndex] = useState(-1);
 
     const CertificateEditModalOpen = () => { setCertificateEditModal(true); };
-    const CertificateEditModalClose = () => { 
+    const CertificateEditModalClose = () => {
         setCertificateEditIndex(-1);
-        setCertificateEditModal(false); 
+        setCertificateEditModal(false);
     };
 
     const [ServicesModal, setServicesModal] = useState(false);
@@ -78,12 +126,12 @@ const DoctorManageAccount = () => {
     const [ServicesEditModal, setServicesEditModal] = useState(false);
     const [ServicesEditIndex, setServicesEditIndex] = useState(-1);
 
-    const ServicesEditModalOpen = () => { 
-        setServicesEditModal(true); 
+    const ServicesEditModalOpen = () => {
+        setServicesEditModal(true);
     };
-    const ServicesEditModalClose = () => { 
+    const ServicesEditModalClose = () => {
         setServicesEditIndex(-1);
-        setServicesEditModal(false); 
+        setServicesEditModal(false);
     };
 
 
@@ -97,131 +145,128 @@ const DoctorManageAccount = () => {
         ServicesEditModalOpen();
     }
 
-
     useEffect(() => {
-
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
     }, []);
 
     return (
-        <Container style={{ marginBottom: '70px', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-            <div className="column211">
-                <AccountDetails
-                    Data={DoctorData}
-                    setData={setDoctorData}
-                    setChanges={setChanges}
-                />
+        <>
+            <LoadingAnimation isVisible={isLoading} />
+            {
+                isLoading ? null : <Container style={{ marginBottom: '70px', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                    <div className="column211">
+                        <AccountDetails
+                            Data={DoctorData.users}
+                            setData={setDoctorData}
+                            setChanges={setChanges}
+                        />
 
-                <DoctorSpecializedDetails
-                    DoctorData={DoctorData}
-                    setDoctorData={setDoctorData}
-                    setChanges={setChanges}
-                />
-                <Typography variant="h6">Certificates</Typography>
-                <CertificateTable
-                    DoctorData={DoctorData}
-                    setDoctorData={setDoctorData}
-                    HandleCertificateEdit={HandleCertificateEdit}
-                    setChanges={setChanges}
-                />
-
-                {
-                    DoctorData.services.length > 0 ?
-                        <Container style={{ display: 'flex', flexDirection: 'row', width: '100%', padding: '10px', marginBottom: '0px', borderBottom: '1px solid rgba(224, 224, 224, 1)', paddingBottom: '5px' }}>
-                            <Container style={{ width: '100%', textAlign: 'left', padding: '5px', margin: '0px' }}>
-                                <Typography variant="h6" style={{ textAlign: 'left' }}>Services</Typography>
-                                {
-                                    DoctorData.services.map((service, index) => {
-                                        return (
-                                            <>
-                                                <Typography variant="p" style={{ textAlign: 'left' }}>{service}</Typography>
-                                                <Button
-                                                    style={{ backgroundColor: '#3f51b5', color: 'white', width: 'fit-content', fontWeight: 'bold', fontSize: '16px' }}
-                                                    onClick={() => {
-                                                        HandleServicesEdit(index);
-                                                    }}
-                                                    variant="contained"
-                                                >
-                                                    Edit
-                                                </Button>
-
-                                            </>
+                        <DoctorSpecializedDetails
+                            DoctorData={DoctorData}
+                            setDoctorData={setDoctorData}
+                            setChanges={setChanges}
+                        />
+                        <Typography variant="h6">Certificates</Typography>
+                        <CertificateTable
+                            DoctorData={DoctorData}
+                            setDoctorData={setDoctorData}
+                            HandleCertificateEdit={HandleCertificateEdit}
+                            setChanges={setChanges}
+                        />
+                        <Button style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '-10px' }}
+                            onClick={() => { CertificateModalOpen() }}
+                            startIcon={<AddCircleOutline />}
+                        >
+                            Add Certificate
+                        </Button>
 
 
-                                        )
-                                    })
-                                }
-                            </Container>
-                        </Container>
-                        :
-                        null
-                }
+                        <Typography variant="h6">Services</Typography>
+                        <DoctorServices
+                            DoctorData={DoctorData}
+                            setDoctorData={setDoctorData}
+                            HandleServicesEdit={HandleServicesEdit}
+                            setChanges={setChanges}
+                        />
 
-                <Button style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '-10px' }}
-                    onClick={() => { CertificateModalOpen() }}
-                    startIcon={<AddCircleOutline />}
-                >
-                    Add Certificate
-                </Button>
+                        <Button style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '-10px' }}
+                            onClick={() => { ServicesModalOpen() }}
+                            startIcon={<AddCircleOutline />}
+                        >
+                            Add Service
+                        </Button>
+                    </div>
 
-                <Button style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '-10px' }}
-                    onClick={() => { ServicesModalOpen() }}
-                    startIcon={<AddCircleOutline />}
-                >
-                    Add Service
-                </Button>
-            </div>
+                    <AddCertificate
+                        setDoctorData={setDoctorData}
+                        CertificateModal={CertificateModal}
+                        CertificateModalClose={CertificateModalClose}
+                        setChanges={setChanges}
+                    />
+                    <EditCertificate
+                        DoctorData={DoctorData}
+                        setDoctorData={setDoctorData}
+                        CertificateEditModal={CertificateEditModal}
+                        CertificateEditModalClose={CertificateEditModalClose}
+                        CertificateIndex={CertificateEditIndex}
+                        setChanges={setChanges}
+                    />
 
-            <AddCertificate
-                setDoctorData={setDoctorData}
-                CertificateModal={CertificateModal}
-                CertificateModalClose={CertificateModalClose}
-                setChanges={setChanges}
-            />
-            <EditCertificate
-                DoctorData={DoctorData}
-                setDoctorData={setDoctorData}
-                CertificateEditModal={CertificateEditModal}
-                CertificateEditModalClose={CertificateEditModalClose}
-                CertificateIndex={CertificateEditIndex}
-                setChanges={setChanges}
-            />
+                    <AddService
+                        setDoctorData={setDoctorData}
+                        ServiceModal={ServicesModal}
+                        ServiceModalClose={ServicesModalClose}
+                        setChanges={setChanges}
+                    />
 
-            <AddService
-                setDoctorData={setDoctorData}
-                ServiceModal={ServicesModal}
-                ServiceModalClose={ServicesModalClose}
-                setChanges={setChanges}
-            />
+                    <EditService
+                        DoctorData={DoctorData}
+                        setDoctorData={setDoctorData}
+                        ServicesEditModal={ServicesEditModal}
+                        ServiceModalClose={ServicesEditModalClose}
+                        ServiceIndex={ServicesEditIndex}
+                        setChanges={setChanges}
+                    />
 
-            <EditService
-                DoctorData={DoctorData}
-                setDoctorData={setDoctorData}
-                ServicesEditModal={ServicesEditModal}
-                ServiceModalClose={ServicesEditModalClose}
-                ServiceIndex={ServicesEditIndex}
-                setChanges={setChanges}
-            />
+                    <Container style={{ display: 'flex', justifyContent: 'space-around' }}>
+                        <Button variant="contained"
+                            style={{ backgroundColor: 'red', color: 'white', marginTop: '20px' }}
+                            onClick={() => {
+                                setDoctorData(draft => {
+                                    draft.users = History.users;
+                                    draft.specialization = History.specialization;
+                                    draft.description = History.description;
+                                    draft.location = History.location;
+                                    draft.experience = History.experience;
+                                    draft.workingHours = History.workingHours;
+                                    draft.fee = History.fee;
+                                    draft.availability = History.availability;
+                                    draft.session = History.session;
+                                    draft.certificates = History.certificates;
+                                    draft.services = History.services;
+                                });
+                                setChanges(false);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button variant="contained"
+                            style={{ backgroundColor: Changes ? '#3f51b5' : 'grey', color: 'white', marginTop: '20px' }}
+                            onClick={() => {
+                                setChanges(false);
+                            }}
+                            disabled={!Changes}
+                        >
+                            Save Changes
+                        </Button>
+                    </Container>
+                </Container>
+            }
 
-            <Container style={{ display: 'flex', justifyContent: 'space-around' }}>
-                <Button variant="contained"
-                    style={{ backgroundColor: 'red', color: 'white', marginTop: '20px' }}
-                    onClick={() => {
-                        setChanges(false);
-                    }}
-                >
-                    Cancel
-                </Button>
-                <Button variant="contained"
-                    style={{ backgroundColor: Changes ? '#3f51b5' : 'grey', color: 'white', marginTop: '20px' }}
-                    onClick={() => {
-                        setChanges(false);
-                    }}
-                    disabled={!Changes}
-                >
-                    Save Changes
-                </Button>
-            </Container>
-        </Container>
+        </>
+
     )
 }
 

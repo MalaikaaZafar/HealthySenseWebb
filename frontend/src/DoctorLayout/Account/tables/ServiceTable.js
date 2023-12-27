@@ -17,8 +17,8 @@ const CustomTableRow = styled(TableRow)(({}) => ({
 const CustomTableCell = styled(TableCell)(({}) => ({
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    justifyContent: 'left',
+    alignItems: 'center',
     textAlign: 'left',
     wordBreak: 'normal',
     overflowWrap: 'break-word',
@@ -27,30 +27,27 @@ const CustomTableCell = styled(TableCell)(({}) => ({
     gap:'10px'
 }));
 
-const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModalOpen }) => {
+const DoctorServices = ({ DoctorData, setDoctorData, HandleServicesEdit, setChanges }) => {
     return (
-        <Table>
+        <Table style={{marginTop:'-20px'}}>
             <TableHead>
                 <CustomTableRow>
-                    <CustomTableCell style={{fontWeight:'bold', fontSize:'16px', width:'25%'}}>Type</CustomTableCell>
-                    <CustomTableCell style={{fontWeight:'bold', fontSize:'16px', width:'45%'}}>Description</CustomTableCell>
-                    <CustomTableCell style={{ width:'30%'}}></CustomTableCell>
+                    <CustomTableCell style={{fontWeight:'bold', fontSize:'16px', width:'80%'}}>Service</CustomTableCell>
+                    <CustomTableCell style={{ width:'16%'}}></CustomTableCell>
                 </CustomTableRow>
             </TableHead>
             <TableBody>
             {
-                PatientData.history.length > 0 ?
-                    PatientData.history.map((history, index) => {
+                DoctorData.services.length > 0 ?
+                    DoctorData.services.map((service, index) => {
                         return (
                             <CustomTableRow>
-                                <CustomTableCell>{history.type}</CustomTableCell>
-                                <CustomTableCell>{history.description}</CustomTableCell>
-                                <CustomTableCell>
+                                <CustomTableCell style={{ width:'80%'}}>{service}</CustomTableCell>
+                                <CustomTableCell style={{ width:'16%' , flexWrap:'wrap'}}>
                                     <Button
                                         variant="contained"
                                         onClick={() => {
-                                            setIndex(index);
-                                            HistoryEditModalOpen();
+                                            HandleServicesEdit(index);
                                         }}
                                     >
                                         Edit
@@ -58,10 +55,10 @@ const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModa
                                     <Button
                                         variant="contained"
                                         onClick={() => {
-                                            setPatientData({
-                                                ...PatientData,
-                                                history: PatientData.history.filter((history, i) => i !== index)
+                                            setDoctorData(draft => {
+                                                draft.services.splice(index, 1);
                                             })
+                                            setChanges(true);
                                         }}
                                     >
                                         Delete
@@ -72,7 +69,7 @@ const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModa
                     })
                     :
                     <CustomTableRow>
-                        <CustomTableCell colSpan={3} style={{ textAlign: 'center' }}>No History Added</CustomTableCell>
+                        <CustomTableCell colSpan={3} style={{ textAlign: 'center' }}>No Services Added</CustomTableCell>
                     </CustomTableRow>
             }
             </TableBody>
@@ -80,4 +77,4 @@ const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModa
     );
 }
 
-export default PatientHistory;
+export default DoctorServices;

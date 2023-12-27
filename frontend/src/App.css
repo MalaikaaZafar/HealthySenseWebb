@@ -162,4 +162,13 @@
   z-index: 1000;
 }
 
+@media screen and (max-width: 768px) {
+    .disappear{
+      display: none !important;
+    }
+    .adjust{
+      width: 40% !important;
+    }
+}
+
 
