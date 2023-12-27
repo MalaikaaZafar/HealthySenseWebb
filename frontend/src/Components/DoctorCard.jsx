@@ -12,7 +12,7 @@ import useUserStore from '../stores/userStore';
 import { Box } from '@mui/system';
 import addFavorite from '../services/addFavorite';
 import removeFavorite from '../services/removeFavorite';
-
+import { useNavigate } from 'react-router-dom';
 
 function DoctorCard({ user, buttons, onFavChanged }) {
     const [favourite, setFavourite] = React.useState(false);
@@ -35,7 +35,7 @@ function DoctorCard({ user, buttons, onFavChanged }) {
         //Navigate to user page
         alert("Navigate to user page");
     }
-
+    const Navigate=useNavigate();   
     const bookAppt = () => {
         Navigate(`/patient/book-appointment/${user._id}`);
     }
@@ -141,10 +141,14 @@ function DoctorCard({ user, buttons, onFavChanged }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                 {buttons &&
                     <>
-                        <Button variant="outlined" sx={{ flexGrow: 1, marginRight: '10px', padding: '6px 0', borderColor: 'black', color: 'black', textTransform: 'none', width: '50%' }}>
+                        <Button 
+                        onClick={goToUserPage}
+                        variant="outlined" sx={{ flexGrow: 1, marginRight: '10px', padding: '6px 0', borderColor: 'black', color: 'black', textTransform: 'none', width: '50%' }}>
                             View Profile
                         </Button>
-                        <Button variant="contained" sx={{ flexGrow: 1, marginLeft: '10px', padding: '6px 0', backgroundColor: '#2854C3', color: 'white', textTransform: 'none', width: '50%' }}>
+                        <Button 
+                        onClick={bookAppt}
+                        variant="contained" sx={{ flexGrow: 1, marginLeft: '10px', padding: '6px 0', backgroundColor: '#2854C3', color: 'white', textTransform: 'none', width: '50%' }}>
                             Book Appointment
                         </Button>
                     </>
