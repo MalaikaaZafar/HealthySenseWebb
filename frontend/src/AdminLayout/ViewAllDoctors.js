@@ -2,8 +2,6 @@ import { React, useEffect, useState } from "react";
 import "./ViewAllPatients.css";
 import DoctorCard from "../components/DoctorCard";
 import axios from "axios";
-import { Box } from "@mui/system";
-
 import Box from '@mui/material/Box';
 
 function ViewAlldoctors() {
