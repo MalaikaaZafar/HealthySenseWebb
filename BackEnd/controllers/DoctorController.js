@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Appointment = require('../models/Apointments');
 const Payment = require('../models/Payment');
 const { populate } = require('../models/Patient');
+const Patient = require('../models/Patient');
 
 
 const doctorController = {
@@ -131,7 +132,7 @@ const doctorController = {
             slots2.push({date, time, availability:false});
             appointment.doctorId.appointmentSlots=slots;
             await appointment.save();
-            return res.status(200).json({ message: 'Success', appointment: appointment});
+            return res.status(200).json({ message: 'Success', appointment: appointment });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -284,6 +285,31 @@ const doctorController = {
             console.log(error);
             res.status(500).json({ message: error.message });
         }
+    },
+
+    addComplaint: async (req, res) => {
+        const { description } = req.body;
+        const patientId = req.params.id;
+        const doctorId = req.userId;
+
+        try {
+            const complaint = {
+                description: description,
+                doctorId: doctorId,
+            };
+            console.log(complaint); 
+            const patient = await Patient.findById(patientId);
+            if (!patient)
+                return res.status(404).json({ message: "Patient not found" });
+            patient.complaints.push(complaint);
+            await patient.save();
+
+            return res.status(200).json({ message: "Success", complaint });
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+
     }
 
 

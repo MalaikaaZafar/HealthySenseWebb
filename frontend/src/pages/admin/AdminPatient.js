@@ -3,7 +3,6 @@ import { Box, TextField, IconButton } from '@mui/material';
 import TextRotationNoneIcon from '@mui/icons-material/TextRotationNone';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-import DoctorCard from '../../components/DoctorCard';
 import FilterPopover from '../../components/FilterPopover';
 import './Search.css';
 import styles from '../../styles/searchStyles';
@@ -12,7 +11,6 @@ import SearchErrorMessage from '../../components/SearchErrorMessage';
 import ViewAllPatients from '../../adminlayout/ViewAllPatients';
 import searchPatients from '../../services/admin/searchPatient';
 import PatientCard from '../../components/PatientCard';
-import { set } from 'date-fns';
 
 
 const AdminPatient = () => {
