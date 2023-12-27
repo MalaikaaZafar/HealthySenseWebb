@@ -21,8 +21,9 @@ function UserCard({user})
             },
           }}
         >
+            
                 <userContext.Provider value={user}>
-                {user?.user?.type==='Doctor' ? <DoctorDetails/> : <PatientDetails/>}
+                <PatientDetails/>
                 </userContext.Provider>
         </Card>
     )
@@ -40,7 +41,7 @@ function PatientDetails()
         return (
             <Box className='user-card-img'>
             <Avatar style={{ margin:'1%',marginLeft:'5%',marginRight:'5%', height: '75px', width: '75px', float: 'left' }}>
-                {user?.patientId.user.profilePicture? user.profilePicture: "H"}</Avatar>
+                {user?.patientId.user.profilePicture? user.patientId.user.profilePicture: "H"}</Avatar>
             <Box className="patientDetails" style={{margin:'3%'}}>
             <Box className="docName"><p>Name: {user.patientId.user.name}</p></Box>
             <Box className="docSpeciality"><p>Age: {calcAge()}</p></Box>
@@ -56,7 +57,7 @@ function DoctorDetails()
         return (
             <Box className='user-card-img'>
             <Avatar style={{ margin:'1%',marginLeft:'5%',marginRight:'5%', height: '75px', width: '75px', float: 'left' }}>
-                {user?.doctorId?.user.profilePicture? user.doctorId.user.profilePicture: "H"}</Avatar>
+                {user?.doctorId.user.profilePicture? user.doctorId.user.profilePicture: "H"}</Avatar>
             <Box className="patientDetails" style={{margin:'3%'}}>
             <Box className="docDetailLeft">
                 <Box className="docName"><p>Dr. {user.doctorId.user.name}</p></Box>

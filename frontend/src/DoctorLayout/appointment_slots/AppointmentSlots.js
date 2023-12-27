@@ -9,20 +9,18 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { FormControl } from "@mui/material";
+import { Card } from "@mui/material";
+import {CardContent} from "@mui/material";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
-import {
-  Box,
-  Card,
-  CardContent,
-} from "@mui/material";
+
 
 const groupSlotsByDate = (slotData) => {
   const groupedSlots = {};
-
   slotData.forEach((slot) => {
     let date = slot.date;
     date = format(new Date(date), "yyyy-MM-dd");
@@ -34,8 +32,6 @@ const groupSlotsByDate = (slotData) => {
 
   return groupedSlots;
 };
-
-
 
 function findDayFromDate(inputDate) {
   const daysOfWeek = [
@@ -63,8 +59,8 @@ const AddSlotDialog = ({ open, setOpen }) => {
   const [timeRangeFields, setTimeRangeFields] = useState([]);
   const [date, setDate] = useState();
   const [timeList, setTimeList] = useState([]);
-  const [type, setType] = useState("Online");
   const { slotList, setSlotList } = useContext(slotContext);
+  const [type,setType]=useState("Online");
   const handleClose = () => {
     setOpen(false);
   };
@@ -76,7 +72,7 @@ const AddSlotDialog = ({ open, setOpen }) => {
     if (responseObj.message === "Success") {
       alert("Slots added successfully!");
       setSlotList((prevSlotList) => {
-        const currentDateKey = date.format("YYYY-MM-DD ");
+        const currentDateKey = format(new Date(date), "yyyy-MM-dd");
         const updatedSlotList = { ...prevSlotList };
         if (!updatedSlotList[currentDateKey]) {
           updatedSlotList[currentDateKey] = [];
@@ -127,8 +123,8 @@ const AddSlotDialog = ({ open, setOpen }) => {
             const timeObj = {
               time: timeStr,
               availability: true,
+              type:type,
               date: format(new Date(date), "yyyy-MM-dd"),
-              type: type,
             };
             setTimeList([...timeList, timeObj]);
           }
@@ -182,6 +178,18 @@ const AddSlotDialog = ({ open, setOpen }) => {
         }}
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div className="typeSetter">
+              <FormControl sx={{ width: "100%", margin: "5px",marginBottom:'0px' }}>
+                <Card onClick={()=>{setType("Online")}} sx={type && type==="Online"? styles.card1:styles.card2}>
+                 <CardContent>Online Session</CardContent>
+                </Card>
+              </FormControl> 
+              <FormControl sx={{ width: "100%", margin: "5px" }}>
+                <Card onClick={()=>{setType("Clinic")}} sx={type && type==="Clinic"? styles.card1:styles.card2}>
+                 <CardContent>Clinic Session</CardContent>
+                </Card>
+              </FormControl>
+            </div>
           <h3 style={{ margin: "5px" }}>Select Date</h3>
           <DatePicker
             format="YYYY - MM - DD "
@@ -192,22 +200,6 @@ const AddSlotDialog = ({ open, setOpen }) => {
             onChange={handleDateChange}
             dateAdapter={AdapterDayjs}
           />
-             <Box sx={styles.box}>
-        <Card
-          variant="outlined"
-          onClick={() => setType("Online")}
-          sx={type === "Online" ? styles.card1 : styles.card2}
-        >
-          <CardContent>Online</CardContent>
-        </Card>
-        <Card
-          variant="outlined"
-          onClick={() => setType("Clinic")}
-          sx={type === "Clinic" ? styles.card1 : styles.card2}
-        >
-          <CardContent>Clinic</CardContent>
-        </Card>
-      </Box>
           <h3 style={{ margin: "5px" }}>Add Time Slots</h3>
           {timeRangeFields.length === 0 && addAnotherSlot()}
           {timeRangeFields &&
@@ -236,32 +228,37 @@ const AddSlotDialog = ({ open, setOpen }) => {
 
 function AppointmentSlots() {
   const [open, setOpen] = useState(false);
-  const [slotList, setSlotList] = useState([]);
-
-  console.log("slotList:", slotList);
-  const getSlots=async () =>{
-    try{
-      const list=await axios.get(`http://localhost:3000/doctor/slots`).then(response=>response.data);
-      if (list)
-        setSlotList(groupSlotsByDate(list.slots));
-      else
-        alert("Slots could not be fetched!");
-    }
-     catch(err){
-      console.log(err);
-      alert("Slots could not be fetched!");
-     }
-  }
+  const [slotList, setSlotList] = useState(null);
+  const [groupedSlots, setGroupedSlots] = useState(null); // [date, slots
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  useEffect(() => {
-    const fetch=async ()=>{
-      await getSlots();
+  console.log("slotList:", slotList);
+  const getSlots = async () => {
+    try{
+      const responseObj = await axios.get(`http://localhost:3000/doctor/slots`);
+      if (responseObj.data.message === "Success") {
+        setSlotList(groupSlotsByDate(responseObj.data.slots));
+        // setslotList(groupSlotsByDate(responseObj.data.slots));
+        
+      }else
+      {
+        alert("Slots could not be fetched!");
+      }
     }
-    fetch();
+    catch(err){
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    const fetchFunc = async () => {
+    getSlots();
+    };
+    fetchFunc();
   },[]);
+ 
 
   return (
     <div className="appointmentDetailsScreen">
@@ -272,7 +269,7 @@ function AppointmentSlots() {
               Object.keys(slotList).map((date) => {
                 return (
                   <slotContext.Provider value={{ slotList, setSlotList }}>
-                  <SlotList date={date}/>
+                  <SlotList date={date} slotListByDate={slotList[date]} />
                   </slotContext.Provider>
                   )
               })}
@@ -305,25 +302,36 @@ function AppointmentSlots() {
   );
 }
 
-const SlotList = ({ date }) => {
+const SlotList = ({ date, slotListByDate }) => {
   const [open, setOpen] = useState(false);
-  const { slotList, setSlotList } = useContext(slotContext);
+  const {slotList,setSlotList}=useContext(slotContext);
   function checkDate(date) {
     const today = new Date();
-    // const todayDate = format(today, "yyyy-MM-dd");
+    const todayDate = format(today, "yyyy-MM-dd");
     if (date >= format(today.setDate(today.getDate() + 1), "yyyy-MM-dd")) {
       return true;
     } else {
       return false;
     }
   }
+
+  const deleteSlot = async (time,type) => {
+    console.log("e.target.value:", time);
+    console.log("e.target.value2:", type);
+    const responseObj=await axios.put(`http://localhost:3000/doctor/deleteSlot`,{date:date, time:time, type:type})
+                      .then(response=>response.data);
+    if (responseObj.message === "Success") {
+      alert("Slot deleted successfully!");
+      setSlotList(groupSlotsByDate(responseObj.slots))
+    }
+  }
+
   const day = findDayFromDate(date);
   return (
     <div className="slotDay">
       <table
         style={{
           width: "100%",
-          height: "100%",
           borderCollapse: "collapse",
           borderRadius: "10px",
           overflow: "hidden",
@@ -333,7 +341,7 @@ const SlotList = ({ date }) => {
         <thead>
           <tr>
             <th
-              colSpan={4}
+              colSpan={3}
               style={{
                 background: "#2854C3",
                 color: "#ffff",
@@ -356,13 +364,12 @@ const SlotList = ({ date }) => {
             <td style={{ padding: "10px", textAlign: "center" }}>
               Availability
             </td>
-            <td style={{ padding: "10px", textAlign: "right" }}>Session</td>
             <td style={{ padding: "10px", textAlign: "right" }}>Actions</td>
           </tr>
         </thead>
         <tbody>
-          {slotList && Array.isArray(slotList[date]) &&
-            slotList[date].map((slot) => {
+          {slotListByDate &&
+            slotListByDate.map((slot) => {
               return (
                 <tr>
                   <td style={{ padding: "10px" }}>{slot.time}</td>
@@ -370,19 +377,16 @@ const SlotList = ({ date }) => {
                     {slot.availability ? "Available" : "Unavailable"}
                   </td>
                   <td style={{ padding: "10px", textAlign: "right" }}>
-                    {slot.type}
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "right" }}>
                     <Button
                       disabled={!checkDate(date)}
-                      onClick={() => setOpen(true)}
+                      onClick={()=>deleteSlot(slot.time, slot.type)}
                       style={{
                         textTransform: "none",
                         background: !checkDate(date) ? "gray" : "#2854c3",
                         color: "#ffffff",
                       }}
                     >
-                      Edit
+                      Delete Slot
                     </Button>
                   </td>
                 </tr>
@@ -394,28 +398,26 @@ const SlotList = ({ date }) => {
   );
 };
 
-const styles = {
-  card1: {
+
+const styles={
+  card1:{
+    width: "90%",
+    marginBottom:'0px',
     background: "#2854c3",
     color: "white",
-    width: "100%",
-    margin: "5px",
     borderRadius: "10px",
+    padding: "10px",
   },
-  card2: {
-    background: "white",
-    color: "black",
-    width: "100%",
-    margin: "5px",
-    borderRadius: "10px",
-  },
-  box: {
+  card2:{
     width: "90%",
-    display: "flex",
-    justifyContent: "center",
-    margin: "10px",
+    margin: "5px",
+    background: "#f7f7f7",
+    color: "black",
+    borderRadius: "10px",
+    padding: "10px",
   }
-};
+}
+
 
 
 export default AppointmentSlots;

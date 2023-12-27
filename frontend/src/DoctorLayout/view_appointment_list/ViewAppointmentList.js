@@ -7,21 +7,25 @@ import ApptCardForList from '../../components/ApptCardForList';
 import './ViewApptList.css';
 
 async function fetchAppointments() {
-    try{
-      const appoinmentList= await fetch(`http://localhost:3000/doctor/consultations`,{
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-      }).then(response =>  response.json()).catch(err => console.log(err));
-      if (appoinmentList) 
-        return appoinmentList.appList;
-      else 
-        alert("Error in fetching appointments");
-    }catch(err){
-      console.log(err);
-      alert("Error in fetching appointments")
+  try{
+    const appoinmentList= await fetch(`http://localhost:3000/doctor/consultations`,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response =>  response.json());
+    if(appoinmentList.message=== 'Success')
+    {
+        return appoinmentList.appt;
     }
+    else
+    {
+        return null;
+    }
+  }catch(error){
+    console.log(error);
+    alert("Something went wrong");
+  }
 }
 
  function AppointmentList() {
@@ -60,7 +64,7 @@ async function fetchAppointments() {
       <div className="apptListBody">
           <div className="apptList">
     {appointmentList && appointmentList.map((app, index) => 
-        app.status === value ? <div className="listItem" ><ApptCardForList key={index} type="patient" appt={app}/></div> : null
+        app?.status === value ? <div style={{ margin:'10px', width:'45%'}}><ApptCardForList key={index} type="patient" appt={app}/></div> : null
   )}
     </div>
     </div>

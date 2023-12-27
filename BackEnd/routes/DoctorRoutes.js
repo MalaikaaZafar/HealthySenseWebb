@@ -11,6 +11,7 @@ router.post("/consultations/reschedule", doctorController.rescheduleAppt);
 router.put("/consultations/cancel", doctorController.cancelAppt);
 router.put("/addSlots", doctorController.addSlots);
 router.get("/slots", doctorController.getSlots);
+router.put("/deleteSlot", doctorController.deleteSlots);
 router.get("/specialties", doctorController.getSpecialties);
 router.get("/search", doctorController.searchDoctors);
 module.exports = router;
