@@ -23,15 +23,18 @@ const CancelAppointment = () => {
       const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
       const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
       if (appoinmentList.message==="Success")
-            setAppointment(appoinmentList.consultation);
+      {
+        return appoinmentList.appt;
+      }
+      else 
+      {
+        alert("Something went wrong"); 
+      }
     }
 
     const cancelAppointment=async ()=>{
       const formattedStr = `http://localhost:3000/doctor/consultations/cancel`;
-      const appoinmentList = await axios.put(formattedStr,{
-        id:id,
-        reason:reason,
-      }).then((response) => response.data);
+      const appoinmentList = await axios.put(formattedStr,{id: id, reason: reason}).then((response) => response.data);
       if (appoinmentList.message==="Success")
       {
         alert("Appointment Cancelled");
@@ -61,17 +64,17 @@ const CancelAppointment = () => {
     }
 
   return (
-    <div className="cancelAppointmentScreen">
-      <div className="ScreenBodyCA">
-        <div className="halfCA">
+    <div className="cancelAppointmentScreenDoc">
+      <div className="ScreenBodyCADoc">
+        <div className="halfCADoc">
           {
             appointment && 
-            <div className="user">
+            <div className="userDoc">
               <AppointmentCard appt={appointment} />
             </div>
           }
           
-          <div className="reasonDiv">
+          <div className="reasonDivDoc">
             <h2 style ={{color: '#2854C3'}}>Reason for Cancelling Appointment</h2>
             <FormControl>
               <RadioGroup
@@ -101,7 +104,7 @@ const CancelAppointment = () => {
             </FormControl>
             <textarea rows={10} disabled={reason === "other" ? false : true} onChange={setReasonHandler} style={{borderRadius: '10px'}}></textarea>
           </div>
-          <div className="appointmentBtns">
+          <div className="appointmentBtnsDoc">
             <Button
               onClick={cancelAppointment}
               variant="contained"

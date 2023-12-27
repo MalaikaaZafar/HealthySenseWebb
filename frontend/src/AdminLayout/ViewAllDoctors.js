@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import "./ViewAllPatients.css";
 import DoctorCard from "../components/DoctorCard";
 import axios from "axios";
-import Box from '@mui/material/Box';
+import { Box } from "@mui/system";
 
 function ViewAlldoctors() {
   const [doctorList, setDoctorList] = useState([]);

@@ -4,9 +4,7 @@ import CancelAppointment from './DoctorLayout/cancel_appointment/CancelAppointme
 import AppointmentSlots from './DoctorLayout/appointment_slots/AppointmentSlots.js';
 import RescheduleAppointment from './DoctorLayout/reschedule_appointment/RescheduleAppointment.js';
 import AppointmentDetail from './DoctorLayout/view_appointment/AppointmentDetail.js';
-
-import ViewAllDoctors from './adminLayout/ViewAllDoctors.js';
-import ViewAllPatients from './adminLayout/ViewAllPatients.js';
+import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
 import { RescheduleAppointment as ReschedulePatient } from './patientlayout/reschedule_appointment/RescheduleAppointment.js';
 import { AppointmentList as AppointmentListPatient } from './patientlayout/view_appointment_list/ViewAppointmentList.js';
@@ -30,6 +28,7 @@ import DoctorReview from './pages/patient/DoctorReview.js';
 
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
+import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
 function App() {
   return (
