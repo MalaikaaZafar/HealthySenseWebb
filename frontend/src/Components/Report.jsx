@@ -91,7 +91,7 @@ function Report({ id }) {
                 variant="contained"
                 onClick={handleClickOpen}
                 style={{ background: red[500], width: '20%', textTransform: 'none', borderRadius: '10px' }}>Report</Button>
-            <D  ialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClose}>
                 <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', paddingBottom: 2 }}>Report User</DialogTitle>
                 <DialogContent>
                     <DialogContentText style={{ paddingBottom: 10 }}>

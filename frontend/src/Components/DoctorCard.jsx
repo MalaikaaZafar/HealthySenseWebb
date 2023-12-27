@@ -12,8 +12,7 @@ import useUserStore from '../stores/userStore';
 import { Box } from '@mui/system';
 import addFavorite from '../services/addFavorite';
 import removeFavorite from '../services/removeFavorite';
-import { Navigate, useNavigate } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 
 function DoctorCard({ user, buttons, onFavChanged }) {
     const [favourite, setFavourite] = React.useState(false);
@@ -84,7 +83,7 @@ function DoctorCard({ user, buttons, onFavChanged }) {
             onClick={goToUserPage}
             sx={{
                 minWidth: '300px',
-                maxWidth: '400px',
+                maxWidth: '100%',
                 width: '40%',
                 background: 'white', // Set your desired background color
                 borderRadius: '10px',
@@ -143,13 +142,14 @@ function DoctorCard({ user, buttons, onFavChanged }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                 {buttons &&
                     <>
-                        <Button variant="outlined" sx={{ flexGrow: 1, marginRight: '10px', padding: '6px 0', borderColor: 'black', color: 'black', textTransform: 'none', width: '50%' }}>
+                        <Button 
+                        onClick={goToUserPage}
+                        variant="outlined" sx={{ flexGrow: 1, marginRight: '10px', padding: '6px 0', borderColor: 'black', color: 'black', textTransform: 'none', width: '50%' }}>
                             View Profile
                         </Button>
-                        <Button
-                            variant="contained" 
-                            onClick={bookAppt}
-                            sx={{ flexGrow: 1, marginLeft: '10px', padding: '6px 0', backgroundColor: '#2854C3', color: 'white', textTransform: 'none', width: '50%' }}>
+                        <Button 
+                        onClick={bookAppt}
+                        variant="contained" sx={{ flexGrow: 1, marginLeft: '10px', padding: '6px 0', backgroundColor: '#2854C3', color: 'white', textTransform: 'none', width: '50%' }}>
                             Book Appointment
                         </Button>
                     </>

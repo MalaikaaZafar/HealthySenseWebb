@@ -50,11 +50,11 @@ function ApptCardForList({ type, appt }) {
             <p>Online Session</p>
           </div>
           <div className="docExperience">
-            <p style={{display:'flex', alignItems:'center'}}><TimeIcon sx={{margin: '2%'}}/>{appt.time} </p>
-            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.date), "yyyy-MM-dd")}</p>
+            <p style={{display:'flex', alignItems:'center'}}><TimeIcon sx={{margin: '2%'}}/>{appt?.time} </p>
+            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{appt?.date? format(new Date(appt.date), "yyyy-MM-dd"): null}</p>
           </div>
           <appointmentContext.Provider value={appt}>
-          {appt?.status && appt.status === "Completed" || appt.status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} Navigate={Navigate}/>}
+          {appt.status === "Completed" || appt.status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} Navigate={Navigate}/>}
           </appointmentContext.Provider>
         </div>
       </div>
@@ -119,9 +119,13 @@ function IsNotComplete({type, Navigate}) {
 }
 function PatientDetails() {
   const appt=useContext(appointmentContext);
+  const calcAge=()=>{
+    return new Date().getFullYear()-new Date(appt.patientId.user.dob).getFullYear()
+  }
   return (
     <div className="docName">
-      <p>Name: {appt?.patientId?.user?.name}</p>
+      <p>{appt.patientId.user.name}</p>
+      <p>Age: {calcAge()}</p>
     </div>
   );
 }
@@ -131,6 +135,7 @@ function DoctorDetails() {
   return (
     <div className="docName">
       <p>Dr. {appt?.doctorId?.user?.name}</p>
+      <p>{appt?.doctorId?.specialization}</p>
     </div>
   );
 }

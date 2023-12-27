@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
-import { Box, TextField, IconButton } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, TextField, IconButton } from '@mui/material';
 import TextRotationNoneIcon from '@mui/icons-material/TextRotationNone';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-import DoctorCard from '../components/DoctorCard';
-import FilterPopover from '../components/FilterPopover';
+import DoctorCard from '../../components/DoctorCard';
+import FilterPopover from '../../components/FilterPopover';
 import './Search.css';
-import styles from '../styles/searchStyles';
+import styles from '../../styles/searchStyles';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import SearchErrorMessage from '../components/SearchErrorMessage';
-import ViewAllPatients from '../adminlayout/ViewAllPatients';
-import searchPatients from '../services/admin/searchPatient';
-import PatientCard from '../components/PatientCard';
-import { set } from 'date-fns';
+import SearchErrorMessage from '../../components/SearchErrorMessage';
+import ViewAlldoctors from '../../adminlayout/ViewAllDoctors';
+import searchDoctors from '../../services/admin/searchDoctor';
 
 
-const AdminPatient = () => {
+const AdminDoctor = () => {
     const [sortDirection, setSortDirection] = React.useState('asc');
     const [searchText, setSearchText] = React.useState('');
-    const [patients, setPatients] = React.useState([]);
-    const [bloodFilter, setBloodFilter] = React.useState('');
+    const [doctors, setDoctors] = React.useState([]);
+    const [specialtyFilter, setSpecialtyFilter] = React.useState('');
     const [notFound, setNotFound] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [actionCompleted, setActionCompleted] = React.useState(true);
@@ -31,19 +29,19 @@ const AdminPatient = () => {
     const fetchMoreData = async () => {
 
         console.log("fetching more data")
-        const skip = patients.length;
-        let morePatients = await searchPatients(searchText, direction, bloodFilter, skip);
-        if (morePatients.length === 0) {
+        const skip = doctors.length;
+        let moreDoctors = await searchDoctors(searchText, direction, specialtyFilter, skip);
+        if (moreDoctors.length === 0) {
             setHasMore(false);
             return;
         }
-        setPatients(patients.concat(morePatients));
+        setDoctors(doctors.concat(moreDoctors));
     };
 
 
 
-    const handleBloodFilter = (value) => {
-        setBloodFilter(value);
+    const handleSpecialtyFilter = (value) => {
+        setSpecialtyFilter(value);
     };
 
 
@@ -65,8 +63,7 @@ const AdminPatient = () => {
         //     alert('Please enter a search query');
         // }
         setActionCompleted(false);
-        console.log(direction);
-        const result = await searchPatients(searchText, direction, bloodFilter, 0);
+        const result = await searchDoctors(searchText, direction, specialtyFilter, 0);
         console.log(result);
         if (result == -1) {
             setError(true);
@@ -74,8 +71,8 @@ const AdminPatient = () => {
             return;
         }
 
-        setPatients(result);
-        if (patients.length === 0) {
+        setDoctors(result);
+        if (doctors.length === 0) {
             setNotFound(true);
         }
         else {
@@ -114,7 +111,7 @@ const AdminPatient = () => {
                                 ),
                             }}
                         />
-                        <FilterPopover handleFilterChange={handleBloodFilter} specialty={bloodFilter} onApply={searchPressed} isPatient={true} />
+                        <FilterPopover handleFilterChange={handleSpecialtyFilter} specialty={specialtyFilter} onApply={searchPressed} />
                     </Box>
                     <Box sx={styles.buttonGroup}>
                         <IconButton
@@ -124,37 +121,37 @@ const AdminPatient = () => {
                             sx={{ ...styles.button, backgroundColor: '#2854c3' }}>
                             <TextRotationNoneIcon sx={sortDirection === 'asc' ? { color: 'white' } : { color: 'white', transform: 'scaleX(-1)' }} fontSize='small' />                        </IconButton>
                     </Box>
-                    {patients.length > 0 && <h4 style={{ flexGrow: 1, marginTop: 2 }}>Showing {patients?.length} results</h4>}
+                    {doctors.length > 0 && <h4 style={{ flexGrow: 1, marginTop: 2 }}>Showing {doctors?.length} results</h4>}
                 </Box>
             </Box>
-            {patients.length > 0 && !error ? <InfiniteScroll
-                dataLength={patients.length}
+            {doctors.length > 0 && !error ? <InfiniteScroll
+                dataLength={doctors.length}
                 next={fetchMoreData}
                 hasMore={hasMore}
-                loader={patients && patients.length > 3 ? <h4 style={{ textAlign: 'center' }}>Loading...</h4> : null}
+                loader={doctors && doctors.length > 3 ? <h4 style={{ textAlign: 'center' }}>Loading...</h4> : null}
 
                 endMessage={
                     <p style={{ textAlign: 'center' }}>
-                        <b>No more patients, We couldn't find a suitable patient for you :(</b>
+                        <b>No more doctors, We couldn't find a suitable doctor for you :(</b>
                     </p>
                 }
                 style={{ overflow: 'hidden', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}
 
             >
                 <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
-                    {patients?.length > 0 && patients.map((patient) => {
+                    {doctors?.length > 0 && doctors.map((doctor) => {
                         return (
-                            <PatientCard user={patient} />
+                            <DoctorCard user={doctor} />
                         );
                     })}
                 </Box>
             </InfiniteScroll>
                 :
-                !notFound && !error && !searched ? <ViewAllPatients /> : <SearchErrorMessage notFound={notFound} error={error} role={'patient'} />
+                !notFound && !searched && !error ? <ViewAlldoctors /> : <SearchErrorMessage notFound={notFound} error={error} role='doctor' />
             }
         </div >
     );
 };
 
-export default AdminPatient;
+export default AdminDoctor;
 
