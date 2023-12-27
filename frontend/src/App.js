@@ -19,15 +19,17 @@ import Search from './pages/Search.js';
 import PatientManageAccount from './patientlayout/account/ManageAccount.js';
 import DoctorManageAccount from './doctorlayout/account/ManageAccount.js';
 import DiagnosisPage from './doctorlayout/diagnosis/DiagnosisPage.js';
+import Payment from './patientlayout/payment/Payment.js';
 
 import './App.css';
+import ConfirmPayement from './patientlayout/payment/PaymentConfirm.js';
 
 function App() {
 
   return (
     <div className="App">
       <Routes>
-        <Route index path="*" element={<DiagnosisPage />} />
+        <Route index path="*" element={<Payment />} />
         <Route path="/nav" element={<NavBar />}>
           <Route index element={<AppointmentSlots />}/>
         </Route>
@@ -43,6 +45,7 @@ function App() {
           <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
           <Route path="appointmentSlots" element={<AppointmentSlots />} />
           <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
+          <Route path="account" element={<DoctorManageAccount />} />
         </Route>
 
         <Route path='/patient' element={<NavBar />}>
@@ -51,6 +54,10 @@ function App() {
           <Route path='appointments/:id' element={<ApptDetail />} />
           <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
           <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
+          <Route path='account' element={<PatientManageAccount />} />
+          <Route path='diagnosis/:id' element={<DiagnosisPage />} />
+          <Route path='payment' element={<Payment />} />
+          <Route path='payment/confirm' element={<ConfirmPayement />} />
         </Route>
       </Routes>
     </div >

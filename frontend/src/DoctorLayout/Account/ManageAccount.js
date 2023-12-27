@@ -16,7 +16,7 @@ const DoctorManageAccount = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [Changes, setChanges] = useState(false);
     const [DoctorData, setDoctorData] = useImmer({
-        users: {
+        user: {
             _id: "",
             name: "John Doe",
             dob: "2003-02-11",
@@ -158,7 +158,7 @@ const DoctorManageAccount = () => {
                 isLoading ? null : <Container style={{ marginBottom: '70px', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
                     <div className="column211">
                         <AccountDetails
-                            Data={DoctorData.users}
+                            Data={DoctorData.user}
                             setData={setDoctorData}
                             setChanges={setChanges}
                         />
@@ -235,7 +235,7 @@ const DoctorManageAccount = () => {
                             style={{ backgroundColor: 'red', color: 'white', marginTop: '20px' }}
                             onClick={() => {
                                 setDoctorData(draft => {
-                                    draft.users = History.users;
+                                    draft.user = History.users;
                                     draft.specialization = History.specialization;
                                     draft.description = History.description;
                                     draft.location = History.location;

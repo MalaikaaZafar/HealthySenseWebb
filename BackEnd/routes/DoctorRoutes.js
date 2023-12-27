@@ -13,4 +13,5 @@ router.put("/addSlots", doctorController.addSlots)
 router.get("/specialties", doctorController.getSpecialties);
 router.get("/search", doctorController.searchDoctors);
 router.get("/appointments/:id", doctorController.getAppintmentDetails);
+router.post("/appointments/:id/diagnosis", doctorController.createDiagnosis);
 module.exports = router;

@@ -162,6 +162,17 @@
   z-index: 1000;
 }
 
+.Completed{
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: white;
+}
+
 @media screen and (max-width: 768px) {
     .disappear{
       display: none !important;

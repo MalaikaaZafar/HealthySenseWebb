@@ -5,6 +5,8 @@ import { Button } from '@mui/material';
 import PatientDetails from './PatientDetails';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import CreateDiagnosis from './CreateDiagnosis';
+import FinalReport from './FinalReport';
 
 const DiagnosisContext = createContext();
 
@@ -23,6 +25,7 @@ const DiagnosisPage = () => {
         tests: [],
         notes: "",
         type: "",
+        fee: 0,
     });
     const [isLoading, setIsLoading] = useState(true);
 
@@ -58,6 +61,8 @@ const DiagnosisPage = () => {
         <DiagnosisContext.Provider value={{ AppointmentData, Diagnosis, setDiagnosis, PageChange }}>
             <LoadingAnimation isVisible={isLoading} />
             {CurrentPage === 1 ? <PatientDetails /> : null}
+            {CurrentPage === 2 ? <CreateDiagnosis /> : null}
+            {CurrentPage === 3 ? <FinalReport /> : null}
         </DiagnosisContext.Provider>
     )
 }

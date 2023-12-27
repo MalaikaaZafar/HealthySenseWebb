@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
 import { useDiagnosis } from './DiagnosisPage';
-import { Container, Typography, TextField, Button, Table, TableHead, TableCell, TableRow, TableBody, Modal } from '@mui/material';
+import { Container, Typography, TextField, Button, Table, TableHead, TableCell, TableRow, TableBody, Modal, Tab } from '@mui/material';
 import { useImmer } from 'use-immer';
+import AddMedicine from './modals/AddMedicine';
+import EditMedicine from './modals/EditMedicine';
+import AddTest from './modals/AddTest';
+import EditTest from './modals/EditTest';
+import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 
 
 const CreateDiagnosis = () => {
@@ -13,97 +18,27 @@ const CreateDiagnosis = () => {
     const [MedicineIndex, setMedicineIndex] = useState(-1);
     const [EditTestModal, setEditTest] = useState(false);
     const [TestIndex, setTestIndex] = useState(-1);
-    const [Medicine, setMedicine] = useImmer({
-        Name: "",
-        Dosage: "",
-    });
 
-    const [Test, setTest] = useImmer({
-        Name: "",
-    });
-
-    const AddMedicine = () => {
-        if (Medicine.Name.trim() === "" || Medicine.Dosage.trim() === "") {
-            alert("Please fill all the fields");
-            return;
-        }
-        setDiagnosis(draft => {
-            draft.prescription.push(Medicine);
-        });
-        setMedicine(draft => {
-            draft.Name = "";
-            draft.Dosage = "";
-        });
-        MedicineModalClose();
-    }
-
-    const AddTest = () => {
-        if (Test.Name.trim() === "") {
-            alert("Please fill all the fields");
-            return;
-        }
-        setDiagnosis(draft => {
-            draft.tests.push(Test);
-        });
-        setTest(draft => {
-            draft.Name = "";
-        });
-        TestModalClose();
-    }
 
     const EditMedicineModalClose = () => { setEditMedicine(false) };
-    const EditMedicineModalOpen = () => { setEditMedicine(true) };
+    const EditMedicineModalOpen = () => {
+        setMedicineIndex(-1);
+        setEditMedicine(true)
+    };
 
-    const EditMedicine = (index) => {
+    const HandleEditMedicine = (index) => {
         setMedicineIndex(index);
-        setMedicine(draft => {
-            draft.Name = Diagnosis.prescription[index].Name;
-            draft.Dosage = Diagnosis.prescription[index].Dosage;
-        });
         EditMedicineModalOpen();
     }
-    const EditPrescription = () => {
-        if (Medicine.Name.trim() === "" || Medicine.Dosage.trim() === "") {
-            alert("Please fill all the fields");
-            return;
-        }
-        setDiagnosis(draft => {
-            draft.prescription[MedicineIndex] = Medicine;
-        });
-        setMedicine(draft => {
-            draft.Name = "";
-            draft.Dosage = "";
-        });
-        EditMedicineModalClose();
-    }
+
 
     const EditTestModalClose = () => { setEditTest(false) };
     const EditTestModalOpen = () => { setEditTest(true) };
 
-    const EditTest = (index) => {
+    const HandleEditTest = (index) => {
         setTestIndex(index);
-        setTest(draft => {
-            draft.Name = Diagnosis.tests[index].Name;
-        });
         EditTestModalOpen();
     }
-
-    const EditTests = () => {    
-        if (Test.Name.trim() === "") {
-            alert("Please fill all the fields");
-            return;
-        }
-        setDiagnosis(draft => {
-            draft.tests[TestIndex] = Test;
-        });
-        setTest(draft => {
-            draft.Name = "";
-        });
-        EditTestModalClose();
-    }
-
-
-
 
     const MedicineModalClose = () => { setMedicineModal(false) };
     const MedicineModalOpen = () => { setMedicineModal(true) };
@@ -135,8 +70,7 @@ const CreateDiagnosis = () => {
                 </div>
                 <div className="column21">
                     <Typography variant="h6" style={{ fontWeight: 'bold' }}>Prescription: </Typography>
-                    {Diagnosis.prescription.length > 0 &&
-                        <Table>
+                    <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Medicine</TableCell>
@@ -146,7 +80,7 @@ const CreateDiagnosis = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {
+                    {Diagnosis.prescription.length > 0 ?
                                     Diagnosis.prescription.map((item, index) => {
                                         return (
                                             <TableRow>
@@ -154,7 +88,7 @@ const CreateDiagnosis = () => {
                                                 <TableCell>{item.Dosage}</TableCell>
                                                 <TableCell>
                                                     <Button variant="contained" style={{ backgroundColor: '#3f51b5', color: 'white', marginLeft: '10px' }}
-                                                        onClick={() => EditMedicine(index)}
+                                                        onClick={() => HandleEditMedicine(index)}
                                                     >
                                                         Edit
                                                     </Button>
@@ -170,92 +104,38 @@ const CreateDiagnosis = () => {
                                                 </TableCell>
                                             </TableRow>
                                         )
-                                    }
-                                    )}
+                                    }) :
+                                    <TableRow>
+                                        <TableCell>No Medicines</TableCell>
+                                        <TableCell></TableCell>
+                                        <TableCell></TableCell>
+                                        <TableCell></TableCell>
+                                    </TableRow>
+                                }
                             </TableBody>
                         </Table>
-                    }
-                    <Button variant="contained"
-                        style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '10px', width: 'fit-content' }}
+                    <Button
+                        style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '10px' }}
+                        startIcon={<AddCircleOutline />}
                         onClick={MedicineModalOpen}
                     >
                         Add Medicine
                     </Button>
-                    <Modal
-                        open={MedicineModal}
-                        onClose={MedicineModalClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <Container className='model-container' style={{ width: 'fit-content' }}>
-                            <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '30px' }}>Add Medicine</Typography>
-                            <TextField
-                                id="outlined-multiline-static"
-                                label="Medicine Name"
-                                variant="outlined"
-                                onChange={(e) => setMedicine(draft => { draft.Name = e.target.value })}
-                                style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
-                            />
-                            <TextField
-                                id="outlined-multiline-static"
-                                multiline
-                                rows={4}
-                                label="Dosage"
-                                variant="outlined"
-                                onChange={(e) => setMedicine(draft => { draft.Dosage = e.target.value })}
-                                style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
-                            />
-                            <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>
-                                <Button variant="contained"
-                                    style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '10px' }}
-                                    onClick={AddMedicine}
-                                >
-                                    Add
-                                </Button>
-                            </Container>
-                        </Container>
-                    </Modal>
-                    <Modal
-                        open={EditMedicineModal}
-                        onClose={EditMedicineModalClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <Container className='model-container' style={{ width: 'fit-content' }}>
-                            <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '30px' }}>Edit Medicine</Typography>
-                            <TextField
-                                id="outlined-multiline-static"
-                                label="Medicine Name"
-                                variant="outlined"
-                                defaultValue={Medicine.Name}
-                                onChange={(e) => setMedicine(draft => { draft.Name = e.target.value })}
-                                style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
-                            />
-                            <TextField
-                                id="outlined-multiline-static"
-                                multiline
-                                rows={4}
-                                label="Dosage"
-                                variant="outlined"
-                                defaultValue={Medicine.Dosage}
-                                onChange={(e) => setMedicine(draft => { draft.Dosage = e.target.value })}
-                                style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
-                            />
-                            <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>
-                                <Button variant="contained"
-                                    style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '10px' }}
-                                    onClick={EditPrescription}
-                                >
-                                    Edit
-                                </Button>
-                            </Container>
-                        </Container>
-                    </Modal>
+                    <AddMedicine
+                        setDiagnosis={setDiagnosis}
+                        MedicineModal={MedicineModal}
+                        MedicineModalClose={MedicineModalClose}
+                    />
+                    <EditMedicine
+                        setDiagnosis={setDiagnosis}
+                        EditMedicineModal={EditMedicineModal}
+                        EditMedicineModalClose={EditMedicineModalClose}
+                        MedicineIndex={MedicineIndex}
+                    />
                 </div>
                 <div className="column21">
                     <Typography variant="h6" style={{ fontWeight: 'bold' }}>Tests: </Typography>
-                    {Diagnosis.tests.length > 0 &&
-                        <Table>
+                    <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Test</TableCell>
@@ -263,15 +143,16 @@ const CreateDiagnosis = () => {
                                     <TableCell></TableCell>
                                 </TableRow>
                             </TableHead>
+                    
                             <TableBody>
-                                {
+                                {Diagnosis.tests.length > 0 ?
                                     Diagnosis.tests.map((item, index) => {
                                         return (
                                             <TableRow>
-                                                <TableCell>{item.Name}</TableCell>
+                                                <TableCell>{item}</TableCell>
                                                 <TableCell>
                                                     <Button variant="contained" style={{ backgroundColor: '#3f51b5', color: 'white', marginLeft: '10px' }}
-                                                        onClick={() => EditTest(index)}
+                                                        onClick={() => HandleEditTest(index)}
                                                     >
                                                         Edit
                                                     </Button>
@@ -287,68 +168,34 @@ const CreateDiagnosis = () => {
                                                 </TableCell>
                                             </TableRow>
                                         )
-                                    }
-                                    )}
+                                    }):
+                                    <TableRow>
+                                        <TableCell>No Tests</TableCell>
+                                        <TableCell></TableCell>
+                                        <TableCell></TableCell>
+                                    </TableRow>
+                                }
                             </TableBody>
                         </Table>
-                    }
-                    <Button variant="contained"
-                        style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '10px', width: 'fit-content' }}
+                    <Button
+                        style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '10px' }}
+                        startIcon={<AddCircleOutline />}
                         onClick={TestModalOpen}
                     >
                         Add Test
                     </Button>
-                    <Modal
-                        open={TestModal}
-                        onClose={TestModalClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <Container className='model-container' style={{ width: 'fit-content' }}>
-                            <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '30px' }}>Add Test</Typography>
-                            <TextField
-                                id="outlined-multiline-static"
-                                label="Test Name"
-                                variant="outlined"
-                                onChange={(e) => setTest(draft => { draft.Name = e.target.value })}
-                                style={{ width: '600px', marginBottom: '20px' }}
-                            />
-                            <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>
-                                <Button variant="contained"
-                                    style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '10px', width: 'fit-content', justifySelf: 'center' }}
-                                    onClick={AddTest}
-                                >
-                                    Add
-                                </Button>
-                            </Container>
-                        </Container>
-                    </Modal>
-                    <Modal
-                        open={EditTestModal}
-                        onClose={EditTestModalClose}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <Container className='model-container' style={{ width: 'fit-content' }}>
-                            <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '30px' }}>Edit Test</Typography>
-                            <TextField
-                                id="outlined-multiline-static"
-                                label="Test Name"
-                                variant="outlined"
-                                defaultValue={Test.Name}
-                                onChange={(e) => setTest(draft => { draft.Name = e.target.value })}
-                                style={{ width: '600px', marginBottom: '20px' }}
-                            />
-                            <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>
-                                <Button variant="contained"
-                                    style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '10px', width: 'fit-content', justifySelf: 'center' }}
-                                    onClick={EditTests}
-                                >
-                                    Edit
-                                </Button>
-                            </Container>
-                        </Container>
-                    </Modal>
+                    <AddTest
+                        setDiagnosis={setDiagnosis}
+                        TestModal={TestModal}
+                        TestModalClose={TestModalClose}
+                    />
+                    <EditTest
+                        Diagnosis={Diagnosis}
+                        setDiagnosis={setDiagnosis}
+                        EditTestModal={EditTestModal}
+                        EditTestModalClose={EditTestModalClose}
+                        TestIndex={TestIndex}
+                    />
                 </div>
                 <div className="column21">
                     <TextField

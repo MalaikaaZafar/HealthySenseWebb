@@ -8,46 +8,16 @@ import PatientHistory from "./table/HistoryTable";
 import PatientBloodGroup from "./dropdown/BloodGroup";
 import AccountDetails from "../../components/user/Account/AccountDetails";
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
+import axios from "axios";
 
 
 const PatientManageAccount = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [Changes, setChanges] = useState(true);
-    const [PatientData, setPatientData] = useImmer({
-        users: {
-            _id: "",
-            name: "John Doe",
-            dob: "2003-02-11",
-            country: "123, ABC Street, XYZ City",
-            phoneNumber: 1234567890,
-            email: "JohnDoe@Email",
-            gender: 'Male',
-            profilePicture: null,
-        },
-        history: [
-            {
-                type: "Diabetes",
-                description: "Since 2010",
-            }
-        ],
-        bloodGroup: "A+",
-    });
-    const [History, setHistory] = useImmer({
-        name: "John Doe",
-        dob: "2003-02-11",
-        country: "123, ABC Street, XYZ City",
-        phoneNumber: 1234567890,
-        email: "JohnDoe@Email",
-        gender: 'Male',
-        history: [
-            {
-                type: "Diabetes",
-                description: "Since 2010",
-            }
-        ],
-        bloodGroup: "A+",
-        profilePicture: null,
-    });
+    const [isLoading, setIsLoading] = useState(true);
+    const [Changes, setChanges] = useState(false);
+    const [PatientData, setPatientData] = useImmer({});
+    const [History, setHistory] = useImmer({});
+    const [ImageFile, setImageFile] = useState(null);
+
     const [Index, setIndex] = useState(-1);
     const [HistoryModal, setHistoryModal] = useState(false);
     const [HistoryEditModal, setHistoryEditModal] = useState(false);
@@ -60,8 +30,40 @@ const PatientManageAccount = () => {
     };
     const HistoryEditModalOpen = () => { setHistoryEditModal(true) };
 
-    useEffect(() => {
+    const fetchPatientData = async () => {
+        const id = "6585484c797f80875a8a769f";
+        try {
+            const response = await axios.get(`http://localhost:5000/patient/account/${id}`);
+            const data = response.data;
+            console.log(data);
+            data.user.dob = data.user.dob.slice(0, 10);
+            setIsLoading(false);
+            setPatientData(data);
+            setHistory(data);
+            setImageFile(data.user.profilePicture);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
+    const SaveData = async (e) => {
+        e.preventDefault();
+        const form_data = new FormData();
+        form_data.append('file', ImageFile);
+        form_data.append('data', JSON.stringify(PatientData))
+
+        try {
+            const response = await axios.post(`http://localhost:5000/patient/account/${PatientData._id}`, form_data);
+            const data = response.data;
+            console.log(data);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchPatientData();
     }, []);
 
     return (
@@ -72,9 +74,11 @@ const PatientManageAccount = () => {
                     <Container style={{ marginBottom: '70px', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
                         <div className="column211">
                             <AccountDetails
-                                Data={PatientData.users}
+                                Data={PatientData.user}
                                 setData={setPatientData}
                                 setChanges={setChanges}
+                                ImageFile={ImageFile}
+                                setImageFile={setImageFile}
                             />
 
                             <PatientBloodGroup
@@ -119,7 +123,7 @@ const PatientManageAccount = () => {
                                 style={{ backgroundColor: 'red', color: 'white', marginTop: '20px' }}
                                 onClick={() => {
                                     setPatientData(draft => {
-                                        draft.users= History.users;
+                                        draft.user = History.user;
                                         draft.bloodGroup = History.bloodGroup;
                                         draft.history = History.history;
                                     })
@@ -130,7 +134,8 @@ const PatientManageAccount = () => {
                             </Button>
                             <Button variant="contained"
                                 style={{ backgroundColor: Changes ? '#3f51b5' : 'grey', color: 'white', marginTop: '20px' }}
-                                onClick={() => {
+                                onClick={(e) => {
+                                    SaveData(e);
                                     setChanges(false);
                                 }}
                                 disabled={!Changes}

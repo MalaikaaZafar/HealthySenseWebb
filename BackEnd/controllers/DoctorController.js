@@ -2,7 +2,9 @@ const Doctor = require('../models/Doctor');
 const User = require('../models/User');
 const Appointment = require('../models/Apointments');
 const Payment = require('../models/Payment');
+const Diagnosis = require('../models/Diagnosis');
 const { populate } = require('../models/Patient');
+const fs = require('fs');
 
 
 const doctorController = {
@@ -258,6 +260,7 @@ const doctorController = {
 
             AppointmentDetail.doctorId.appointmentSlots = undefined;
             AppointmentDetail.doctorId.services = undefined;
+
             AppointmentDetail.doctorId.user.profilePicture = undefined;
             AppointmentDetail.doctorId.user.password = null;
 
@@ -272,6 +275,76 @@ const doctorController = {
             return res.status(502).json({ message: "Something went wrong" });
         }
 
+    },
+
+    getAccountDetails: async (req, res) => {
+        const UserId = "65854380aa6b07046cf14512";
+        try {
+            const doctor = await Doctor.findOne({ id: UserId }).populate({ path: 'user' }).exec();
+            if (!doctor)
+                return res.status(404).json({ message: "Doctor not found" });
+
+            //Retrieve certificates
+            const certificates = [];
+            for (let i = 0; i < doctor.certificates.length; i++) {
+                // Get File form Uploads folder
+                const file = doctor.certificates[i].file;
+                const path = `../uploads/${file}`;
+                const fileToSend = fs.readFileSync(path);
+                const fileToSendBase64 = fileToSend.toString('base64');
+                certificates.push({ ...doctor.certificates[i].toObject(), file: fileToSendBase64 });
+            }
+            return res.status(200).json({ doctor });
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
+
+    updateAccount: async (req, res) => {
+        const { specialization, description, location, experience, workingHours, sessions, services, certificates, user } = req.body;
+        const Files=req.files.certificates;
+        const UserId = "65854380aa6b07046cf14512";
+        try {
+            const doctor = await Doctor.findOne({ id: UserId });
+            if (!doctor)
+                return res.status(404).json({ message: "Doctor not found" });
+            doctor.specialization = specialization;
+            doctor.description = description;
+            doctor.location = location;
+            doctor.experience = experience;
+            doctor.workingHours = workingHours;
+            doctor.fee = fee;
+            doctor.services = services;
+            await doctor.save();
+            return res.status(200).json({ message: "Success" });
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
+
+    createDiagnosis: async (req, res) => {
+        const { id } = req.params;
+        console.log(id);
+        const { diagnosis, prescription, tests, notes, type, fee } = req.body;
+        console.log(req.body);
+        try {
+            const appointment = await Appointment.findById(id);
+            if (!appointment)
+                return res.status(404).json({ message: "Appointment not found" });
+            Diagnosis.create({ date: Date.now(), description: diagnosis, type, fee, notes, prescription, tests, appointmentId: id });
+            appointment.status = "Completed";
+            await appointment.save();
+            console.log(appointment);   
+            return res.status(200).json({ message: "Success" });
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
     },
 };
 

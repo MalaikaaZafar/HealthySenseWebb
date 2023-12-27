@@ -5,16 +5,14 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import React from "react";
 
-const AccountDetails = ({ Data, setData, setChanges }) => {
+const AccountDetails = ({ Data, setData, setChanges, ImageFile, setImageFile }) => {
     const HandleProfilePicChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
-                setData(draft => {
-                    draft.users.profilePicture = reader.result;
-                })
+                setImageFile(reader.result);
             };
             setChanges(true);
         }
@@ -31,7 +29,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
         <>
             <Typography variant="h4" style={{ textAlign: 'center' }}>Manage Account</Typography>
             <div className="column123">
-                <Avatar sx={{ width: 300, height: 300 }} src={Data.profilePicture} />
+                <Avatar sx={{ width: 300, height: 300 }} src={ImageFile} />
                 <div className="row-display">
                     <input type="file"
                         accept="image/*"
@@ -50,7 +48,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
                 <TextField id="outlined-basic" label="Name" variant="outlined" value={Data.name}
                     onChange={(e) => {
                         setData(draft => {
-                            draft.users.name = e.target.value;
+                            draft.user.name = e.target.value;
                         })
                         setChanges(true);
                     }}
@@ -73,7 +71,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
                         onChange={(e) => {
                             const date = dayjs(e).format('YYYY-MM-DD');
                             setData(draft => {
-                                draft.users.dob = date;
+                                draft.user.dob = date;
                             })
                             setChanges(true);
                         }}
@@ -85,7 +83,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '20px' }}>
                 <TextField id="outlined-basic" label="Country" variant="outlined" value={Data.country} onChange={(e) => {
                     setData(draft => {
-                        draft.users.country = e.target.value;
+                        draft.user.country = e.target.value;
                     })
                     setChanges(true);
                 }}
@@ -97,7 +95,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
                     }
                     else if (isNumeric(e.target.value)) {
                         setData(draft => {
-                            draft.users.phoneNumber = e.target.value;
+                            draft.user.phoneNumber = e.target.value;
                         })
                         setChanges(true);
                     }
@@ -113,7 +111,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
                     value={Data.gender}
                     onChange={(e) => {
                         setData(draft => {
-                            draft.users.gender = e.target.value;
+                            draft.user.gender = e.target.value;
                         })
                         setChanges(true);
                     }}
@@ -126,7 +124,7 @@ const AccountDetails = ({ Data, setData, setChanges }) => {
             </FormControl>
             <TextField id="outlined-basic" label="Email" variant="outlined" value={Data.email} onChange={(e) => {
                 setData(draft => {
-                    draft.users.email = e.target.value;
+                    draft.user.email = e.target.value;
                 })
                 setChanges(true);
             }} />

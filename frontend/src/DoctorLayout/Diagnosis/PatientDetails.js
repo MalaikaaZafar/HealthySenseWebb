@@ -2,6 +2,34 @@ import { Accordion, AccordionDetails, AccordionSummary, Avatar, Button, Containe
 import React from "react";
 import { useDiagnosis } from "./DiagnosisPage";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { styled } from "@mui/system";
+
+const CustomTableRow = styled(TableRow)(({ }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'left',
+    wordBreak: 'break-word',
+    overflowWrap: 'break-word',
+    width: '100%',
+    borderBottom: '1px solid rgba(224, 224, 224, 1)',
+}));
+
+const CustomTableCell = styled(TableCell)(({ }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'left',
+    alignItems: 'center',
+    textAlign: 'left',
+    wordBreak: 'normal',
+    overflowWrap: 'break-word',
+    width: '100%',
+    border: 'none',
+    gap: '10px'
+}));
+
+
 
 const PatientDetails = () => {
     const { AppointmentData, PageChange } = useDiagnosis();
@@ -13,7 +41,7 @@ const PatientDetails = () => {
                 <Typography variant="h4" style={{ textAlign: 'center' }}>Appointment Details</Typography>
                 <div className="Column-display">
                     <div className="column1">
-                        <Avatar style={{ width: '130px', height: '130px', margin: 'auto' }} 
+                        <Avatar style={{ width: '130px', height: '130px', margin: 'auto' }}
                         />
                     </div>
                     <div className="column2">
@@ -75,26 +103,28 @@ const PatientDetails = () => {
                             <Typography variant="h6" style={{ fontWeight: 'bold', marginBottom: '0px' }}>Patient History</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <Table stickyHeader aria-label="sticky table">
+                            <Table>
                                 <TableHead>
-                                    <TableRow >
-                                        <TableCell style={{ width: '20%', fontWeight: 'bold' }}>Type</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold' }}>Description</TableCell>
-                                    </TableRow>
+                                    <CustomTableRow>
+                                        <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '35%' }}>Type</CustomTableCell>
+                                        <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '65%' }}>Description</CustomTableCell>
+                                    </CustomTableRow>
                                 </TableHead>
                                 <TableBody>
                                     {
                                         AppointmentData.patientId.history.length > 0 ?
-                                            AppointmentData.patientId.history.map((row) => (
-                                                <TableRow key={row._id}>
-                                                    <TableCell style={{ width: '20%' }}>{row.type}</TableCell>
-                                                    <TableCell>{row.description}</TableCell>
-                                                </TableRow>
-                                            ))
+                                            AppointmentData.patientId.history.map((history, index) => {
+                                                return (
+                                                    <CustomTableRow>
+                                                        <CustomTableCell style={{  width: '35%' }}>{history.type}</CustomTableCell>
+                                                        <CustomTableCell style={{  width: '65%' }}>{history.description}</CustomTableCell>
+                                                    </CustomTableRow>
+                                                )
+                                            })
                                             :
-                                            <TableRow>
-                                                <TableCell colSpan={2} style={{ textAlign: 'center' }}>No History</TableCell>
-                                            </TableRow>
+                                            <CustomTableRow>
+                                                <CustomTableCell colSpan={3} style={{ textAlign: 'center' }}>No History </CustomTableCell>
+                                            </CustomTableRow>
                                     }
                                 </TableBody>
                             </Table>

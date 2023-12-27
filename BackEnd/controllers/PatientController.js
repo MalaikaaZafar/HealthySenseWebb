@@ -3,6 +3,8 @@ const Doctor = require("../models/Doctor");
 const Patient = require("../models/Patient");
 const Appointment = require("../models/Apointments");
 const Payment = require("../models/Payment");
+const fs = require("fs");
+const path = require("path");
 
 const patientController = {
   // view all consultations of a doctor, both pending and completed
@@ -131,8 +133,79 @@ const patientController = {
     patient.favoriteDoctors.splice(index, 1);
     await patient.save();
     return res.status(200).json({ message: "Doctor removed from favorites" });
-  }
+  },
 
+  getAccountDetails: async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+    try {
+      const patient = await Patient.findById(id).populate('user').exec();
+      console.log(patient);
+      if (!patient) {
+        return res.status(404).json({ message: 'Patient not found' });
+      }
+      //Check Uploads Folder for profilePicture
+      if (!patient.user.profilePicture) {
+        patient.user.profilePicture = null;
+      }
+      else {
+        const profilePicturePath = path.join(__dirname, '../uploads', patient.user.profilePicture);
+        if (!fs.existsSync(profilePicturePath)) {
+          patient.user.profilePicture = null;
+        }
+        else {
+          const ImageUrl = `${req.protocol}://${req.get('host')}/files/${patient.user.profilePicture}`;
+          patient.user.profilePicture = ImageUrl;
+        }
+      }
+      console.log(patient);
+      return res.status(200).json(patient);
+    }
+    catch (error) {
+      return res.status(500).json({ message: 'Something went wrong' });
+    }
+  },
+
+  updateAccountDetails: async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+    console.log(req.body);
+    console.log(req.file);
+
+    try {
+      const Patient = await Patient.findById(id).populate('user').exec();
+      if (!Patient) {
+        return res.status(404).json({ message: 'Patient not found' });
+      }
+      Patient.user.name = PatientData.user.name;
+      Patient.user.email = PatientData.user.email;
+      Patient.user.phoneNumber = PatientData.user.phoneNumber;
+      Patient.user.dob = PatientData.user.dob;
+      Patient.bloodGroup = PatientData.bloodGroup;
+      Patient.country = PatientData.country;
+
+      if (File) {
+        if (Patient.user.profilePicture) {
+          const profilePicturePath = path.join(__dirname, '../uploads', Patient.user.profilePicture);
+          if (fs.existsSync(profilePicturePath)) {
+            fs.unlinkSync(profilePicturePath);
+          }
+        }
+        const FileName = Date.now() + '-' + File.name;
+        File.mv(`./uploads/${FileName}`, async (err) => {
+          if (err) {
+            console.log(err);
+            return res.status(404).json({ message: 'Error Uploadign Picture' });
+          }
+        })
+        Patient.user.profilePicture = FileName;
+      }
+      await Patient.save();
+      return res.status(200).json({ message: 'Success', patient: Patient });
+    } catch (error) {
+      return res.status(500).json({ message: 'Something went wrong' });
+    }
+  },
 };
 
 module.exports = patientController;
