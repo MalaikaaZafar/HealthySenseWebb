@@ -51,7 +51,7 @@ function AppointmentCard({ type, appt }) {
           </div>
           <div className="docExperience" style={{width:'100%'}}> 
             <p style={{display:'flex', alignItems:'center', width: '100%'}}><TimeIcon sx={{margin: '2%'}}/>{appt?.time} </p>
-            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{appt?.date?  format(new Date(appt?.date),'yyyy-MM-dd'):null}</p>
+            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{appt?.date?  format(new Date(appt.date),'yyyy-MM-dd'):null}</p>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@ function PatientDetails() {
   return (
     <div className="docName">
       <p>Name: {appt?.patientId?.user?.name}</p>
-      <p>Status: <b>{appt?.status? appt.status: 'Pending'}</b></p>
+      <p>Status: <b>{appt?.status}</b></p>
     </div>
   );
 }

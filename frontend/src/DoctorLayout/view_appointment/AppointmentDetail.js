@@ -15,28 +15,14 @@ function AppointmentDetail() {
  
   const getAppointment=async ()=>
   {
-    try{
     const formattedStr=`http://localhost:3000/doctor/consultations/${id}`;
     const appoinmentList= await fetch(formattedStr,{
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
       },
-  }).then((response) =>  response.json()).catch(err=>console.log(err));
-    if (appoinmentList.message==="Success")
-    {
-      setAppointment(appoinmentList.consultation);
-    }
-    else 
-    {
-      alert(appoinmentList.message);
-    }
-  }
-  catch(error)
-  {
-    console.log(error);
-    alert("Something went wrong");
-  }
+  }).then((response) =>  response.json());
+    setAppointment(appoinmentList)
   }
 
 
@@ -47,7 +33,7 @@ function AppointmentDetail() {
  
   function cancelNav()
   {
-    Navigate(`/doctor/appointments/cancel/${id}`);
+    Navigate('/doctor/cancelAppointment');
   }
   
   useEffect(() => {

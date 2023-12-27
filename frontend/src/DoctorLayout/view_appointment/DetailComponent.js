@@ -1,52 +1,50 @@
 import './AppointmentDetail.css';
+import { format } from "date-fns";
+
 import TimeIcon from '@mui/icons-material/AccessTime';
 import PatientIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ProblemIcon from '@mui/icons-material/DescriptionOutlined';
 import FeeIcon from '@mui/icons-material/AttachMoneyOutlined';
-import { format } from 'date-fns';
 
-const DetailComponent = ({appt}) => {
-
-  function calcAge()
-  {
-      var today = new Date();
-      var birthDate = new Date(appt.patientId.user.dob);
-      return today.getFullYear() - birthDate.getFullYear();
+function DetailComponent({appt}) {
+  function getTiming(){
+    if (appt.time.includes("AM"))
+    {
+      return "Morning"
+    }
+    else{
+      return "Evening"
+    }
   }
 
+
   return (
-    <div className="appointmentDetailsPatient">
-       <p className="headingPatient"><TimeIcon/> Appointment Timing</p>
-    <div className="detailPatient">
-      <p>{format(new Date(appt.date),'yyyy-MM-dd')}</p>
-      <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt?.time}</p>
+    <div className="appointmentDetails">
+       <p className="heading"><TimeIcon/> Appointment Timing</p>
+    <div className="detail">
+      <p >{getTiming}</p>
+      <p>{format(new Date(appt.consult.date), "yyyy-MM-dd")}</p>
+      <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt.consult.time}</p>
       </div>
-      <div >
-       <p className="headingPatient"><PatientIcon/> Patient information </p>
-       <div className="detailPatient">
-              <p>Name: {appt.patientId.user.name}</p>
-              <p>Age: {calcAge()}</p>
-              <p>Phone: {appt.patientId.user.phoneNumber}</p>
+      <div>
+       <p className="heading"><PatientIcon/> Doctor information </p>
+       <div className="detail">
+              <p>Dr. {appt.docOrPatient.user.name} </p>
+              <p>{appt.docOrPatient.details.specialization}</p>
+              <p>5+ Years of Experience</p>
         </div>
       </div>
       <div >
-       <p className="headingPatient"><ProblemIcon/> Problem Description </p>
-       <div className="detailPatient">
-              <p>{appt.problem}</p>
+       <p className="heading"><ProblemIcon/>Problem Description </p>
+       <div className="detail">
+              <p>{appt.consult.problem}</p>
         </div>
       </div>
       <div >
-      <p className="headingPatient"><FeeIcon/> Fee information </p>
-      <div className="detailPatient" style={{marginBottom: '0px'}}>
-       
-              <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt.paymentStatus}</p>
-              {
-                appt.doctorId.session.map((sess) => {
-                  if (sess.type===appt.type){
-                    return <p>Rs. {sess.fee}</p>
-                  }
-                })
-              }
+      <p className="heading"><FeeIcon/> Fee information </p>
+      <div className="detail" style={{marginBottom: '0px'}}>
+              <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt.fee?.status? appt.fee.status:'N/A'}</p>
+              <p>{appt.fee?.amount? appt.fee.amount: "N/A"}</p>
         </div>
       </div>
     </div>

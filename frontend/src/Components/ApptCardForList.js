@@ -54,7 +54,7 @@ function ApptCardForList({ type, appt }) {
             <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.date), "yyyy-MM-dd")}</p>
           </div>
           <appointmentContext.Provider value={appt}>
-          {appt?.status && appt.status === "Completed" || appt.status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} Navigate={Navigate}/>}
+          {appt.status === "Completed" || appt.status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} Navigate={Navigate}/>}
           </appointmentContext.Provider>
         </div>
       </div>
@@ -121,7 +121,7 @@ function PatientDetails() {
   const appt=useContext(appointmentContext);
   return (
     <div className="docName">
-      <p>Name: {appt?.patientId?.user?.name}</p>
+      <p>Name: {appt.user.name}</p>
     </div>
   );
 }

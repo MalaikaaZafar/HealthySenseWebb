@@ -3,25 +3,18 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
-import ApptCardForList from '../../components/ApptCardForList';
+import ApptCardForList from '../components/ApptCardForList';
 import './ViewApptList.css';
 
 async function fetchAppointments() {
-    try{
-      const appoinmentList= await fetch(`http://localhost:3000/doctor/consultations`,{
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-      }).then(response =>  response.json()).catch(err => console.log(err));
-      if (appoinmentList) 
-        return appoinmentList.appList;
-      else 
-        alert("Error in fetching appointments");
-    }catch(err){
-      console.log(err);
-      alert("Error in fetching appointments")
-    }
+    const appoinmentList= await fetch(`http://localhost:3000/doctor/consultations`,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response =>  response.json());
+    console.log(appoinmentList);
+    return appoinmentList;
 }
 
  function AppointmentList() {
@@ -60,7 +53,7 @@ async function fetchAppointments() {
       <div className="apptListBody">
           <div className="apptList">
     {appointmentList && appointmentList.map((app, index) => 
-        app.status === value ? <div className="listItem" ><ApptCardForList key={index} type="patient" appt={app}/></div> : null
+        app.consult.status === value ? <div style={{ margin:'10px', width:'45%'}}><ApptCardForList key={index} type="patient" appt={app}/></div> : null
   )}
     </div>
     </div>
