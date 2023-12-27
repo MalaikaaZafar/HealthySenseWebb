@@ -29,7 +29,6 @@ const CustomTextField = styled(TextField)({
   },
 });
 
-// Main Functional Component
 function DoctorReviewForm() {
 
   const [rating, setRating] = useState(0);
@@ -71,53 +70,55 @@ function DoctorReviewForm() {
       <Container>
         <Box className={styles.bigPane} p={3}>
           <Hidden smDown>
-            <Grid container spacing={3} justifyContent={'center'}>
-              <Grid item xs={12} sm={3}>
+            <Grid container spacing={3} justifyContent={'center'} mb={2}>
+              <Grid item xs={12} sm={6} md={doctor.name.length > 20 || doctor.specialization.length > 20 ? 4 : 3}>
                 <Paper className={styles.innerBigPane1}>
-                  <Box display="flex" alignItems="center" marginLeft={2} height={100}>
-                    <PersonIcon fontSize="large" color="primary" />
-                    <Box ml={2}>
-                      <Typography variant="h6">{doctor.name}</Typography>
-                      <Typography variant="body2" color="textSecondary">
+                  <Box display="flex" alignItems="center" marginLeft={2} height={100} pr={2} justifyContent={'center'} >
+                    <PersonIcon fontSize="large" color="black" />
+                    <Box ml={2} mt={-2}>
+                      <Typography variant="h7" color={'black'} fontWeight={'bold'}>
+                        {doctor.name}
+                      </Typography>
+                      <Typography variant="body2" fontSize={12} color="textSecondary" mt={1}>
                         {doctor.specialization}
                       </Typography>
                     </Box>
                   </Box>
                 </Paper>
               </Grid>
-              <Grid item xs={12} sm={2}>
+              <Grid item xs={12} sm={6} md={2}>
                 <Paper className={styles.innerBigPane1}>
                   <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
-                    <PeopleIcon fontSize="large" color="primary" />
-                    <Typography variant="h6">{doctor.patients}</Typography>
+                    <PeopleIcon fontSize="large" color="black" />
+                    <Typography variant="h7">{doctor.patients}</Typography>
                     <Typography variant="body2" color="textSecondary">
                       Patients
                     </Typography>
                   </Box>
                 </Paper>
               </Grid>
-              <Grid item xs={12} sm={2}>
+              <Grid item xs={12} sm={6} md={2}>
                 <Paper className={styles.innerBigPane1}>
                   <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
-                    <School fontSize="large" color="primary" />
-                    <Typography variant="h6">{doctor.experience}+ Years</Typography>
+                    <School fontSize="large" color="black" />
+                    <Typography variant="h7">{doctor.experience}+ Years</Typography>
                     <Typography variant="body2" color="textSecondary">
                       Experience
                     </Typography>
                   </Box>
                 </Paper>
               </Grid>
-              <Grid item xs={12} sm={2}>
+              <Grid item xs={12} sm={6} md={2}>
                 <Paper className={styles.innerBigPane1}>
                   <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
                     <StarRatings
                       rating={doctor.rating / 5}
-                      starRatedColor="#2854C3"
+                      starRatedColor="black"
                       numberOfStars={1}
                       name='rating'
                       starDimension="30px"
                     />
-                    <Typography variant="h6">{doctor.rating}</Typography>
+                    <Typography variant="h7">{doctor.rating}</Typography>
                     <Typography variant="body2" color="textSecondary">
                       Ratings
                     </Typography>
@@ -126,9 +127,9 @@ function DoctorReviewForm() {
               </Grid>
             </Grid>
           </Hidden>
-          <Grid container spacing={3} justifyContent={'center'}>
+          <Grid container justifyContent={'center'}>
             <Grid item xs={12} sm={9}>
-              <Box mt={3}>
+              <Box mt={1}>
                 <Typography variant="h7" color="#2854C3" mb={-1}> How was your overall experience with the doctor?</Typography>
                 <ReactStars
                   count={5}
@@ -141,26 +142,27 @@ function DoctorReviewForm() {
                   onChange={onRatingChange}
                 />
               </Box>
-              <Grid container spacing={5} >
-                <Grid item xs={12} sm={9}>
-                  <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
-                    <CustomTextField
-                      name="comment"
-                      label="Comment"
-                      multiline
-                      margin='normal'
-                      fullWidth
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <InsertDriveFile />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Box>
+              <Grid container justifyContent={'center'}>
+                <Grid item xs={12} md={7}>
+                  <CustomTextField
+                    name="comment"
+                    label="Comment"
+                    multiline
+                    margin='normal'
+                    fullWidth
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <InsertDriveFile />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
                 </Grid>
-                <Grid item xs={12} sm={3}>
+                <Hidden smDown>
+                  <Grid style={{ flexGrow: 1 }} />
+                </Hidden>
+                <Grid item xs={12} md={4} mt={1}>
                   <Typography variant="h7" color="#2854C3" mb={-1}>Rate the checkup</Typography>
                   <ReactStars
                     count={5}
@@ -196,7 +198,7 @@ function DoctorReviewForm() {
                   />
                 </Grid>
               </Grid>
-              <Box mt={3}>
+              <Box mt={1}>
                 <Typography variant="h7" color="#2854C3" mb={-2}>Would you recommend them to a friend?</Typography>
                 <RadioGroup row aria-label="recommend" name="recommend">
                   <FormControlLabel
@@ -214,18 +216,18 @@ function DoctorReviewForm() {
                 </RadioGroup>
               </Box>
             </Grid>
+            <Grid item xs={12} sm={9} mt={3}>
+              <Button
+                className={styles.submitButton}
+                variant="contained"
+                color="primary"
+                size="large"
+                fullWidth
+              >
+                Submit
+              </Button>
+            </Grid>
           </Grid>
-          <Box mt={3}>
-            <Button
-              className={styles.submitButton}
-              variant="contained"
-              color="primary"
-              size="large"
-              fullWidth
-            >
-              Submit
-            </Button>
-          </Box>
         </Box>
       </Container>
     </div>
