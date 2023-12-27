@@ -2,7 +2,6 @@ import { React, useEffect, useState } from "react";
 import axios from "axios";
 
 import Box from "@mui/material/Box";
-import UserCard from "../components/UserCard";
 
 import "./ViewAllPatients.css";
 
@@ -13,6 +12,7 @@ function ViewAllPatients() {
     const patients = await axios
       .get("http://localhost:3000/admin/patientList")
       .then((response) => response.data);
+    console.log(patients);
     setPatientList(patients);
   }
 
@@ -24,19 +24,13 @@ function ViewAllPatients() {
   }, []);
 
   return (
-    <Box className="userListScreen" >
-      <Box className="screenBodyUserList">
-        <Box className="halfUserScreen" >
-          <Box className="userList" sx={styles.userList}>
-            {patientList &&
-              patientList.map((patient) => (
-                <Box key={patient.id} className="userCard" sx={styles.userCard}>
-                  <UserCard user={patient} />
-                </Box>
-              ))}
-          </Box>
-        </Box>
-      </Box>
+
+    <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
+      {patientList?.length > 0 && patientList.map((pat) => {
+        return (
+          <PatientCard user={pat} />
+        );
+      })}
     </Box>
   );
 }

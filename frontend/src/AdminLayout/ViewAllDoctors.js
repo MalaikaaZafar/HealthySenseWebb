@@ -2,16 +2,18 @@ import { React, useEffect, useState } from "react";
 import "./ViewAllPatients.css";
 import DoctorCard from "../components/DoctorCard";
 import axios from "axios";
+import { Box } from "@mui/system";
 
 import Box from '@mui/material/Box';
 
 function ViewAlldoctors() {
   const [doctorList, setDoctorList] = useState([]);
 
-  async function fetchUsers() {
+  const fetchUsers = async () => {
     const docList = await axios.get("http://localhost:3000/admin/doctorList")
       .then(response => response.data);
-    setDoctorList(docList)
+    setDoctorList(docList);
+    console.log(docList);
   }
 
 
@@ -24,18 +26,17 @@ function ViewAlldoctors() {
     console.log(doctorList.length)
   }, []);
 
+
   return (
-    <Box className="userListScreen">
-      <Box className="screenBodyUserList">
-        <Box className="halfUserScreen">
-          <Box className="userList">
-            {doctorList?.length > 0 && doctorList.map((doctor) => {
-              return <Box className="docCard"><DoctorCard user={doctor} /></Box>;
-            })}
-          </Box>
-        </Box>
-      </Box>
+
+    <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
+      {doctorList?.length > 0 && doctorList.map((doctor) => {
+        return (
+          <DoctorCard user={doctor} />
+        );
+      })}
     </Box>
+
   );
 }
 

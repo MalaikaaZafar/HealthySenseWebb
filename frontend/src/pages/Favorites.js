@@ -15,6 +15,7 @@ const Favorites = () => {
             setFavourites(favourites);
         }
         fetchFavs();
+        
     }, [favouritesChanged]);
     return (
         <div>
