@@ -278,27 +278,17 @@ const doctorController = {
     },
 
     getAccountDetails: async (req, res) => {
-        const UserId = "65854380aa6b07046cf14512";
-        try {
-            const doctor = await Doctor.findOne({ id: UserId }).populate({ path: 'user' }).exec();
-            if (!doctor)
+        const { id } = req.params;
+        console.log(id);
+        try{
+            const doctor = await Doctor.findById(id).populate({ path: 'user' }).exec();
+            if(!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
-
-            //Retrieve certificates
-            const certificates = [];
-            for (let i = 0; i < doctor.certificates.length; i++) {
-                // Get File form Uploads folder
-                const file = doctor.certificates[i].file;
-                const path = `../uploads/${file}`;
-                const fileToSend = fs.readFileSync(path);
-                const fileToSendBase64 = fileToSend.toString('base64');
-                certificates.push({ ...doctor.certificates[i].toObject(), file: fileToSendBase64 });
-            }
             return res.status(200).json({ doctor });
         }
-        catch (error) {
+        catch(error){
             console.log(error.message);
-            return res.status(500).json({ message: "Something went wrong" });
+            return res.status(502).json({ message: "Something went wrong" });
         }
     },
 

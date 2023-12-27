@@ -17,8 +17,8 @@ const CustomTableRow = styled(TableRow)(({}) => ({
 const CustomTableCell = styled(TableCell)(({}) => ({
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    justifyContent: 'left',
+    alignItems: 'center',
     textAlign: 'left',
     wordBreak: 'normal',
     overflowWrap: 'break-word',
@@ -27,7 +27,7 @@ const CustomTableCell = styled(TableCell)(({}) => ({
     gap:'10px'
 }));
 
-const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModalOpen }) => {
+const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModalOpen, setChanges }) => {
     return (
         <Table>
             <TableHead>
@@ -43,9 +43,9 @@ const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModa
                     PatientData.history.map((history, index) => {
                         return (
                             <CustomTableRow>
-                                <CustomTableCell>{history.type}</CustomTableCell>
-                                <CustomTableCell>{history.description}</CustomTableCell>
-                                <CustomTableCell>
+                                <CustomTableCell style={{width:'25%'}}>{history.type}</CustomTableCell>
+                                <CustomTableCell style={{width:'45% '}}>{history.description}</CustomTableCell>
+                                <CustomTableCell style={{width:'30%'}}>
                                     <Button
                                         variant="contained"
                                         onClick={() => {
@@ -62,6 +62,7 @@ const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModa
                                                 ...PatientData,
                                                 history: PatientData.history.filter((history, i) => i !== index)
                                             })
+                                            setChanges(true);
                                         }}
                                     >
                                         Delete

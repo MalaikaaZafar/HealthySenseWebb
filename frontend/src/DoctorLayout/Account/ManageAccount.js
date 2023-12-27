@@ -11,10 +11,14 @@ import AddService from "./modals/services/AddService";
 import EditService from "./modals/services/EditService";
 import DoctorServices from "./tables/ServiceTable";
 import LoadingAnimation from "../../components/loader/LoadingAnimation";
+import axios from "axios";
 
 const DoctorManageAccount = () => {
+    const ID = "658aeab2a07cfdec21fc4931";
     const [isLoading, setIsLoading] = useState(true);
     const [Changes, setChanges] = useState(false);
+    const [ImageUrl, setImageUrl] = useState(null);
+
     const [DoctorData, setDoctorData] = useImmer({
         user: {
             _id: "",
@@ -145,10 +149,22 @@ const DoctorManageAccount = () => {
         ServicesEditModalOpen();
     }
 
-    useEffect(() => {
-        setTimeout(() => {
+    const fetchDoctorData = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5000/doctor/account/${ID}`);
+            const data = response.data;
+            data.doctor.user.dob = data.doctor.user.dob.slice(0, 10);
             setIsLoading(false);
-        }, 1000);
+            console.log(data.doctor);
+            setDoctorData(data.doctor);
+            setHistory(data.doctor);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchDoctorData();
     }, []);
 
     return (
@@ -161,6 +177,8 @@ const DoctorManageAccount = () => {
                             Data={DoctorData.user}
                             setData={setDoctorData}
                             setChanges={setChanges}
+                            ImageUrl={ImageUrl}
+                            setImageUrl={setImageUrl}
                         />
 
                         <DoctorSpecializedDetails

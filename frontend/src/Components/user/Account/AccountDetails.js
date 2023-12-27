@@ -5,14 +5,17 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import React from "react";
 
-const AccountDetails = ({ Data, setData, setChanges, ImageFile, setImageFile }) => {
+const AccountDetails = ({ Data, setData, setChanges,ImageUrl ,setImageUrl }) => {
     const HandleProfilePicChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            setImageUrl(file);
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
-                setImageFile(reader.result);
+                setData(draft => {
+                    draft.user.profilePicture = reader.result;
+                })
             };
             setChanges(true);
         }
@@ -29,7 +32,7 @@ const AccountDetails = ({ Data, setData, setChanges, ImageFile, setImageFile }) 
         <>
             <Typography variant="h4" style={{ textAlign: 'center' }}>Manage Account</Typography>
             <div className="column123">
-                <Avatar sx={{ width: 300, height: 300 }} src={ImageFile} />
+                <Avatar sx={{ width: 300, height: 300 }} src={ImageUrl? Data.profilePicture :`http://localhost:5000/${Data.profilePicture}`}  />
                 <div className="row-display">
                     <input type="file"
                         accept="image/*"

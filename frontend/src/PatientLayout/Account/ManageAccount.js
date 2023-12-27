@@ -16,7 +16,7 @@ const PatientManageAccount = () => {
     const [Changes, setChanges] = useState(false);
     const [PatientData, setPatientData] = useImmer({});
     const [History, setHistory] = useImmer({});
-    const [ImageFile, setImageFile] = useState(null);
+    const [ImageUrl, setImageUrl] = useState(null);
 
     const [Index, setIndex] = useState(-1);
     const [HistoryModal, setHistoryModal] = useState(false);
@@ -40,7 +40,6 @@ const PatientManageAccount = () => {
             setIsLoading(false);
             setPatientData(data);
             setHistory(data);
-            setImageFile(data.user.profilePicture);
         } catch (error) {
             console.log(error);
         }
@@ -49,13 +48,22 @@ const PatientManageAccount = () => {
     const SaveData = async (e) => {
         e.preventDefault();
         const form_data = new FormData();
-        form_data.append('file', ImageFile);
-        form_data.append('data', JSON.stringify(PatientData))
-
+        form_data.append('name', PatientData.user.name);
+        form_data.append('email', PatientData.user.email);
+        console.log(PatientData.history);
+        form_data.append('history', JSON.stringify(PatientData.history));
+        form_data.append('gender', PatientData.user.gender)
+        form_data.append('phoneNumber', PatientData.user.phoneNumber);
+        form_data.append('dob', PatientData.user.dob);
+        form_data.append('bloodGroup', PatientData.bloodGroup);
+        form_data.append('country', PatientData.user.country);
+        form_data.append('profile', ImageUrl);
+        console.log(form_data);
         try {
-            const response = await axios.post(`http://localhost:5000/patient/account/${PatientData._id}`, form_data);
+            const response = await axios.post(`http://localhost:5000/patient/update/${PatientData._id}`, form_data);
             const data = response.data;
             console.log(data);
+            setHistory(PatientData)
         }
         catch (error) {
             console.log(error);
@@ -77,8 +85,8 @@ const PatientManageAccount = () => {
                                 Data={PatientData.user}
                                 setData={setPatientData}
                                 setChanges={setChanges}
-                                ImageFile={ImageFile}
-                                setImageFile={setImageFile}
+                                ImageUrl={ImageUrl}
+                                setImageUrl={setImageUrl}
                             />
 
                             <PatientBloodGroup
@@ -93,6 +101,7 @@ const PatientManageAccount = () => {
                                 setPatientData={setPatientData}
                                 setIndex={setIndex}
                                 HistoryEditModalOpen={HistoryEditModalOpen}
+                                setChanges={setChanges}
                             />
                             <Button
                                 style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '-10px' }}

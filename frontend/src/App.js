@@ -29,7 +29,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route index path="*" element={<Payment />} />
+        <Route index path="*" element={<DoctorManageAccount />} />
         <Route path="/nav" element={<NavBar />}>
           <Route index element={<AppointmentSlots />}/>
         </Route>

@@ -44,6 +44,8 @@ const CertificateTable = ({ DoctorData, setDoctorData, HandleCertificateEdit, se
             </TableHead>
             <TableBody>
                 {DoctorData.certificates.length > 0 ? DoctorData.certificates.map((certificate, index) => {
+                    certificate.issueDate=certificate.issueDate.slice(0,10);
+                    certificate.expiryDate=certificate.expiryDate.slice(0,10);
                     return (
                         <CustomTableRow> 
                             <CustomTableCell className="adjust" style={{ width:'15%'}}>{certificate.name}</CustomTableCell>

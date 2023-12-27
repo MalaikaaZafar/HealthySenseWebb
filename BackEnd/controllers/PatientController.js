@@ -4,7 +4,6 @@ const Patient = require("../models/Patient");
 const Appointment = require("../models/Apointments");
 const Payment = require("../models/Payment");
 const fs = require("fs");
-const path = require("path");
 
 const patientController = {
   // view all consultations of a doctor, both pending and completed
@@ -140,25 +139,13 @@ const patientController = {
     console.log(id);
     try {
       const patient = await Patient.findById(id).populate('user').exec();
-      console.log(patient);
       if (!patient) {
         return res.status(404).json({ message: 'Patient not found' });
       }
       //Check Uploads Folder for profilePicture
-      if (!patient.user.profilePicture) {
+      if (patient.user.profilePicture === null || patient.user.profilePicture === undefined || patient.user.profilePicture === '') {
         patient.user.profilePicture = null;
       }
-      else {
-        const profilePicturePath = path.join(__dirname, '../uploads', patient.user.profilePicture);
-        if (!fs.existsSync(profilePicturePath)) {
-          patient.user.profilePicture = null;
-        }
-        else {
-          const ImageUrl = `${req.protocol}://${req.get('host')}/files/${patient.user.profilePicture}`;
-          patient.user.profilePicture = ImageUrl;
-        }
-      }
-      console.log(patient);
       return res.status(200).json(patient);
     }
     catch (error) {
@@ -168,42 +155,51 @@ const patientController = {
 
   updateAccountDetails: async (req, res) => {
     const { id } = req.params;
-    console.log(id);
+    const { name, email, phoneNumber, dob, bloodGroup, country, history, gender } = req.body;
+    var File;
     console.log(req.body);
-    console.log(req.file);
-
+    if (req.files !== null) {
+      File = req.files.profile;
+      console.log("Profile");
+    }
     try {
-      const Patient = await Patient.findById(id).populate('user').exec();
-      if (!Patient) {
+      const patient = await Patient.findById(id);
+      if (!patient) {
         return res.status(404).json({ message: 'Patient not found' });
       }
-      Patient.user.name = PatientData.user.name;
-      Patient.user.email = PatientData.user.email;
-      Patient.user.phoneNumber = PatientData.user.phoneNumber;
-      Patient.user.dob = PatientData.user.dob;
-      Patient.bloodGroup = PatientData.bloodGroup;
-      Patient.country = PatientData.country;
-
+      console.log("patient");
+      const user = await User.findById(patient.user);
+      user.name = name;
+      user.email = email;
+      user.phoneNumber = phoneNumber;
+      user.dob = dob;
+      user.country = country;
+      user.gender=gender;
+      console.log("user");
+      patient.history = JSON.parse(history);
+      patient.bloodGroup = bloodGroup;
+      console.log("patient");
       if (File) {
-        if (Patient.user.profilePicture) {
-          const profilePicturePath = path.join(__dirname, '../uploads', Patient.user.profilePicture);
-          if (fs.existsSync(profilePicturePath)) {
-            fs.unlinkSync(profilePicturePath);
-          }
-        }
-        const FileName = Date.now() + '-' + File.name;
-        File.mv(`./uploads/${FileName}`, async (err) => {
-          if (err) {
-            console.log(err);
-            return res.status(404).json({ message: 'Error Uploadign Picture' });
-          }
-        })
-        Patient.user.profilePicture = FileName;
+        var fileName = `${user._id}_${File.name}`;
+        //Check if file exists
+        console.log(fileName);
+        fileName=fileName.replace(/\s/g, '');
+        File.mv(`./uploads/${fileName}`,
+          function (err) {
+            if (err) {
+              console.log(err);
+              return res.status(505).json({ message: 'Something went wrong' });
+            }
+          });
+        user.profilePicture = fileName;
       }
-      await Patient.save();
-      return res.status(200).json({ message: 'Success', patient: Patient });
+      console.log("Saving");
+      await user.save();
+      await patient.save();
+      return res.status(200).json({ message: 'Success'});
     } catch (error) {
-      return res.status(500).json({ message: 'Something went wrong' });
+      console.log(error);
+      return res.status(502).json({ message: 'Something went wrong' });
     }
   },
 };

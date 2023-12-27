@@ -5,6 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
+import axios from "axios";
 
 const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, CertificateEditModalClose, setChanges, CertificateIndex }) => {
     const [Certificates, setCertificates] = useImmer({
@@ -13,11 +14,12 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
         issueDate: "",
         expiryDate: "",
         approvedStatus: false,
-        File: null,
+        file: "",
     });
+    const [CertificateFile, setCertificateFile] = useState(null);
 
-    const HandleCertificateEditChange = () => {
-        if (Certificates.name.trim() === "" || Certificates.description.trim() === "" || Certificates.issueDate === "" || Certificates.expiryDate === "" || Certificates.File === null) {
+    const HandleCertificateEditChange = async () => {
+        if (Certificates.name.trim() === "" || Certificates.description.trim() === "" || Certificates.issueDate === "" || Certificates.expiryDate === "" || Certificates.file === null) {
             alert("Please fill all the fields");
             return;
         }
@@ -45,15 +47,27 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
             draft.certificates[CertificateIndex].issueDate = Certificates.issueDate;
             draft.certificates[CertificateIndex].expiryDate = Certificates.expiryDate;
             draft.certificates[CertificateIndex].approvedStatus = Certificates.approvedStatus;
-            draft.certificates[CertificateIndex].File = Certificates.File;
+            draft.certificates[CertificateIndex].file = Certificates.file;
         })
+        if (CertificateFile !== null) {
+            const form_data = new FormData();
+            form_data.append('file', CertificateFile);
+            form_data.append('id', DoctorData.certificates[CertificateIndex]._id);
+            try {
+                const response =await axios.post('http://localhost:5000/doctor/account/certificate/upload', form_data);
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         setCertificates(draft => {
             draft.name = "";
             draft.description = "";
             draft.issueDate = "";
             draft.expiryDate = "";
             draft.approvedStatus = false;
-            draft.File = null;
+            draft.file = null;
         })
         setChanges(true);
         CertificateEditModalClose();
@@ -67,7 +81,11 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
                 draft.issueDate = DoctorData.certificates[CertificateIndex].issueDate;
                 draft.expiryDate = DoctorData.certificates[CertificateIndex].expiryDate;
                 draft.approvedStatus = DoctorData.certificates[CertificateIndex].approvedStatus;
-                draft.File = DoctorData.certificates[CertificateIndex].File;
+                draft.file = DoctorData.certificates[CertificateIndex].file;
+            });
+            setCertificates(draft => {
+                draft.issueDate = draft.issueDate.slice(0, 10);
+                draft.expiryDate = draft.expiryDate.slice(0, 10);
             });
         }
     }, [CertificateIndex]);
@@ -102,7 +120,7 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Issue Date"
-                            defaultValue={dayjs(Certificates.issueDate)}
+                            value={dayjs(Certificates.issueDate)}
                             onChange={(newValue) => {
                                 const formattedDate = dayjs(newValue).format("YYYY-MM-DD");
                                 setCertificates(draft => {
@@ -116,7 +134,7 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Expiry Date"
-                            defaultValue={dayjs(Certificates.expiryDate)}
+                            value={dayjs(Certificates.expiryDate)}
                             onChange={(newValue) => {
                                 const formattedDate = dayjs(newValue).format("YYYY-MM-DD");
                                 setCertificates(draft => {
@@ -130,12 +148,13 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
                 </div>
                 <div className="row-display">
                     <input type="file"
-                        accept="image/*"
+                        accept="pdf/*"
                         style={{ display: 'none' }}
                         onChange={(e) => {
                             setCertificates(draft => {
-                                draft.File = e.target.files[0];
+                                draft.file = e.target.files[0].name;
                             })
+                            setCertificateFile(e.target.files[0]);
                         }}
                         id="certificateInput"
                     />
@@ -145,7 +164,7 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
                         </Typography>
                     </label>
                     {
-                        Certificates.File !== null ? <Typography>{Certificates.File.name}</Typography> : null
+                        Certificates.file !== null ? <Typography>{Certificates.file}</Typography> : null
                     }
                 </div>
                 <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>
