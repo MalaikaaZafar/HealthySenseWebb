@@ -15,7 +15,7 @@ const Favorites = () => {
             setFavourites(favourites);
         }
         fetchFavs();
-        
+
     }, [favouritesChanged]);
     return (
         <div>
@@ -54,7 +54,7 @@ const Favorites = () => {
 
                             icon={
                                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                                    <img src={require("../../assets/images/favorites.png")} alt="loading" style={{ width: '30%', height: '30%' }} />
+                                    <img src={require("../../assets/images/favorites.png")} alt="loading" style={{ width: '30%', height: '30%',marginLeft:'5px' }} />
                                 </div>
                             }
                         >

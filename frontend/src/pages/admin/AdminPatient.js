@@ -140,9 +140,9 @@ const AdminPatient = () => {
 
             >
                 <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
-                    {patients?.length > 0 && patients.map((patient) => {
+                    {patients?.length > 0 && patients.map((patient,index) => {
                         return (
-                            <PatientCard user={patient} />
+                            <PatientCard user={patient} key={index} />
                         );
                     })}
                 </Box>
