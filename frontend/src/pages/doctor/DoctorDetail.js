@@ -19,7 +19,6 @@ import {
     TableCell,
     TableBody,
     Divider,
-    Avatar,
 } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import PeopleIcon from '@mui/icons-material/People';

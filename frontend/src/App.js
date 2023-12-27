@@ -13,7 +13,8 @@ import Signup from './pages/auth/Signup.js';
 import RegisterDoctor from './pages/doctor/Register.js';
 import Meet from './pages/meet/Meet.js';
 import DoctorReview from './pages/patient/DoctorReview.js';
-import DoctorDeatils from './pages/doctor/DoctorDetails.js';
+import DoctorDeatils from './pages/doctor/DoctorDetail.js';
+import PatientDetails from './pages/doctor/PatientDetail.js';
 import theme from './Theme.js';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/doctor/register" element={<RegisterDoctor />} />
           <Route path='/patient/review' element={<DoctorReview />} />
           <Route path='/doctor-detail' element={<DoctorDeatils />} />
+          <Route path='/patient-detail' element={<PatientDetails />} />
           <Route path="/meet" element={<Meet />} />
           <Route path="/doctor" element={<NavBar />}>
             <Route index element={<CustomTabPanel />} />
