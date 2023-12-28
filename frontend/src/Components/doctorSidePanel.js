@@ -4,23 +4,55 @@ import DoneIcon from "@mui/icons-material/DoneOutlined";
 import ReschedIcon from "@mui/icons-material/EditCalendarOutlined";
 import ReportIcon from "@mui/icons-material/AssessmentOutlined";
 import DiagnosisIcon from "@mui/icons-material/MedicationOutlined";
-
+import axios from "axios";
 import { List, ListItemButton, ListItemText } from "@mui/material";
-import styled from "@emotion/styled";
+import { useNavigate } from "react-router-dom";
+import "./doctorSidePanel.css";
+const DoctorSidePanel = ({ appt }) => {
+  const Navigate = useNavigate();
 
+  function rescheduleNav() {
+    if (!appt.status ==="Completed" && !appt.status ==="Cancelled")
+      Navigate(`/doctor/appointments/reschedule/${appt._id}`);
+    else alert("Cannot reschedule a completed/cancelled appointment");
+  }
 
+  function cancelNav() {
+    if (!appt.status ==="Completed" && !appt.status ==="Cancelled")
+    Navigate(`/doctor/appointments/cancel/${appt._id}`);
+    else alert("Cannot cancel a completed/cancelled appointment");
+  }
 
-
-const DoctorSidePanel = ({appt}) => {
-
-    function rescheduleNav() {
-        Navigate(`/doctor/appointments/reschedule/${appt._id}`);
+  const markCompleted = async() => {
+    if (appt.status === "Completed") {
+      alert("You have already completed this appointment");
+    } else if (appt.status === "Cancelled") {
+      alert("You cannot complete a cancelled appointment");
+    }
+    else
+    {
+      const formattedStr = `http://localhost:3000/doctor/consultations/complete`;
+      const res = await axios.put(formattedStr, {
+        id: appt._id,
+      });
+  
+      console.log(res);
+      if (res.data.message === "Success") {
+        alert("Appointment marked as completed");
+        Navigate(`/doctor/appointments/${appt._id}`);
+      } else {
+        alert("Something went wrong");
       }
+    }
+
     
-      function cancelNav() {
-        Navigate(`/doctor/appointments/cancel/${appt._id}`);
-      }
-        
+  };
+
+    const startChat = () => {
+    Navigate(`/messages/${appt.patientId._id}`);
+    }
+
+   return ( 
   <div className="buttonPanel">
     <List sx={styles.list}>
       <ListItemButton onClick={startChat}>
@@ -28,7 +60,7 @@ const DoctorSidePanel = ({appt}) => {
         <ListItemText sx={styles.listItemText} primary="Start Chat" />
       </ListItemButton>
       <ListItemButton>
-        <DoneIcon sx={styles.icon} />
+        <DoneIcon sx={styles.icon} onClick={markCompleted}/>
         <ListItemText sx={styles.listItemText} primary="Mark as Completed" />
       </ListItemButton>
       <ListItemButton onClick={rescheduleNav}>
@@ -48,7 +80,8 @@ const DoctorSidePanel = ({appt}) => {
         <ListItemText sx={styles.listItemText} primary="Report" />
       </ListItemButton>
     </List>
-  </div>;
+  </div>
+   );
 };
 
 const styles = {

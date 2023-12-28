@@ -27,6 +27,8 @@ import axios from "axios";
 
 import "./RescheduleAppointment.css";
 import  AppointmentCard from "../../components/AppointmentCard";
+import DoctorSidePanel from "../../components/doctorSidePanel";
+
 
 const apptContext = createContext();
 
@@ -120,6 +122,9 @@ function RescheduleAppointment() {
   };
   return (
     <div className="rescheduleAppointmentScreen">
+      <div className="sidePanel">
+        <DoctorSidePanel appt={appointment} />
+      </div>
       <div className="ScreenBody">
         <div className="halfra">
           {appointment && <div className="appt"><AppointmentCard type="patient" appt={appointment} /></div>}

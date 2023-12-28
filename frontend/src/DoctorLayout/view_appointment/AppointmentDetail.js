@@ -10,7 +10,6 @@ import DoctorSidePanel from "../../components/doctorSidePanel";
 
 function AppointmentDetail() {
   const [appointment, setAppointment] = useState(null);
-  const Navigate = useNavigate();
   const { id } = useParams();
 
   const getAppointment = async () => {
@@ -46,7 +45,9 @@ function AppointmentDetail() {
 
   return (
     <div className="appointmentDetailsScreenDoc">
-      <DoctorSidePanel appt={appointment}/>
+      <div className="sidePanel">
+        <DoctorSidePanel appt={appointment}/></div>
+      
       <div className="ScreenBodyADoc">
         <div className="halfADoc">
           {appointment && (

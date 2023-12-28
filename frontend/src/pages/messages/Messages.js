@@ -19,6 +19,7 @@ import { useImmer } from "use-immer";
 import fetchMessages from "../../services/fetchMessages";
 import sendMessage from "../../services/sendMessage";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const ChatContainer = styled("div")({
   display: "flex",
@@ -101,7 +102,7 @@ export const Messages = () => {
   const [messages, setMessages] = useState([]);
   const [chats, setChat] = useState([]);
   const [selectedChat, setSelectedChat] = useImmer(null);
-  console.log(messages);
+  const{id}=useParams();
   const handleSendMessage = async () => {
     if (messageInput.trim() === "") return;
     const message = {text: messageInput, date: new Date(), senderId: selectedChat.primary._id};
@@ -130,7 +131,14 @@ export const Messages = () => {
     const fetch = async () => {
       const response = await fetchMessages();
       setMessages(response.messages[0].messages);
-      setSelectedChat(response.messages[0]);
+      setSelectedChat((draft) => {
+        const select= response?.map((c)=> c.secondary._id === id || c.primary._id === id ? draft = c : null)
+        if (select)
+        {
+            return  select;
+        }
+        return response.messages[0];
+      });
       setChat(response.messages);
     };
     fetch();

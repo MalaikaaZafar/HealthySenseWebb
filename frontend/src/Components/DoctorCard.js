@@ -105,7 +105,7 @@ function DoctorCard({ user, buttons, onFavChanged }) {
             onClick={goToUserPage}
             sx={{
                 minWidth: '300px',
-                maxWidth: '100%',
+                maxWidth: '400px',
                 width: '40%',
                 background: 'white', // Set your desired background color
                 borderRadius: '10px',

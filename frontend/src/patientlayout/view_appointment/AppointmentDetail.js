@@ -87,6 +87,7 @@ export const AppointmentDetail = () => {
             <div className="viewApptDetails">
               {appointment && <div className="viewApptDetailsLeft"><DetailComponent appt={appointment} /></div>}
           </div>
+          {appointment && !appointment.status==="Completed" && !appointment.status==="Cancelled" &&
           <div className="viewApptBottomRight">
             <Button sx={styles.button} onClick={reschedAppt}>
               Reschedule Appointment
@@ -95,6 +96,17 @@ export const AppointmentDetail = () => {
               Cancel Appointment
             </Button>
           </div>
+          }
+          {appointment && appointment.status==="Completed" && 
+          <div className="viewApptBottomRight">
+            <Button sx={styles.button} onClick={reschedAppt}>
+              View Diagnosis
+            </Button>
+            <Button sx={styles.button} onClick={cancelAppt}>
+            View Report
+            </Button>
+            </div>
+          }
         </div>
       </div>
     </div>

@@ -41,6 +41,7 @@ function App() {
           <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
           <Route path="appointmentSlots" element={<AppointmentSlots />} />
           <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
+          
         </Route>
 
         <Route path='/patient' element={<NavBar />}>
@@ -55,6 +56,7 @@ function App() {
         <Route path="/" element={<NavBar />}>
           <Route index element={<Search />} />
           <Route path='favorites' element={<Favorites />} />
+          <Route path='messages/:id' element={<Messages />} />          
         </Route>
       </Routes>
     </div >

@@ -22,11 +22,11 @@ const DetailComponent = ({appt}) => {
       <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt?.time}</p>
       </div>
       <div >
-       <p className="headingPatient"><PatientIcon/> Patient information </p>
+       <p className="headingPatient"><PatientIcon/> Doctor Information </p>
        <div className="detailPatient">
-              <p>Name: {appt.patientId.user.name}</p>
-              <p>Age: {calcAge()}</p>
-              <p>Phone: {appt.patientId.user.phoneNumber}</p>
+              <p>Specialization: {appt.doctorId.specialization}</p>
+              <p>Experience: {appt.doctorId.experience}</p>
+              <p>Working Hours: {appt.doctorId.workingHours}</p>
         </div>
       </div>
       <div >
