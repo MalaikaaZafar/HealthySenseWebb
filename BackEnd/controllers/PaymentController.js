@@ -69,6 +69,9 @@ const paymentController = {
         const { id } = req.params;
         try {
             const payment = await Payment.findById(id);
+            const appointment = await Appointment.findById(payment.appointmentId);
+            appointment.paymentStatus = 'Paid';
+            await appointment.save();
             payment.status = true;
             await payment.save();
             res.status(200).json({

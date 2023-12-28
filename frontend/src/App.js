@@ -39,6 +39,7 @@ import './App.css';
 import ConfirmPayement from './patientlayout/payment/PaymentConfirm.js';
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
+import AllReports from './patientlayout/reports/AllReports.js';
 
 function App() {
 
@@ -46,7 +47,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <Routes>
-          <Route path="*" element={<Payment />} />
+          <Route path="*" element={<AllReports />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<RegisterDoctor />} />

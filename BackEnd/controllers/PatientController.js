@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Doctor = require("../models/Doctor");
 const Patient = require("../models/Patient");
 const Appointment = require("../models/Apointments");
+const Diagnosis = require("../models/Diagnosis");
 const Payment = require("../models/Payment");
 const fs = require("fs");
 
@@ -251,7 +252,7 @@ const patientController = {
       if (File) {
         var fileName = `${user._id}_${File.name}`;
         //Check if file exists
-        if(fs.existsSync(`./uploads/${user.profilePicture}`)){
+        if (fs.existsSync(`./uploads/${user.profilePicture}`)) {
           fs.unlinkSync(`./uploads/${user.profilePicture}`);
         }
         fileName = fileName.replace(/\s/g, '');
@@ -267,6 +268,45 @@ const patientController = {
       await user.save();
       await patient.save();
       return res.status(200).json({ message: 'Success' });
+    } catch (error) {
+      console.log(error);
+      return res.status(502).json({ message: 'Something went wrong' });
+    }
+  },
+
+  getPatientDiagnosis: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const AllAppointments = await Appointment.find({ patientId: id }).exec();
+      var AllDiagnosis = [];
+      for (var i = 0; i < AllAppointments.length; i++) {
+        const diagnosis = await Diagnosis.findOne({ appointmentId: AllAppointments[i]._id }).populate('appointmentId').exec();
+        if (diagnosis) {
+          AllDiagnosis.push(diagnosis);
+        }
+      }
+      if (AllDiagnosis.length === 0) {
+        return res.status(200).json({ message: 'No diagnosis found' });
+      }
+      var SpecificDiagnosis = [];
+      for (var i = 0; i < AllDiagnosis.length; i++) {
+        for(var j=0; j<AllAppointments.length; j++){
+          if(AllDiagnosis[i].appointmentId._id.toString() === AllAppointments[j]._id.toString()){
+            const appointmentData = await Appointment.findById(AllAppointments[j]._id).populate('doctorId').exec();
+            const doctorData = await Doctor.findById(appointmentData.doctorId._id).populate('user').exec(); 
+            SpecificDiagnosis.push({
+              id: AllDiagnosis[i]._id,
+              doctorName: doctorData.user.name,
+              date:AllAppointments[j].date,
+              time:AllAppointments[j].time,
+              type:AllAppointments[j].type,
+              paymentStatus:AllAppointments[j].paymentStatus,
+              problem:AllAppointments[j].problem,
+            });
+          }
+        }
+      }
+      return res.status(200).json({ Diagnosis: SpecificDiagnosis });
     } catch (error) {
       console.log(error);
       return res.status(502).json({ message: 'Something went wrong' });
