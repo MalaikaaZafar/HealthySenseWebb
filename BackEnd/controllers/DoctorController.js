@@ -158,6 +158,19 @@ const doctorController = {
             return res.status(500).json({ message: "Something went wrong" });
         }
     },
+
+    completeAppt: async (req, res) => {
+      try{
+        const {id} = req.body;
+        await Appointment.findByIdAndUpdate({_id: id}, { status: "Completed" }, {new:true})
+        return res.status(200).json({ message: 'Success'});
+      }  
+      catch(err)
+      {
+        console.log(err.message);
+        return res.status(500).json({ message: "Something went wrong" });
+      }
+    },
     addSlots: async (req, res) => {
         const { slots } = req.body;
         const userId = "658aeab2a07cfdec21fc4968";

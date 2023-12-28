@@ -13,7 +13,7 @@ import {useImmer} from 'use-immer';
 
 import "./CancelAppointment.css";
 import AppointmentCard from "../../components/AppointmentCard";
-
+import DoctorSidePanel from "../../components/doctorSidePanel";
 
 const CancelAppointment = () => {
     const [reason, setReason]= useState("Something urgent came up");
@@ -65,6 +65,9 @@ const CancelAppointment = () => {
 
   return (
     <div className="cancelAppointmentScreenDoc">
+      <div className="sidePanel">
+      <DoctorSidePanel appt={appointment}/>
+      </div>
       <div className="ScreenBodyCADoc">
         <div className="halfCADoc">
           {
