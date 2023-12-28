@@ -6,7 +6,7 @@ import {createContext, useContext} from 'react';
 
 import DateIcon from '@mui/icons-material/DateRangeOutlined';
 import TimeIcon from '@mui/icons-material/AccessTimeOutlined';
-import { Divider } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 
 const appointmentContext=createContext();
 
@@ -100,7 +100,7 @@ function DoctorDetails() {
             <p style={{display:'flex', alignItems:'center', width: '100%'}}><TimeIcon sx={{margin: '2%'}}/>{appt?.time} </p>
             <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{appt?.date?  format(new Date(appt.date),'yyyy-MM-dd'):null}</p>
           </div>
-    </div>
+          </div>
   );
 }
 

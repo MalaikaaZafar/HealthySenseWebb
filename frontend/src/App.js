@@ -19,13 +19,14 @@ import FAQ from './pages/faqs/FAQ.js';
 import { Routes, Route } from 'react-router-dom';
 import Search from './pages/Search.js';
 import Favorites from './pages/Favorites.js';
+import AppointmentList from './DoctorLayout/view_appointment_list/ViewAppointmentList.js';
 
 function App() {
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<NavBar />}>
-          <Route index element={<FAQ />} />
+          <Route index element={<AppointmentList />} />
           </Route>
         
         <Route path="/admin" element={<NavBar />}>

@@ -26,18 +26,16 @@ function DetailComponent({appt}) {
       <p>{format(new Date(appt?.date), "yyyy-MM-dd")}</p>
       <p style={{color: "#2854C3", fontWeight: "bold"}}>{appt?.time}</p>
       </div>
-      <div>
-       <p className="heading"><PatientIcon sx={styles.icon}/> Doctor information </p>
-       <div className="detail">
-              <p>Dr. {appt?.doctorId?.user?.name} </p>
-              <p>{appt?.doctorId?.specialization}</p>
-              <p>{appt?.doctorId?.experience} Years of Experience</p>
-        </div>
-      </div>
       <div >
        <p className="heading"><ProblemIcon sx={styles.icon}/>Problem Description </p>
        <div className="detail">
               <p>{appt.problem}</p>
+        </div>
+      </div>
+      <div >
+       <p className="heading"><ProblemIcon sx={styles.icon}/>Patient information </p>
+       <div className="detail">
+              <p>Blood Group: {appt?.patientId?.bloodGroup}</p>
         </div>
       </div>
       <div >
