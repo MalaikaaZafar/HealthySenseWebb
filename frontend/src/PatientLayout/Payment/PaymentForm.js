@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { CardElement, useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
-import { Container } from "@mui/material";
-import Payment from "./Payment";
+import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
+import { Alert, Button, Container, Snackbar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { set } from "date-fns";
+import SavePayment from "../../services/patient/payment/savePayment";
+
 
 const PaymentForm = ({ id }) => {
     const stripe = useStripe();
     const elements = useElements();
     const navigate = useNavigate();
-
-
-    const [succeeded, setSucceeded] = useState("");
     const [message, setMessage] = useState("");
-    const [error, setError] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [variant, setVariant] = useState("success");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -26,25 +23,34 @@ const PaymentForm = ({ id }) => {
             confirmParams: {
                 return_url: "",
             },
-            redirect:'if_required'
+            redirect: 'if_required'
         });
         if (error) {
-            setMessage(error.message);
-        } 
-        else if(paymentIntent && paymentIntent.status==="succeeded"){
-            setMessage("Payment Successful");
-            try{
-                const response = await axios.post(`http://localhost:5000/payment/create-payment/${id}`);
-                const data = response.data;
-                console.log(data);
-                navigate('/patient/payment/confirm');
+            setMessage("Payment Failed.");
+            setOpen(true);
+            setVariant("error");
+        }
+        else if (paymentIntent && paymentIntent.status === "succeeded") {
+            if(await SavePayment(id)){
+                setMessage("Payment Successful.");
+                setOpen(true);
+                setVariant("success");
+                setTimeout(() => {
+                    navigate('/login');
+                }, 2000);
             }
-            catch(err){
-                console.log(err);
+            else{
+                setMessage("Payment Failed.");
+                setOpen(true);
+                setVariant("error");
+                setTimeout(() => {
+                    navigate('/login');
+                }, 2000);
             }
         }
         else {
             setMessage("Payment Failed.");
+            setVariant("error");
         }
     }
 
@@ -56,15 +62,48 @@ const PaymentForm = ({ id }) => {
 
     return (
         <form id="payment-form" onSubmit={handleSubmit}>
-            <Container>
+            <Container
+                sx={{
+                    marginTop: '5rem',
+                    borderRadius: '1rem',
+                    boxShadow: '0 0 10px rgba(0,0,0,0.2)',
+                    padding: '2rem',
+                    backgroundColor:'white',
+                }}
+            >
                 <PaymentElement id="card-element" options={{ layout: 'tabs' }} />
             </Container>
-            <button type="submit" disabled={!stripe}>
-                Pay
-            </button>
-            {
-                message && <p>{message}</p>
-            }
+            <Container
+                style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    marginTop: '1rem',
+                }}
+            >
+                <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    sx={{
+                        marginTop: '2rem',
+                    }}
+                >
+                    Confirm Payement
+                </Button>
+            </Container>
+            <Snackbar
+                open={open}
+                autoHideDuration={6000}
+                onClose={() => setOpen(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert severity={variant} sx={{ width: '100%' }}>
+                    {message}
+                </Alert>
+            </Snackbar>
+
         </form>
     );
 }
