@@ -1,7 +1,8 @@
+const mongoose = require("mongoose");
 const stripe = require("stripe")("sk_test_51ORCE8COwHOebIPaJCcA5KIonEpNVIL5NoNTFFquyPetGMIPuKMfbn7M3HQWa0NSM4Tih512nFrI2qfZrbWSFKLp00wwmvDQHk");
-const Diagnosis = require("../models/Diagnosis");
 const Appointment = require("../models/Apointments");
 const Payment = require("../models/Payment");
+const Diagnosis = require("../models/Diagnosis");
 
 const paymentController = {
     getClientSecret: async (req, res) => {

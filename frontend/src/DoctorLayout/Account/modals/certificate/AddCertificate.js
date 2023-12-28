@@ -131,8 +131,10 @@ const AddCertificate = ({ setDoctorData, CertificateModal, CertificateModalClose
                         }}
                         id="certificateInput"
                     />
-                    <label htmlFor="certificateInput">
-                        <Typography variant="contained" style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }} component="span">
+                    <label htmlFor="certificateInput"
+                        style={{ display: 'flex', flexDirection: 'row', gap: '10px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                        <Typography variant="contained" style={{ backgroundColor: '#3f51b5', color: 'white'}} component="span">
                             Upload Certificate
                         </Typography>
                     </label>

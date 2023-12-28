@@ -1,13 +1,11 @@
+const mongoose = require('mongoose');
 const Doctor = require('../models/Doctor');
 const User = require('../models/User');
 const Appointment = require('../models/Apointments');
-const Payment = require('../models/Payment');
-const Diagnosis = require('../models/Diagnosis');
-const { populate } = require('../models/Patient');
 const fs = require('fs');
 const Chat = require('../models/Message');
 const Patient = require('../models/Patient');
-
+const Diagnosis= require('../models/Diagnosis');
 
 const doctorController = {
 
@@ -354,7 +352,6 @@ const doctorController = {
 
     getAccountDetails: async (req, res) => {
         const { id } = req.params;
-        console.log(id);
         try{
             const doctor = await Doctor.findById(id).populate({ path: 'user' }).exec();
             if(!doctor)
@@ -369,10 +366,8 @@ const doctorController = {
 
     updateAccount: async (req, res) => {
         const { id } = req.params;
-        console.log(id);
-        const { specialization, description, location, experience, workingHours, services, certificates, sessions, user, availability } = req.body;
-        console.log(req.body);
-        console.log(req.files);
+        const { specialization, description, location, experience, workingHours, services, certificates, session, user, availability, phoneNumber } = req.body;
+        var UpdatedCertificates = JSON.parse(certificates);
         try {
             const doctor = await Doctor.findById(id);
             if (!doctor)
@@ -381,53 +376,66 @@ const doctorController = {
             if (!user)
                 return res.status(404).json({ message: "User not found" });
             if (req.files) {
-                if (req.files.profilePicture) {
-                    const file = req.files.profilePicture;
+                if (req.files.profile) {
+                    const file = req.files.profile;
+                    if(userdata.profilePicture && fs.existsSync(`./uploads/${userdata.profilePicture}`))
+                    {
+                        fs.unlinkSync(`./uploads/${userdata.profilePicture}`);
+                    }
                     const fileName = Date.now() + file.name;
-                    file.mv(`../uploads/${fileName}`, async (err) => {
+                    file.mv(`./uploads/${fileName}`, async (err) => {
                         if (err) {
                             console.log(err);
                             return res.status(500).send({ msg: "Error occured in uploading profile picture" });
                         }
                     });
-                    user.profilePicture = fileName;
+                    userdata.profilePicture = fileName; 
                 }
-                const UpdatedCertificates = JSON.parse(certificates);
+                console.log(certificates);
                 const OldCertificates = doctor.certificates;
-                const filteredCertificates = OldCertificates.filter(certificate => 
-                    UpdatedCertificates.some(updatedCertificate => updatedCertificate._id === certificate._id)
-                );
-                const newCertificates = UpdatedCertificates.filter(updatedCertificate => !updatedCertificate._id);
-                filteredCertificates.forEach(certificate => {
-                    const index = UpdatedCertificates.findIndex(updatedCertificate => updatedCertificate._id === certificate._id);
-                    if(certificate.file !== UpdatedCertificates[index].file){
-                        const file = req.files[UpdatedCertificates[index]._id];
-                        const fileName = (Date.now() + file.name).replace(/\s/g, '');  
-                        file.mv(`../uploads/${fileName}`, async (err) => {
-                            if (err) {
-                                console.log(err);
-                                return res.status(500).send({ msg: "Error occured in uploading certificates" });
+                UpdatedCertificates.forEach(certificate => {
+                    if (certificate._id) {
+                        const oldCertificate = OldCertificates.find(oldCertificate => oldCertificate._id == certificate._id);
+                        if(oldCertificate)
+                        {
+                            if (oldCertificate.file !== certificate.file) {
+                                if (fs.existsSync(`./uploads/${oldCertificate.file}`)) {   
+                                    fs.unlinkSync(`./uploads/${oldCertificate.file}`);
+                                }
+                                const file = req.files[certificate._id];
+                                const fileName = (Date.now() +"_" + file.name).replace(/\s/g, '');
+                                file.mv(`./uploads/${fileName}`, async (err) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return res.status(500).send({ msg: "Error occured in uploading certificates" });
+                                    }
+                                });
+                                certificate.file = fileName;
                             }
-                        });
+                        }
                     }
                 });
+                const newCertificates = UpdatedCertificates.filter(updatedCertificate => !updatedCertificate._id);
                 newCertificates.forEach(certificate => {
                     const file = req.files[certificate.file];
-                    const fileName = (Date.now() + file.name).replace(/\s/g, '');  
-                    file.mv(`../uploads/${fileName}`, async (err) => {
+                    const fileName = (Date.now()+"_" + file.name).replace(/\s/g, '');  
+                    file.mv(`./uploads/${fileName}`, async (err) => {
                         if (err) {
                             console.log(err);
                             return res.status(500).send({ msg: "Error occured in uploading certificates" });
                         }
                     });
+                    const index = UpdatedCertificates.findIndex(updatedCertificate => updatedCertificate.name === certificate.name);
+                    UpdatedCertificates[index].file = fileName;
                 });
             }
-            userdata.name = user.name;
-            userdata.email = user.email;
-            userdata.phoneNumber = user.phoneNumber;
-            userdata.gender=user.gender;
-            userdata.country=user.country;
-            userdata.dob=user.dob;
+            var newuser=JSON.parse(user);
+            userdata.name = newuser.name;
+            userdata.email = newuser.email;
+            userdata.phoneNumber = phoneNumber;
+            userdata.gender=newuser.gender;
+            userdata.country=newuser.country;
+            userdata.dob=newuser.dob;
             await userdata.save();
 
             doctor.specialization = specialization;
@@ -436,13 +444,11 @@ const doctorController = {
             doctor.experience = experience;
             doctor.workingHours = workingHours;
             doctor.services = JSON.parse(services);
-            doctor.certificates = JSON.parse(certificates);
-            doctor.sessions = JSON.parse(sessions);
+            doctor.certificates = UpdatedCertificates;
+            doctor.session = JSON.parse(session);
             doctor.availability = JSON.parse(availability);
-
-
+            await doctor.save();
             res.json({ message: "Success" });
-
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });   
@@ -458,7 +464,7 @@ const doctorController = {
             const appointment = await Appointment.findById(id);
             if (!appointment)
                 return res.status(404).json({ message: "Appointment not found" });
-            Diagnosis.create({ date: Date.now(), description: diagnosis, type, fee, notes, prescription, tests, appointmentId: id });
+            const diagnosisData = await Diagnosis.create({ date: Date.now(), description: diagnosis, type: type, fee: fee, notes: notes, prescription: prescription, tests: tests, appointmentId: id });
             appointment.status = "Completed";
             await appointment.save();
             console.log(appointment);   

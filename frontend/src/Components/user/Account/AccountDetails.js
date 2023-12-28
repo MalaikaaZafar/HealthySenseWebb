@@ -30,7 +30,7 @@ const AccountDetails = ({ Data, setData, setChanges,ImageUrl ,setImageUrl }) => 
 
     return (
         <>
-            <Typography variant="h4" style={{ textAlign: 'center' }}>Manage Account</Typography>
+            <Typography variant="h4" style={{ textAlign: 'center' }}>My Account</Typography>
             <div className="column123">
                 <Avatar sx={{ width: 300, height: 300 }} src={ImageUrl? Data.profilePicture :`http://localhost:5000/${Data.profilePicture}`}  />
                 <div className="row-display">
@@ -93,12 +93,12 @@ const AccountDetails = ({ Data, setData, setChanges,ImageUrl ,setImageUrl }) => 
                     fullWidth
                 />
                 <TextField id="outlined-basic" label="Phone" variant="outlined" value={Data.phoneNumber} onChange={(e) => {
-                    if (e.target.value.length > 12) {
+                    if (e.target.value.length > 10) {
                         alert("Phone Number Cannot be more than 12 digits")
                     }
                     else if (isNumeric(e.target.value)) {
                         setData(draft => {
-                            draft.user.phoneNumber = e.target.value;
+                            draft.user.phoneNumber =e.target.value;
                         })
                         setChanges(true);
                     }

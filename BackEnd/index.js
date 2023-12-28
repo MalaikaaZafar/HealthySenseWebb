@@ -13,12 +13,18 @@ app.use(fileUpload({
     createParentPath: true
 }));
 
+app.use(express.static('uploads'));
+
 app.use('/', require('./routes/UserRoutes'));
 app.use('/', require('./routes/PatientRoutes'));
 app.use('/doctor', require('./routes/DoctorRoutes'));
 app.use('/admin', require('./routes/AdminRoutes'));
 app.use('/patient', require('./routes/PatientRoutes'));
 app.use('/payment', require('./routes/PaymentRoutes'));
+
+app.get('/uploads/:image', (req, res)=>{
+    res.sendFile(__dirname+'/uploads/'+req.params.image);
+});
 
 
 const PORT =process.env.PORT || 3000;

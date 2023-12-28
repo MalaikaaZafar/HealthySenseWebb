@@ -1,4 +1,4 @@
-import { Button, Container, Typography } from "@mui/material";
+import { Button, Container, Typography, Snackbar, Alert } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
 import AddHistory from "./modals/AddHistory";
@@ -8,15 +8,23 @@ import PatientHistory from "./table/HistoryTable";
 import PatientBloodGroup from "./dropdown/BloodGroup";
 import AccountDetails from "../../components/user/Account/AccountDetails";
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
-import axios from "axios";
+import getAccountDetails from "../../services/patient/account/getAccountDetails";
+import saveAccountChanges from "../../services/patient/account/saveAccountChanges";
+import MedicalServicesRoundedIcon from '@mui/icons-material/MedicalServicesRounded';
+import { useNavigate } from "react-router-dom";
 
 
 const PatientManageAccount = () => {
+    const navigate = useNavigate();
+    
     const [isLoading, setIsLoading] = useState(true);
     const [Changes, setChanges] = useState(false);
     const [PatientData, setPatientData] = useImmer({});
     const [History, setHistory] = useImmer({});
     const [ImageUrl, setImageUrl] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [msg, setMsg] = useState("");
+    const [severity, setSeverity] = useState("success");
 
     const [Index, setIndex] = useState(-1);
     const [HistoryModal, setHistoryModal] = useState(false);
@@ -29,49 +37,56 @@ const PatientManageAccount = () => {
         setHistoryEditModal(false)
     };
     const HistoryEditModalOpen = () => { setHistoryEditModal(true) };
-
-    const fetchPatientData = async () => {
-        const id = "6585484c797f80875a8a769f";
-        try {
-            const response = await axios.get(`http://localhost:5000/patient/account/${id}`);
-            const data = response.data;
-            console.log(data);
-            data.user.dob = data.user.dob.slice(0, 10);
-            setIsLoading(false);
-            setPatientData(data);
-            setHistory(data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    const id = "6585484c797f80875a8a769f";
 
     const SaveData = async (e) => {
         e.preventDefault();
         const form_data = new FormData();
         form_data.append('name', PatientData.user.name);
         form_data.append('email', PatientData.user.email);
-        console.log(PatientData.history);
         form_data.append('history', JSON.stringify(PatientData.history));
         form_data.append('gender', PatientData.user.gender)
-        form_data.append('phoneNumber', PatientData.user.phoneNumber);
+        form_data.append('phoneNumber', "+92" + PatientData.user.phoneNumber);
         form_data.append('dob', PatientData.user.dob);
         form_data.append('bloodGroup', PatientData.bloodGroup);
         form_data.append('country', PatientData.user.country);
         form_data.append('profile', ImageUrl);
-        console.log(form_data);
-        try {
-            const response = await axios.post(`http://localhost:5000/patient/update/${PatientData._id}`, form_data);
-            const data = response.data;
-            console.log(data);
-            setHistory(PatientData)
+        if (await saveAccountChanges(id, form_data)) {
+            setHistory(PatientData);
+            setChanges(false);
+            setMsg("Changes Saved Successfully");
+            setSeverity("success");
+            setOpen(true);
         }
-        catch (error) {
-            console.log(error);
+        else {
+            setMsg("Error Occured");
+            setSeverity("error");
+            setOpen(true);
         }
     }
 
+    const fetchData = async () => {
+        const data = await getAccountDetails(id);
+        if (data !== null) {
+            console.log("Data");
+            console.log(data);
+            setPatientData(data);
+            setHistory(data);
+            setIsLoading(false);
+        }
+        else {
+            setMsg("Sorry Failed to Retrieve Data");
+            setSeverity('error')
+            setOpen(true);
+            setTimeout(() => {
+                navigate('/login');   
+            }, 2000);
+        }
+    }
+
+
     useEffect(() => {
-        fetchPatientData();
+        fetchData();
     }, []);
 
     return (
@@ -79,7 +94,20 @@ const PatientManageAccount = () => {
             <LoadingAnimation isVisible={isLoading} />
             {
                 isLoading ? null :
-                    <Container style={{ marginBottom: '70px', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                    <Container style={{ 
+                        marginBottom: '70px', 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        flexDirection: 'column', 
+                        alignItems: 'center' ,
+                        padding:'20px',
+                        backgroundColor:'white',
+                        borderRadius:'20px',
+                        marginTop:'30px',
+                        boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
+                        marginBottom:'30px'
+                    }}
+                    >
                         <div className="column211">
                             <AccountDetails
                                 Data={PatientData.user}
@@ -95,7 +123,17 @@ const PatientManageAccount = () => {
                                 setChanges={setChanges}
                             />
 
-                            <Typography variant="h6">History</Typography>
+                            <Typography variant="h6"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    fontWeight:'bold'
+                                }}
+                            >
+                                <MedicalServicesRoundedIcon />
+                                History
+                            </Typography>
                             <PatientHistory
                                 PatientData={PatientData}
                                 setPatientData={setPatientData}
@@ -127,7 +165,7 @@ const PatientManageAccount = () => {
                             Index={Index}
                         />
 
-                        <Container style={{ display: 'flex', justifyContent: 'space-around', paddingRight: '70px' }}>
+                        <Container style={{ display: 'flex', justifyContent: 'space-around', marginBottom:'20px' }}>
                             <Button variant="contained"
                                 style={{ backgroundColor: 'red', color: 'white', marginTop: '20px' }}
                                 onClick={() => {
@@ -154,6 +192,16 @@ const PatientManageAccount = () => {
                         </Container>
                     </Container>
             }
+            <Snackbar
+                open={open}
+                autoHideDuration={3000}
+                onClose={() => setOpen(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert onClose={() => setOpen(false)} severity={severity} sx={{ width: '100%' }}>
+                    {msg}
+                </Alert>
+            </Snackbar>
         </>
     )
 }

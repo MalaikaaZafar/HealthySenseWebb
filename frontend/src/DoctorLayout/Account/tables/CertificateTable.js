@@ -55,6 +55,7 @@ const CertificateTable = ({ DoctorData, setDoctorData, HandleCertificateEdit, se
                                 <Button
                                     variant="contained"
                                     onClick={() => HandleCertificateEdit(index)}
+                                    color="success"
                                 >
                                     Edit
                                 </Button>
@@ -67,6 +68,7 @@ const CertificateTable = ({ DoctorData, setDoctorData, HandleCertificateEdit, se
                                         })
                                         setChanges(true)
                                     }}
+                                    color="error"
                                 >
                                     Delete
                                 </Button>

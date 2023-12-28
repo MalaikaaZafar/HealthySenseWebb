@@ -1,12 +1,12 @@
 import NavBar from './components/NavBar.js';
 
-import CustomTabPanel from './DoctorLayout/view_appointment_list/ViewAppointmentList.js'
-import CancelAppointment from './DoctorLayout/cancel_appointment/CancelAppointment.js';
-import AppointmentSlots from './DoctorLayout/appointment_slots/AppointmentSlots.js';
-import RescheduleAppointment from './DoctorLayout/reschedule_appointment/RescheduleAppointment.js';
-import AppointmentDetail from './DoctorLayout/view_appointment/AppointmentDetail.js';
+import CustomTabPanel from './doctorlayout/view_appointment_list/ViewAppointmentList.js'
+import CancelAppointment from './doctorlayout/cancel_appointment/CancelAppointment.js';
+import AppointmentSlots from './doctorlayout/appointment_slots/AppointmentSlots.js';
+import RescheduleAppointment from './doctorlayout/reschedule_appointment/RescheduleAppointment.js';
+import AppointmentDetail from './doctorlayout/view_appointment/AppointmentDetail.js';
 
-import ViewAllPatients from './adminLayout/ViewAllPatients.js';
+import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
 import { RescheduleAppointment as ReschedulePatient } from './patientlayout/reschedule_appointment/RescheduleAppointment.js';
 import { AppointmentList as AppointmentListPatient } from './patientlayout/view_appointment_list/ViewAppointmentList.js';
@@ -30,7 +30,6 @@ import DoctorReview from './pages/patient/DoctorReview.js';
 
 
 import { Routes, Route } from 'react-router-dom';
-import Search from './pages/Search.js';
 import PatientManageAccount from './patientlayout/account/ManageAccount.js';
 import DoctorManageAccount from './doctorlayout/account/ManageAccount.js';
 import DiagnosisPage from './doctorlayout/diagnosis/DiagnosisPage.js';
@@ -47,7 +46,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <Routes>
-
+          <Route path="*" element={<Payment />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<RegisterDoctor />} />
@@ -67,6 +66,7 @@ function App() {
             <Route path="appointmentSlots" element={<AppointmentSlots />} />
             <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
             <Route path='patient-detail' element={<PatientDetail />} />
+            <Route path='account' element={<DoctorManageAccount />} />
           </Route>
 
           <Route path='/patient' element={<NavBar />}>
@@ -79,9 +79,10 @@ function App() {
             <Route path='book-appointment/:id' element={<BookAppointment />} />
             <Route path='review' element={<DoctorReview />} />
             <Route path='favorites' element={<Favorites />} />
+            <Route path='account' element={<PatientManageAccount />} />
           </Route>
 
-          <Route path="/" element={<NavBar />}>
+          <Route path="/nag" element={<NavBar />}>
             <Route path='doctor-detail' element={<DoctorDeatil />} />
             <Route index element={<Search />} />
           </Route>

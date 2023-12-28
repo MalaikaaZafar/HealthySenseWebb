@@ -29,7 +29,9 @@ const CustomTableCell = styled(TableCell)(({}) => ({
 
 const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModalOpen, setChanges }) => {
     return (
-        <Table>
+        <Table style={{
+            marginTop: '-20px',
+        }}>
             <TableHead>
                 <CustomTableRow>
                     <CustomTableCell style={{fontWeight:'bold', fontSize:'16px', width:'25%'}}>Type</CustomTableCell>
@@ -52,6 +54,7 @@ const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModa
                                             setIndex(index);
                                             HistoryEditModalOpen();
                                         }}
+                                        color="success"
                                     >
                                         Edit
                                     </Button>
@@ -64,6 +67,7 @@ const PatientHistory = ({ PatientData, setPatientData, setIndex, HistoryEditModa
                                             })
                                             setChanges(true);
                                         }}
+                                        color="error"
                                     >
                                         Delete
                                     </Button>

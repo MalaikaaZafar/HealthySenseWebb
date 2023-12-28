@@ -32,7 +32,7 @@ const DoctorServices = ({ DoctorData, setDoctorData, HandleServicesEdit, setChan
         <Table style={{marginTop:'-20px'}}>
             <TableHead>
                 <CustomTableRow>
-                    <CustomTableCell style={{fontWeight:'bold', fontSize:'16px', width:'80%'}}>Service</CustomTableCell>
+                    <CustomTableCell style={{fontWeight:'bold', fontSize:'18px', width:'80%'}}>Service</CustomTableCell>
                     <CustomTableCell style={{ width:'16%'}}></CustomTableCell>
                 </CustomTableRow>
             </TableHead>
@@ -49,6 +49,7 @@ const DoctorServices = ({ DoctorData, setDoctorData, HandleServicesEdit, setChan
                                         onClick={() => {
                                             HandleServicesEdit(index);
                                         }}
+                                        color="success"
                                     >
                                         Edit
                                     </Button>
@@ -60,6 +61,7 @@ const DoctorServices = ({ DoctorData, setDoctorData, HandleServicesEdit, setChan
                                             })
                                             setChanges(true);
                                         }}
+                                        color="error"
                                     >
                                         Delete
                                     </Button>
