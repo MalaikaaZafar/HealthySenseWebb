@@ -30,7 +30,6 @@ import DoctorReview from './pages/patient/DoctorReview.js';
 
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
-import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
 function App() {
   return (
