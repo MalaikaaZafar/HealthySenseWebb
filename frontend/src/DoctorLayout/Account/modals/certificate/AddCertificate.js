@@ -6,18 +6,19 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
 
-const AddCertificate = ({ setDoctorData, CertificateModal, CertificateModalClose, setChanges }) => {
+const AddCertificate = ({ setDoctorData, CertificateModal, CertificateModalClose, setChanges, setFiles }) => {
     const [Certificates, setCertificates] = useImmer({
         name: "",
         description: "",
         issueDate: "",
         expiryDate: "",
         approvedStatus: false,
-        File: null,
+        file: "",
     });
+    const [CertificateFile, setCertificateFile] = useState(null);
 
     const HandleCertificateChange = () => {
-        if (Certificates.name.trim() === "" || Certificates.description.trim() === "" || Certificates.issueDate === "" || Certificates.expiryDate === "" || Certificates.File === null) {
+        if (Certificates.name.trim() === "" || Certificates.description.trim() === "" || Certificates.issueDate === "" || Certificates.expiryDate === "" || Certificates.file === "") {
             alert("Please fill all the fields");
             return;
         }
@@ -39,6 +40,17 @@ const AddCertificate = ({ setDoctorData, CertificateModal, CertificateModalClose
                 }
             }
         }
+        if (CertificateFile !== null) {
+            setFiles(draft => {
+                draft.push(
+                    {
+                        name: Certificates.file,
+                        newFile: true,
+                        file: CertificateFile,
+                    }
+                )
+            })
+        }
         setDoctorData(draft => {
             draft.certificates.push(Certificates);
         })
@@ -48,7 +60,7 @@ const AddCertificate = ({ setDoctorData, CertificateModal, CertificateModalClose
             draft.issueDate = "";
             draft.expiryDate = "";
             draft.approvedStatus = false;
-            draft.File = null;
+            draft.file = "";
         })
         setChanges(true);
         CertificateModalClose();
@@ -108,12 +120,14 @@ const AddCertificate = ({ setDoctorData, CertificateModal, CertificateModalClose
                 </div>
                 <div className="row-display">
                     <input type="file"
-                        accept="image/*"
+                        accept=".pdf"  
                         style={{ display: 'none' }}
                         onChange={(e) => {
                             setCertificates(draft => {
-                                draft.File = e.target.files[0];
-                            })
+                                draft.file = e.target.files[0].name;
+                                draft.file = draft.file.replace(/\s/g, '');
+                            });
+                            setCertificateFile(e.target.files[0]);
                         }}
                         id="certificateInput"
                     />
@@ -123,7 +137,7 @@ const AddCertificate = ({ setDoctorData, CertificateModal, CertificateModalClose
                         </Typography>
                     </label>
                     {
-                        Certificates.File !== null ? <Typography>{Certificates.File.name}</Typography> : null
+                        Certificates.file !== "" ? <Typography>{Certificates.file}</Typography> : null
                     }
                 </div>
                 <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>

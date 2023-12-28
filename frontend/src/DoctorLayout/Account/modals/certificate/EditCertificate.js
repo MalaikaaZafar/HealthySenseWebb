@@ -7,7 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
 import axios from "axios";
 
-const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, CertificateEditModalClose, setChanges, CertificateIndex }) => {
+const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, CertificateEditModalClose, setChanges, CertificateIndex, setFiles }) => {
     const [Certificates, setCertificates] = useImmer({
         name: "",
         description: "",
@@ -19,7 +19,7 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
     const [CertificateFile, setCertificateFile] = useState(null);
 
     const HandleCertificateEditChange = async () => {
-        if (Certificates.name.trim() === "" || Certificates.description.trim() === "" || Certificates.issueDate === "" || Certificates.expiryDate === "" || Certificates.file === null) {
+        if (Certificates.name.trim() === "" || Certificates.description.trim() === "" || Certificates.issueDate === "" || Certificates.expiryDate === "" || Certificates.file === "") {
             alert("Please fill all the fields");
             return;
         }
@@ -41,6 +41,17 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
                 }
             }
         }
+        if (CertificateFile !== null) {
+            setFiles(draft => {
+                draft.push(
+                    {
+                        name: DoctorData.certificates[CertificateIndex]._id,
+                        newFile: false,
+                        file: CertificateFile,
+                    }
+                )
+            })
+        }
         setDoctorData(draft => {
             draft.certificates[CertificateIndex].name = Certificates.name;
             draft.certificates[CertificateIndex].description = Certificates.description;
@@ -50,15 +61,6 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
             draft.certificates[CertificateIndex].file = Certificates.file;
         })
         if (CertificateFile !== null) {
-            const form_data = new FormData();
-            form_data.append('file', CertificateFile);
-            form_data.append('id', DoctorData.certificates[CertificateIndex]._id);
-            try {
-                const response =await axios.post('http://localhost:5000/doctor/account/certificate/upload', form_data);
-                console.log(response);
-            } catch (error) {
-                console.log(error);
-            }
         }
 
         setCertificates(draft => {
@@ -148,11 +150,12 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
                 </div>
                 <div className="row-display">
                     <input type="file"
-                        accept="pdf/*"
+                        accept=".pdf"  
                         style={{ display: 'none' }}
                         onChange={(e) => {
                             setCertificates(draft => {
                                 draft.file = e.target.files[0].name;
+                                draft.file = draft.file.replace(/\s/g, '');
                             })
                             setCertificateFile(e.target.files[0]);
                         }}
@@ -164,7 +167,7 @@ const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, Cert
                         </Typography>
                     </label>
                     {
-                        Certificates.file !== null ? <Typography>{Certificates.file}</Typography> : null
+                        Certificates.file !== "" ? <Typography>{Certificates.file}</Typography> : null
                     }
                 </div>
                 <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '0px' }}>

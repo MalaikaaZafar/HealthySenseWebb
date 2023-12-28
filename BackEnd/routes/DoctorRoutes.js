@@ -15,4 +15,5 @@ router.get("/search", doctorController.searchDoctors);
 router.get("/appointments/:id", doctorController.getAppintmentDetails);
 router.post("/appointments/:id/diagnosis", doctorController.createDiagnosis);
 router.get("/account/:id", doctorController.getAccountDetails);
+router.put("/account/:id", doctorController.updateAccount);
 module.exports = router;

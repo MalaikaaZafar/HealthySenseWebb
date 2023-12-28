@@ -293,26 +293,84 @@ const doctorController = {
     },
 
     updateAccount: async (req, res) => {
-        const { specialization, description, location, experience, workingHours, sessions, services, certificates, user } = req.body;
-        const Files=req.files.certificates;
-        const UserId = "65854380aa6b07046cf14512";
+        const { id } = req.params;
+        console.log(id);
+        const { specialization, description, location, experience, workingHours, services, certificates, sessions, user, availability } = req.body;
+        console.log(req.body);
+        console.log(req.files);
         try {
-            const doctor = await Doctor.findOne({ id: UserId });
+            const doctor = await Doctor.findById(id);
             if (!doctor)
-                return res.status(404).json({ message: "Doctor not found" });
+                return res.status(404).json({ message: "Doctor not found" });   
+            const userdata = await User.findById(doctor.user);
+            if (!user)
+                return res.status(404).json({ message: "User not found" });
+            if (req.files) {
+                if (req.files.profilePicture) {
+                    const file = req.files.profilePicture;
+                    const fileName = Date.now() + file.name;
+                    file.mv(`../uploads/${fileName}`, async (err) => {
+                        if (err) {
+                            console.log(err);
+                            return res.status(500).send({ msg: "Error occured in uploading profile picture" });
+                        }
+                    });
+                    user.profilePicture = fileName;
+                }
+                const UpdatedCertificates = JSON.parse(certificates);
+                const OldCertificates = doctor.certificates;
+                const filteredCertificates = OldCertificates.filter(certificate => 
+                    UpdatedCertificates.some(updatedCertificate => updatedCertificate._id === certificate._id)
+                );
+                const newCertificates = UpdatedCertificates.filter(updatedCertificate => !updatedCertificate._id);
+                filteredCertificates.forEach(certificate => {
+                    const index = UpdatedCertificates.findIndex(updatedCertificate => updatedCertificate._id === certificate._id);
+                    if(certificate.file !== UpdatedCertificates[index].file){
+                        const file = req.files[UpdatedCertificates[index]._id];
+                        const fileName = (Date.now() + file.name).replace(/\s/g, '');  
+                        file.mv(`../uploads/${fileName}`, async (err) => {
+                            if (err) {
+                                console.log(err);
+                                return res.status(500).send({ msg: "Error occured in uploading certificates" });
+                            }
+                        });
+                    }
+                });
+                newCertificates.forEach(certificate => {
+                    const file = req.files[certificate.file];
+                    const fileName = (Date.now() + file.name).replace(/\s/g, '');  
+                    file.mv(`../uploads/${fileName}`, async (err) => {
+                        if (err) {
+                            console.log(err);
+                            return res.status(500).send({ msg: "Error occured in uploading certificates" });
+                        }
+                    });
+                });
+            }
+            userdata.name = user.name;
+            userdata.email = user.email;
+            userdata.phoneNumber = user.phoneNumber;
+            userdata.gender=user.gender;
+            userdata.country=user.country;
+            userdata.dob=user.dob;
+            await userdata.save();
+
             doctor.specialization = specialization;
             doctor.description = description;
             doctor.location = location;
             doctor.experience = experience;
             doctor.workingHours = workingHours;
-            doctor.fee = fee;
-            doctor.services = services;
-            await doctor.save();
-            return res.status(200).json({ message: "Success" });
-        }
-        catch (error) {
+            doctor.services = JSON.parse(services);
+            doctor.certificates = JSON.parse(certificates);
+            doctor.sessions = JSON.parse(sessions);
+            doctor.availability = JSON.parse(availability);
+
+
+            res.json({ message: "Success" });
+
+        } catch (error) {
             console.log(error.message);
-            return res.status(500).json({ message: "Something went wrong" });
+            return res.status(500).json({ message: "Something went wrong" });   
         }
     },
 

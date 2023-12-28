@@ -44,14 +44,12 @@ const CertificateTable = ({ DoctorData, setDoctorData, HandleCertificateEdit, se
             </TableHead>
             <TableBody>
                 {DoctorData.certificates.length > 0 ? DoctorData.certificates.map((certificate, index) => {
-                    certificate.issueDate=certificate.issueDate.slice(0,10);
-                    certificate.expiryDate=certificate.expiryDate.slice(0,10);
                     return (
                         <CustomTableRow> 
                             <CustomTableCell className="adjust" style={{ width:'15%'}}>{certificate.name}</CustomTableCell>
                             <CustomTableCell className="disappear" style={{ width:'25%'}}>{certificate.description}</CustomTableCell>
-                            <CustomTableCell className="disappear" style={{ width:'15%'}}>{certificate.issueDate}</CustomTableCell>
-                            <CustomTableCell className="disappear" style={{ width:'15%'}}>{certificate.expiryDate}</CustomTableCell>
+                            <CustomTableCell className="disappear" style={{ width:'15%'}}>{certificate.issueDate.slice(0,10)}</CustomTableCell>
+                            <CustomTableCell className="disappear" style={{ width:'15%'}}>{certificate.expiryDate.slice(0,10)}</CustomTableCell>
                             <CustomTableCell className="adjust" style={{ width:'15%'}}>{certificate.approvedStatus ? "Approved": "Not Approved"}</CustomTableCell>
                             <CustomTableCell style={{ width:'20%', flexWrap:'wrap'}}>
                                 <Button

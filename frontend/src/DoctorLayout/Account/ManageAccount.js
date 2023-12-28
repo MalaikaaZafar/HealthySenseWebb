@@ -18,6 +18,7 @@ const DoctorManageAccount = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [Changes, setChanges] = useState(false);
     const [ImageUrl, setImageUrl] = useState(null);
+    const [Files, setFiles] = useImmer([]);
 
     const [DoctorData, setDoctorData] = useImmer({
         user: {
@@ -63,50 +64,7 @@ const DoctorManageAccount = () => {
         ],
     });
 
-    const [History, setHistory] = useImmer({
-        users: {
-            _id: "",
-            name: "John Doe",
-            dob: "2003-02-11",
-            country: "123, ABC Street, XYZ City",
-            phoneNumber: 1234567890,
-            email: "JohnDoe@Email",
-            gender: 'Male',
-            profilePicture: null,
-        },
-        specialization: "Cardiologist",
-        description: "I am a cardiologist",
-        location: "ABC Hospital",
-        experience: 10,
-        workingHours: "10:00 AM - 6:00 PM",
-        fee: 500,
-        availability: true,
-        session: [
-            {
-                type: "Online",
-                fee: 500,
-            },
-            {
-                type: "Clinic",
-                fee: 500,
-            },
-        ],
-        certificates: [
-            {
-                name: "Certificate 1",
-                description: "Certificate 1 Description",
-                issueDate: "2021-10-10",
-                expiryDate: "2021-10-10",
-                approvedStatus: true,
-                File: null,
-            },
-        ],
-        services: [
-            "Service 1",
-            "Service 2",
-            "Service 3"
-        ],
-    });
+    const [History, setHistory] = useImmer({});
 
     const [CertificateModal, setCertificateModal] = useState(false);
 
@@ -158,6 +116,34 @@ const DoctorManageAccount = () => {
             console.log(data.doctor);
             setDoctorData(data.doctor);
             setHistory(data.doctor);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const SaveChanges = async () => {
+        const form_data = new FormData();
+        form_data.append("user", JSON.stringify(DoctorData.user));
+        form_data.append("specialization", DoctorData.specialization);
+        form_data.append("description", DoctorData.description);
+        form_data.append("location", DoctorData.location);
+        form_data.append("experience", DoctorData.experience);
+        form_data.append("workingHours", DoctorData.workingHours);
+        form_data.append("availability", DoctorData.availability);
+        form_data.append("session", JSON.stringify(DoctorData.session));
+        form_data.append("certificates", JSON.stringify(DoctorData.certificates));
+        form_data.append("services", JSON.stringify(DoctorData.services));
+        form_data.append("profile", ImageUrl);
+        for (let i = 0; i < Files.length; i++) {
+            form_data.append(`${Files[i].name}`, Files[i].file);
+        }
+        try {
+            const response = await axios.put(`http://localhost:5000/doctor/account/${ID}`, form_data);
+            const data = response.data;
+            console.log(data);
+            setHistory(DoctorData);
+            setChanges(false);
+            setFiles([]);
         } catch (error) {
             console.log(error);
         }
@@ -222,6 +208,7 @@ const DoctorManageAccount = () => {
                         CertificateModal={CertificateModal}
                         CertificateModalClose={CertificateModalClose}
                         setChanges={setChanges}
+                        setFiles={setFiles}
                     />
                     <EditCertificate
                         DoctorData={DoctorData}
@@ -230,6 +217,7 @@ const DoctorManageAccount = () => {
                         CertificateEditModalClose={CertificateEditModalClose}
                         CertificateIndex={CertificateEditIndex}
                         setChanges={setChanges}
+                        setFiles={setFiles}
                     />
 
                     <AddService
@@ -253,13 +241,16 @@ const DoctorManageAccount = () => {
                             style={{ backgroundColor: 'red', color: 'white', marginTop: '20px' }}
                             onClick={() => {
                                 setDoctorData(draft => {
-                                    draft.user = History.users;
+                                    draft.user.name = History.user.name;
+                                    draft.user.dob = History.user.dob;
+                                    draft.user.country = History.user.country;
+                                    draft.user.phoneNumber = History.user.phoneNumber;
+                                    draft.user.email = History.user.email;
                                     draft.specialization = History.specialization;
                                     draft.description = History.description;
                                     draft.location = History.location;
                                     draft.experience = History.experience;
                                     draft.workingHours = History.workingHours;
-                                    draft.fee = History.fee;
                                     draft.availability = History.availability;
                                     draft.session = History.session;
                                     draft.certificates = History.certificates;
@@ -273,6 +264,7 @@ const DoctorManageAccount = () => {
                         <Button variant="contained"
                             style={{ backgroundColor: Changes ? '#3f51b5' : 'grey', color: 'white', marginTop: '20px' }}
                             onClick={() => {
+                                SaveChanges();  
                                 setChanges(false);
                             }}
                             disabled={!Changes}

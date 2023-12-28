@@ -22,7 +22,6 @@ const doctorSchema = new mongoose.Schema({
     location: { type: String, required: true },
     experience: { type: Number, required: true },
     workingHours: { type: String, required: true },
-    fee: { type: Number, required: true },
     availability: { type: Boolean, default: true },
     certificates: [certificateSchema],
     services: [{ type: String}],
