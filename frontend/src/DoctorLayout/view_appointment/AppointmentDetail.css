@@ -1,0 +1,145 @@
+  *{
+  font-family: Roboto;
+  }  
+
+  .ScreenBodyAD{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 50%;
+  }
+  
+  .halfAD{
+    width: 100%;
+    margin-top: 3%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .patientDetails
+  {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+  }
+  
+  .docName p
+  {
+    margin: 5px;
+    color: #172331;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: normal;
+  }
+  
+  .docSpeciality p, .docExperience p
+  {
+    margin:5px;
+    color: #8C8FA5;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.42px;
+  }
+  
+  .topComponent{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+ 
+  .appointmentHours
+  {
+    display: flex;
+    flex-direction: row;
+  
+  }
+  
+  .appointmentHour
+  {
+    margin: 2px;
+    padding: 5px;
+    width: 50%;
+    background: #E9F5FA;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  .appointmentHour:hover
+  {
+    background: #2854C3;
+    color: #FFF;
+  } 
+  
+  .appointmentProblem textarea{
+    width: 100%;
+    height: 200px;
+}
+  .infoCard
+  {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; 
+    border-radius: 10px;
+    margin-bottom: 10%;
+    align-items: center;
+  }
+
+  
+  
+  .infoCard .information
+  {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    text-align: center;
+    align-items: center;
+    background-color: #2854c3;
+    margin:1%;
+    border-radius: 13px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  
+  .appointmentDetails{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-top: 3%;
+    padding: 5%;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .heading{
+    display: flex;
+    flex-direction: row;
+    font-weight: bold;
+    align-items: center;
+    margin: 0px;
+  }
+
+.appointmentDetails p{
+        margin: 0px;
+        padding: 0px;
+        color: #8C8FA5
+    }
+.detail{
+    margin-top: auto;
+    margin-bottom: 5%;
+    width: 100%;
+}
+.detail p{
+  margin-left: 4%;
+}
+.appointmentBtns {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+}

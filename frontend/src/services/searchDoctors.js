@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-const searchDoctors = async (searchText, selectedButton, sortDirection, specialtyFilter, minRating) => {
+const searchDoctors = async (searchText, selectedButton, sortDirection, specialtyFilter, minRating, skip) => {
     try {
         const params = {
             query: searchText,
             sort: selectedButton,
             sortOrder: sortDirection,
+            skip: skip,
         };
         if (specialtyFilter !== '') {
             params.specialty = specialtyFilter;
@@ -17,9 +18,11 @@ const searchDoctors = async (searchText, selectedButton, sortDirection, specialt
         const response = await axios.get(`http://localhost:3000/doctor/search`, {
             params: params
         });
+        console.log(response);
         return response.data;
     } catch (error) {
         console.error(error);
+        return -1;
     }
 };
 

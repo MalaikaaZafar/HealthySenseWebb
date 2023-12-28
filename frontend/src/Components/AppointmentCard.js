@@ -6,8 +6,10 @@ import {createContext, useContext} from 'react';
 
 import DateIcon from '@mui/icons-material/DateRangeOutlined';
 import TimeIcon from '@mui/icons-material/AccessTimeOutlined';
+import { Divider } from "@mui/material";
 
 const appointmentContext=createContext();
+
 function AppointmentCard({ type, appt }) {
   const Navigate = useNavigate();
   const goToDetails = (event) => {
@@ -25,35 +27,14 @@ function AppointmentCard({ type, appt }) {
         width: "100%",
         background: "#F4F9FB",
         borderRadius: "10px",
-        margin: "10px",
       }}
     >
-      <div className="user-card-img">
-        <Avatar
-          style={{
-            margin: "1%",
-            marginLeft: "5%",
-            marginRight: "5%",
-            height: "75px",
-            width: "75px",
-            float: "left",
-          }}
-        >
-          H
-        </Avatar>
-        <div className="patientDetails" onClick={goToDetails} style={{ margin: "3%" }}>
+        <div className="patientDetails" onClick={goToDetails} style={{ margin: "3%", width:'100%' }}>
           <appointmentContext.Provider value={appt}>
-          {type === "doctor" ? <DoctorDetails /> : <PatientDetails />}
+          {appt && type === "doctor" ? <DoctorDetails /> : <PatientDetails />}
           </appointmentContext.Provider>
-          <div className="docSpeciality">
-            <p>Online Session</p>
-          </div>
-          <div className="docExperience">
-            <p style={{display:'flex', alignItems:'center'}}><TimeIcon sx={{margin: '2%'}}/>{appt.time} </p>
-            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{format(new Date(appt.date), "yyyy-MM-dd")}</p>
-          </div>
+         
         </div>
-      </div>
     </Card>
   );
 }
@@ -62,9 +43,32 @@ function AppointmentCard({ type, appt }) {
 function PatientDetails() {
   const appt=useContext(appointmentContext);
   return (
-    <div className="docName">
-      <p>Name: {appt.patientId?.user?.name}</p>
-      <p>Status: <b>{appt.status}</b></p>
+    <div className="user-card-img" style={{width:'100%', display:'flex', flexDirection:'row'}}>
+    <Avatar
+      style={{
+        margin: "1%",
+        margin: "5%",
+        height: "75px",
+        width: "75px",
+        float: "left",
+      }}
+    >
+      H
+    </Avatar>
+    <div className='apptCardInfo' style={{width:'100%',display:'flex', flexDirection:'column'}}>
+    <div className="docName" style={{width:'100%', display:'flex', flexDirection:'row'}}>
+      <p>{appt?.patientId?.user?.name}</p>
+      <Divider orientation="vertical" flexItem sx={styles.div} />
+      <p>Status: {appt?.status}</p>
+    </div>
+    <div className="docSpeciality">
+            <p>Online Session</p>
+          </div>
+          <div className="docExperience" style={{width:'100%'}}> 
+            <p style={{display:'flex', alignItems:'center', width: '100%'}}><TimeIcon sx={{margin: '1%'}}/>{appt?.time} </p>
+            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '1%'}}/>{appt?.date?  format(new Date(appt.date),'yyyy-MM-dd'):null}</p>
+          </div>
+    </div>
     </div>
   );
 }
@@ -72,11 +76,38 @@ function PatientDetails() {
 function DoctorDetails() {
   const appt=useContext(appointmentContext);
   return (
+     <div className="user-card-img" style={{width:'100%'}}>
+        <Avatar
+          style={{
+            margin: "1%",
+            marginLeft: "3%",
+            marginRight: "3%",
+            height: "75px",
+            width: "75px",
+            float: "left",
+          }}
+        >
+          H
+        </Avatar>
     <div className="docName">
-      <p>Dr. {appt.doctorId?.user?.name}</p>
-      <p>Status:  {appt.status}</p>
+      <p>Dr. {appt?.doctorId?.user?.name}</p>
+      <p>Status:  {appt?.status}</p>
+    </div>
+    <div className="docSpeciality">
+      <p>Online Session</p>
+        </div>
+          <div className="docExperience" style={{width:'100%'}}> 
+            <p style={{display:'flex', alignItems:'center', width: '100%'}}><TimeIcon sx={{margin: '2%'}}/>{appt?.time} </p>
+            <p style={{display:'flex', alignItems:'center'}}><DateIcon sx={{margin: '2%'}}/>{appt?.date?  format(new Date(appt.date),'yyyy-MM-dd'):null}</p>
+          </div>
     </div>
   );
 }
 
+const styles={
+  div:{
+    marginLeft:'10%',
+    marginRight:'10%',
+  }
+}
 export default AppointmentCard;

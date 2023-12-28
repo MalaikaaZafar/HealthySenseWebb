@@ -6,18 +6,20 @@ const secret = process.env.SECRET;
 
 const auth = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    // const token = req.headers.authorization.split(" ")[1];
 
-    let decodedData;
+    // let decodedData;
 
-    if (token) {    
-      decodedData = jwt.verify(token, secret, (decodedData, error) => {
-        if (error) {
-          return res.status(401).json({ message: "Invalid Token" });
-        }
-        req.userId = decodedData?.id;
-      });
-    }
+    // if (token) {    
+    //   decodedData = jwt.verify(token, secret, (decodedData, error) => {
+    //     if (error) {
+    //       return res.status(401).json({ message: "Invalid Token" });
+    //     }
+    //     req.userId = decodedData?.id;
+    //   });
+    // }
+   // req.userId="65854380aa6b07046cf14509"; //patient
+    req.userId="658aeab2a07cfdec21fc4930"; //doctor
 
     next();
 

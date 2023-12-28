@@ -1,0 +1,196 @@
+*{
+    font-family: Roboto;
+    }  
+
+.halfra p{
+  
+}
+
+.halfReschedDoc2{
+  width: 50%;
+  padding: 3%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.typeSetter{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+body {
+  background-color: #f7f7f7; /* Light background color */
+  font-family: 'Roboto', sans-serif; /* Use the Roboto font */
+  margin: 0;
+  padding: 0;
+}
+    .ScreenBody{
+      display: flex;
+      flex-direction: row;
+    }
+    
+    .halfra{
+      width: 50%;
+      margin: 3%;
+      padding: 3%;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #ffffff;
+    }
+    .addSlotBtn{
+      margin: 10px;
+      width: 50%;
+      text-transform: none;
+      border-radius: 10px;
+    }
+
+    .appt {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .patientDetails
+    {
+      display: flex;
+      flex-direction: column;
+      width: fit-content;
+    }
+    
+    .docName p
+    {
+      margin: 5px;
+      color: #172331;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: normal;
+    }
+    
+    .docSpeciality p, .docExperience p
+    {
+      margin:5px;
+      color: #8C8FA5;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: normal;
+      letter-spacing: 0.42px;
+    }
+    
+    .topComponent{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+   
+    .appointmentHoursResched
+    {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+  .appointmentBtns {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 3%; /* Align to the bottom of the container */
+  }
+  
+  .reasonDiv{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  
+  .appointmentHour {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+    padding: 5%;
+    width: 25%;
+    color: #8C8FA5;
+    font-size: 13px;
+    border-radius: 10px;
+    text-align: center;
+    transition: background 0.3s, color 0.3s; 
+  }
+  
+  .appointmentHour:hover {
+    background: #2854C3;
+    color: #ffffff;
+  }
+
+
+  .apptResched{
+    width: 90%;
+    border-style: solid;
+    padding: 5%;
+    border-radius: 10px;
+    border-color: #b5b7bd;
+    border-width: 1px;
+    margin: 5px;
+  }
+
+  .apptResched h3{
+    color: #2854C3;
+    margin: 10px;
+  }
+
+  .selectSlot{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+    width: 100%;
+    color: #8C8FA5;
+    font-size: 13px;
+    border-radius: 10px;
+    text-align: center;
+    transition: background 0.3s, color 0.3s; 
+  }
+
+  @media only screen and (max-width: 768px) {
+    .ScreenBody{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .halfra{
+      width: 90%;
+      margin: 3%;
+      margin-bottom: 0px;
+      padding: 3%;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #ffffff;
+    }
+
+    .halfReschedDoc2{
+      width: 90%;
+      padding: 3%;
+      border-radius: 10px;
+      margin-top: 0px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    
+  }
