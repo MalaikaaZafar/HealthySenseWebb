@@ -73,6 +73,7 @@ const AllReports = () => {
                         alignItems: 'flex-start',
                         width: '100%',
                         gap: '20px',
+                        outerHeight: '100%',
                         marginTop: '30px',
                         padding: '30px',
                         borderRadius: '10px',
