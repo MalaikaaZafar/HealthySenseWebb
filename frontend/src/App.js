@@ -40,6 +40,7 @@ import ConfirmPayement from './patientlayout/payment/PaymentConfirm.js';
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
 import AllReports from './patientlayout/reports/AllReports.js';
+import ViewReportPatient from './pages/report/ViewReportPatient.js';
 
 function App() {
 
@@ -81,6 +82,10 @@ function App() {
             <Route path='review' element={<DoctorReview />} />
             <Route path='favorites' element={<Favorites />} />
             <Route path='account' element={<PatientManageAccount />} />
+            <Route path='payment' element={<Payment />} />
+            <Route path='payment/confirm' element={<ConfirmPayement />} />
+            <Route path='reports' element={<AllReports />} />
+            <Route path='report/:id' element={<ViewReportPatient />} />
           </Route>
 
           <Route path="/nag" element={<NavBar />}>

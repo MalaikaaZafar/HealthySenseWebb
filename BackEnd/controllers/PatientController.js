@@ -312,6 +312,7 @@ const patientController = {
       return res.status(502).json({ message: 'Something went wrong' });
     }
   },
+
 };
 
 module.exports = patientController;

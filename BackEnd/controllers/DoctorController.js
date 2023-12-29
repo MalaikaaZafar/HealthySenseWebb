@@ -1,11 +1,10 @@
-const mongoose = require('mongoose');
 const Doctor = require('../models/Doctor');
 const User = require('../models/User');
 const Appointment = require('../models/Apointments');
 const fs = require('fs');
 const Chat = require('../models/Message');
 const Patient = require('../models/Patient');
-const Diagnosis= require('../models/Diagnosis');
+const Diagnosis = require('../models/Diagnosis');
 
 const doctorController = {
 
@@ -64,9 +63,9 @@ const doctorController = {
         const UserId = "658aeab2a07cfdec21fc4931";
         try {
             const apptList = await Appointment.find({ doctorId: UserId })
-            .populate({ path: 'doctorId', populate: { path: 'user' } }).
-            populate({path:'patientId', populate:{path: 'user'}}).exec();
-            return res.status(200).json({message: "Success", appt: apptList});
+                .populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+            return res.status(200).json({ message: "Success", appt: apptList });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -78,9 +77,9 @@ const doctorController = {
         const { id } = req.params;
         try {
             const apptList = await Appointment.findById({ _id: id })
-            .populate({ path: 'doctorId', populate: { path: 'user' } }).
-            populate({path:'patientId', populate:{path: 'user'}}).exec();
-            return res.status(200).json({message: "Success", appt: apptList});
+                .populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+            return res.status(200).json({ message: "Success", appt: apptList });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -120,18 +119,18 @@ const doctorController = {
     },
 
     rescheduleAppt: async (req, res) => {
-        const { id, date, time,type, reason } = req.body;
+        const { id, date, time, type, reason } = req.body;
         try {
-            const appointment = await Appointment.findByIdAndUpdate({_id: id}, {date: date, time: time,type:type, updateReason: reason},{new:true})
-            .populate({ path: 'doctorId', populate: { path: 'user' } }).
-            populate({path:'patientId', populate:{path: 'user'}}).exec();
+            const appointment = await Appointment.findByIdAndUpdate({ _id: id }, { date: date, time: time, type: type, updateReason: reason }, { new: true })
+                .populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
             if (!appointment)
                 return res.status(404).json({ message: "Appointment not found" });
-            const slots=appointment.doctorId.appointmentSlots.filter(slot=>(slot.date!==appointment.date && slot.time!==appointment.time));
-            slots.push({date:appointment.date, time:appointment.time, availability:true});
-            const slots2=appointment.doctorId.appointmentSlots.filter(slot=>(slot.date!==date && slot.time!==time));
-            slots2.push({date, time, availability:false});
-            appointment.doctorId.appointmentSlots=slots;
+            const slots = appointment.doctorId.appointmentSlots.filter(slot => (slot.date !== appointment.date && slot.time !== appointment.time));
+            slots.push({ date: appointment.date, time: appointment.time, availability: true });
+            const slots2 = appointment.doctorId.appointmentSlots.filter(slot => (slot.date !== date && slot.time !== time));
+            slots2.push({ date, time, availability: false });
+            appointment.doctorId.appointmentSlots = slots;
             await appointment.save();
             return res.status(200).json({ message: 'Success', appointment: appointment });
         } catch (error) {
@@ -143,14 +142,14 @@ const doctorController = {
     cancelAppt: async (req, res) => {
         const { id, reason } = req.body;
         try {
-            const app=await Appointment.findByIdAndUpdate({_id: id}, { status: "Cancelled", updateReason: reason }, {new:true})
-            .populate({ path: 'doctorId', populate: { path: 'user' } }).
-            populate({path:'patientId', populate:{path: 'user'}}).exec();
+            const app = await Appointment.findByIdAndUpdate({ _id: id }, { status: "Cancelled", updateReason: reason }, { new: true })
+                .populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
             console.log(app);
-            const doc=app.doctorId;
-            const slots=doc.appointmentSlots.filter(slot=>(slot.date!==app.date && slot.time!==app.time));
-            slots.push({date:app.date, time:app.time, availability:true});
-            doc.appointmentSlots=slots;
+            const doc = app.doctorId;
+            const slots = doc.appointmentSlots.filter(slot => (slot.date !== app.date && slot.time !== app.time));
+            slots.push({ date: app.date, time: app.time, availability: true });
+            doc.appointmentSlots = slots;
             await app.save();
             return res.status(200).json({ message: 'Success', appointment: app });
         } catch (error) {
@@ -175,7 +174,7 @@ const doctorController = {
             return res.status(500).json({ message: "Something went wrong" });
         }
     },
-    getSlots:async(req, res)=>{
+    getSlots: async (req, res) => {
         const userId = "658aeab2a07cfdec21fc4968";
         try {
             const appointment_slots = await Doctor.findById({ _id: userId }, { appointmentSlots: 1 });
@@ -191,17 +190,17 @@ const doctorController = {
 
     deleteSlots: async (req, res) => {
         const { date, time, type } = req.body;
-        console.log(date,time,type)
+        console.log(date, time, type)
         const userId = "658aeab2a07cfdec21fc4968";
         try {
             const doctor = await Doctor.findOne({ _id: userId });
             if (!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
             const newSlots = doctor.appointmentSlots.filter(slot1 => slot1.date !== date)
-            const slots3=newSlots.filter(slot1 => slot1.time !== time)
+            const slots3 = newSlots.filter(slot1 => slot1.time !== time)
             // doctor.appointmentSlots = newSlots;
             await doctor.save();
-            return res.status(200).json({ message: "Success" , slots:slots3});
+            return res.status(200).json({ message: "Success", slots: slots3 });
         }
         catch (error) {
             console.log(error.message);
@@ -300,7 +299,7 @@ const doctorController = {
                 description: description,
                 doctorId: doctorId,
             };
-            console.log(complaint); 
+            console.log(complaint);
             const patient = await Patient.findById(patientId);
             if (!patient)
                 return res.status(404).json({ message: "Patient not found" });
@@ -322,11 +321,11 @@ const doctorController = {
             const AppointmentDetail = await Appointment.findById(id).populate(
                 { path: 'doctorId', populate: { path: 'user' } }
             )
-            .populate(
-                { path: 'patientId', populate: { path: 'user' } }
-            ).exec();
+                .populate(
+                    { path: 'patientId', populate: { path: 'user' } }
+                ).exec();
 
-            if (!AppointmentDetail){
+            if (!AppointmentDetail) {
                 return res.status(402).json({ message: "Appointment not found" });
             }
             console.log(AppointmentDetail);
@@ -352,13 +351,13 @@ const doctorController = {
 
     getAccountDetails: async (req, res) => {
         const { id } = req.params;
-        try{
+        try {
             const doctor = await Doctor.findById(id).populate({ path: 'user' }).exec();
-            if(!doctor)
+            if (!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
             return res.status(200).json({ doctor });
         }
-        catch(error){
+        catch (error) {
             console.log(error.message);
             return res.status(502).json({ message: "Something went wrong" });
         }
@@ -371,15 +370,14 @@ const doctorController = {
         try {
             const doctor = await Doctor.findById(id);
             if (!doctor)
-                return res.status(404).json({ message: "Doctor not found" });   
+                return res.status(404).json({ message: "Doctor not found" });
             const userdata = await User.findById(doctor.user);
             if (!user)
                 return res.status(404).json({ message: "User not found" });
             if (req.files) {
                 if (req.files.profile) {
                     const file = req.files.profile;
-                    if(userdata.profilePicture && fs.existsSync(`./uploads/${userdata.profilePicture}`))
-                    {
+                    if (userdata.profilePicture && fs.existsSync(`./uploads/${userdata.profilePicture}`)) {
                         fs.unlinkSync(`./uploads/${userdata.profilePicture}`);
                     }
                     const fileName = Date.now() + file.name;
@@ -389,21 +387,20 @@ const doctorController = {
                             return res.status(500).send({ msg: "Error occured in uploading profile picture" });
                         }
                     });
-                    userdata.profilePicture = fileName; 
+                    userdata.profilePicture = fileName;
                 }
                 console.log(certificates);
                 const OldCertificates = doctor.certificates;
                 UpdatedCertificates.forEach(certificate => {
                     if (certificate._id) {
                         const oldCertificate = OldCertificates.find(oldCertificate => oldCertificate._id == certificate._id);
-                        if(oldCertificate)
-                        {
+                        if (oldCertificate) {
                             if (oldCertificate.file !== certificate.file) {
-                                if (fs.existsSync(`./uploads/${oldCertificate.file}`)) {   
+                                if (fs.existsSync(`./uploads/${oldCertificate.file}`)) {
                                     fs.unlinkSync(`./uploads/${oldCertificate.file}`);
                                 }
                                 const file = req.files[certificate._id];
-                                const fileName = (Date.now() +"_" + file.name).replace(/\s/g, '');
+                                const fileName = (Date.now() + "_" + file.name).replace(/\s/g, '');
                                 file.mv(`./uploads/${fileName}`, async (err) => {
                                     if (err) {
                                         console.log(err);
@@ -418,7 +415,7 @@ const doctorController = {
                 const newCertificates = UpdatedCertificates.filter(updatedCertificate => !updatedCertificate._id);
                 newCertificates.forEach(certificate => {
                     const file = req.files[certificate.file];
-                    const fileName = (Date.now()+"_" + file.name).replace(/\s/g, '');  
+                    const fileName = (Date.now() + "_" + file.name).replace(/\s/g, '');
                     file.mv(`./uploads/${fileName}`, async (err) => {
                         if (err) {
                             console.log(err);
@@ -429,13 +426,13 @@ const doctorController = {
                     UpdatedCertificates[index].file = fileName;
                 });
             }
-            var newuser=JSON.parse(user);
+            var newuser = JSON.parse(user);
             userdata.name = newuser.name;
             userdata.email = newuser.email;
             userdata.phoneNumber = phoneNumber;
-            userdata.gender=newuser.gender;
-            userdata.country=newuser.country;
-            userdata.dob=newuser.dob;
+            userdata.gender = newuser.gender;
+            userdata.country = newuser.country;
+            userdata.dob = newuser.dob;
             await userdata.save();
 
             doctor.specialization = specialization;
@@ -451,7 +448,7 @@ const doctorController = {
             res.json({ message: "Success" });
         } catch (error) {
             console.log(error.message);
-            return res.status(500).json({ message: "Something went wrong" });   
+            return res.status(500).json({ message: "Something went wrong" });
         }
     },
 
@@ -467,7 +464,7 @@ const doctorController = {
             const diagnosisData = await Diagnosis.create({ date: Date.now(), description: diagnosis, type: type, fee: fee, notes: notes, prescription: prescription, tests: tests, appointmentId: id });
             appointment.status = "Completed";
             await appointment.save();
-            console.log(appointment);   
+            console.log(appointment);
             return res.status(200).json({ message: "Success" });
         }
         catch (error) {

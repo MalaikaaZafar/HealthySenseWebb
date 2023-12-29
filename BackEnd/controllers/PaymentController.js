@@ -1,20 +1,21 @@
-const mongoose = require("mongoose");
-const stripe = require("stripe")("sk_test_51ORCE8COwHOebIPaJCcA5KIonEpNVIL5NoNTFFquyPetGMIPuKMfbn7M3HQWa0NSM4Tih512nFrI2qfZrbWSFKLp00wwmvDQHk");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const stripe = require("stripe")(process.env.STRIPESECRET);
 const Appointment = require("../models/Apointments");
 const Payment = require("../models/Payment");
-const Diagnosis = require("../models/Diagnosis");
-const Patient = require("../models/Patient");
-const Doctor = require("../models/Doctor");
 
 const paymentController = {
     getClientSecret: async (req, res) => {
         const { id } = req.params;
         try {
-            const diagnosis = await Diagnosis.findById(id).populate('appointmentId');
+            const appointment = await Appointment.findById(id).populate({ path: 'doctorId', populate: { path: 'user' } }).exec();
+            if (!appointment) {
+                return res.status(404).json({ message: 'Appointment not found' });
+            }
             var client_secret = null;
-            const appointment = diagnosis.appointmentId;
-            const doctor = await Doctor.findById(appointment.doctorId).populate('user');
-            const payment = await Payment.findOne({ appointmentId: diagnosis.appointmentId._id });
+            var fee = null;
+            const payment = await Payment.findOne({ appointmentId: appointment._id });
             var paymentId = null;
             var status = false;
             if (payment) {
@@ -25,13 +26,20 @@ const paymentController = {
                 }
             }
             else {
+                const type = appointment.type;
+                const doctorSessions = appointment.doctorId.session;
+                doctorSessions.forEach((session) => {
+                    if (session.type == type) {
+                        fee = session.fee;
+                    }
+                });
                 const paymentIntent = await stripe.paymentIntents.create({
-                    amount: (diagnosis.fee * 1000),
+                    amount: (fee * 1000),
                     currency: "pkr",
                 });
                 const newpayment = new Payment({
                     appointmentId: appointment._id,
-                    amount: diagnosis.fee,
+                    amount: fee,
                     date: appointment.date,
                     time: appointment.time,
                     status: false,
@@ -42,14 +50,14 @@ const paymentController = {
                 paymentId = newpayment._id;
             }
             const Data = {
-                Name: doctor.user.name,
-                Profile: doctor.user.profilePicture,
-                Specialization: doctor.specialization,
-                Location: doctor.location,
+                Name: appointment.doctorId.user.name,
+                Profile: appointment.doctorId.user.profilePicture,
+                Specialization: appointment.doctorId.specialization,
+                Location: appointment.doctorId.location,
                 Date: appointment.date,
                 Time: appointment.time,
-                Fee: diagnosis.fee,
-                Type: diagnosis.type,
+                Fee: fee,
+                Type: appointment.type,
                 PaymentId: paymentId,
                 Status: status,
             }

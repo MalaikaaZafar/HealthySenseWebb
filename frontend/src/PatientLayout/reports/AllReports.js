@@ -93,10 +93,10 @@ const AllReports = () => {
                                 <CustomTableRow>
                                     <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '20%' }}>Problem</CustomTableCell>
                                     <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '20%' }}>Doctor</CustomTableCell>
-                                    <CustomTableCell className='disappear' style={{ fontWeight: 'bold', fontSize: '16px', width: '19%' }}>Date & Time</CustomTableCell>
-                                    <CustomTableCell className='disappear' style={{ fontWeight: 'bold', fontSize: '16px', width: '8%' }}>Type</CustomTableCell>
-                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '8%' }}>Payment</CustomTableCell>
-                                    <CustomTableCell style={{ width: '25%' }}></CustomTableCell>
+                                    <CustomTableCell className='disappear' style={{ fontWeight: 'bold', fontSize: '16px', width: '20%' }}>Date & Time</CustomTableCell>
+                                    <CustomTableCell className='disappear' style={{ fontWeight: 'bold', fontSize: '16px', width: '10%' }}>Type</CustomTableCell>
+                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '10%' }}>Payment</CustomTableCell>
+                                    <CustomTableCell style={{ width: '20%' }}></CustomTableCell>
                                 </CustomTableRow>
                             </TableHead>
                             <TableBody>
@@ -104,36 +104,21 @@ const AllReports = () => {
                                     reports.length > 0 ?
                                         reports.map((report, index) => {
                                             return (
-                                                <CustomTableRow>
+                                                <CustomTableRow id={index}>
                                                     <CustomTableCell style={{ width: '20%' }}>{report.problem}</CustomTableCell>
                                                     <CustomTableCell style={{ width: '20% ' }}>{report.doctorName}</CustomTableCell>
-                                                    <CustomTableCell className='disappear' style={{ width: '19% ' }}>{report.date.slice(0, 10) + " | " + report.time}</CustomTableCell>
-                                                    <CustomTableCell className='disappear' style={{ width: '8% ' }}>{report.type}</CustomTableCell>
-                                                    <CustomTableCell style={{ width: '8% ' }}>{report.paymentStatus}</CustomTableCell>
+                                                    <CustomTableCell className='disappear' style={{ width: '20% ' }}>{report.date.slice(0, 10) + " | " + report.time}</CustomTableCell>
+                                                    <CustomTableCell className='disappear' style={{ width: '10% ' }}>{report.type}</CustomTableCell>
+                                                    <CustomTableCell style={{ width: '10% ' }}>{report.paymentStatus}</CustomTableCell>
                                                     <CustomTableCell style={{
-                                                        width: '25%',
+                                                        width: '20%',
                                                         flexWrap: 'wrap',
                                                         justifyContent: 'right',
                                                     }}>
-                                                        {
-                                                            report.paymentStatus === 'Paid' ? null :
-                                                                <Button
-                                                                    variant="contained"
-                                                                    onClick={() => {
-                                                                        navigate(`/payment/${report._id}`);
-                                                                    }}
-                                                                    color="success"
-                                                                    style={{
-                                                                        fontSize: '12px',
-                                                                    }}
-                                                                >
-                                                                    Pay Now
-                                                                </Button>
-                                                        }
                                                         <Button
                                                             variant="contained"
                                                             onClick={() => {
-                                                                navigate(`/report/${report._id}`);
+                                                                navigate(`/patient/report/${report.id}`);
                                                             }}
                                                             color="info"
                                                             style={{
