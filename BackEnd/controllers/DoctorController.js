@@ -4,6 +4,8 @@ const Appointment = require('../models/Apointments');
 const Payment = require('../models/Payment');
 const { populate } = require('../models/Patient');
 const Chat = require('../models/Message');
+const Patient = require('../models/Patient');
+
 
 const doctorController = {
 
@@ -131,7 +133,7 @@ const doctorController = {
             slots2.push({date, time, availability:false});
             appointment.doctorId.appointmentSlots=slots;
             await appointment.save();
-            return res.status(200).json({ message: 'Success', appointment: appointment});
+            return res.status(200).json({ message: 'Success', appointment: appointment });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -226,29 +228,23 @@ const doctorController = {
         const { query, sort, sortOrder, specialty, minRating, skip } = req.query;
 
         try {
-            const users = await User.find({ name: { $regex: query, $options: 'i' } });
+            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor');
+            const users = await q.exec();
             const userIds = users.map(user => user._id);
-
             let filter = { user: { $in: userIds } };
-
             if (specialty) {
                 filter.specialization = specialty;
             }
-
             // if (minRating) {
             //     filter.rating = { $gte: minRating };
             // }
-
-            let doctors = await Doctor.find(filter).populate('user').skip(parseInt(skip)).limit(6);
+            let doctors = await Doctor.find(filter).populate('user');
 
             if (doctors.length !== 0) {
-
-
-
-                if (sort === 'A-Z') {
+                if (sort == 'A-Z') {
                     doctors = doctors.sort((a, b) => {
-                        const nameA = a.user.name.toUpperCase();
-                        const nameB = b.user.name.toUpperCase();
+                        const [nameA, numberA = ''] = a.user.name.toUpperCase().split(' ');
+                        const [nameB, numberB = ''] = b.user.name.toUpperCase().split(' ');
 
                         if (nameA < nameB) {
                             return sortOrder === 'asc' ? -1 : 1;
@@ -257,13 +253,41 @@ const doctorController = {
                             return sortOrder === 'asc' ? 1 : -1;
                         }
 
+                        // If names are equal, compare the numbers
+                        const numA = parseInt(numberA, 10);
+                        const numB = parseInt(numberB, 10);
+
+                        if (numA < numB) {
+                            return sortOrder === 'asc' ? -1 : 1;
+                        }
+                        if (numA > numB) {
+                            return sortOrder === 'asc' ? 1 : -1;
+                        }
+
                         return 0;
+                    });
+
+                    doctors.map((doctor) => {
+                        console.log(doctor.user.name);
                     });
                 }
                 else if (sort === 'Price') {
+
+                    const getSessionFee = (sessions) => {
+                        if (!sessions) {
+                            return 0;
+                        }
+
+                        const clinicSession = sessions.find((session) => session.type == 'Clinic');
+                        return clinicSession ? clinicSession.fee : 0;
+                    }
+
                     doctors = doctors.sort((a, b) => {
-                        return sortOrder === 'asc' ? a.fee - b.fee : b.fee - a.fee;
+                        return sortOrder === 'asc' ? getSessionFee(a.toObject().session) - getSessionFee(b.toObject().session) : getSessionFee(b.toObject().session) - getSessionFee(a.toObject().session);
                     });
+                    console.log(doctors);
+
+
                 }
                 // else if(sort==='Rating'){
                 //     doctors = doctors.sort((a, b) => {
@@ -271,10 +295,37 @@ const doctorController = {
                 //     });
                 // }
             }
-            res.json(doctors);
+            doctors = doctors.slice(skip, skip + 6);
+            return res.status(200).json(doctors);
         } catch (error) {
+            console.log(error);
             res.status(500).json({ message: error.message });
         }
+    },
+
+    addComplaint: async (req, res) => {
+        const { description } = req.body;
+        const patientId = req.params.id;
+        const doctorId = req.userId;
+
+        try {
+            const complaint = {
+                description: description,
+                doctorId: doctorId,
+            };
+            console.log(complaint); 
+            const patient = await Patient.findById(patientId);
+            if (!patient)
+                return res.status(404).json({ message: "Patient not found" });
+            patient.complaints.push(complaint);
+            await patient.save();
+
+            return res.status(200).json({ message: "Success", complaint });
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+
     }
 
 

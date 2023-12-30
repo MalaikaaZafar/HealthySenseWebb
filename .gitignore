@@ -1,4 +1,5 @@
 FrontEnd/node_modules
 BackEnd/node_modules
-frontend/package-lock.json
+FrontEnd/package-lock.json
 BackEnd/package-lock.json
+BackEnd/uploads
