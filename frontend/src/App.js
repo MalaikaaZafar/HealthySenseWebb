@@ -26,7 +26,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<NavBar />}>
-          <Route index element={<AppointmentList />} />
+          <Route index element={<FAQ />} />
           </Route>
         
         <Route path="/admin" element={<NavBar />}>
@@ -51,7 +51,7 @@ function App() {
           <Route path='appointments/:id' element={<ApptDetail />} />
           <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
           <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
-          <Route path='book-appointment/:id' element={<BookAppointment />} />
+          <Route path='bookAppointment' element={<BookAppointment />} />
         </Route>
         <Route path="/" element={<NavBar />}>
           <Route index element={<Search />} />

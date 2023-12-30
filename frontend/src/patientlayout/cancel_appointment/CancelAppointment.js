@@ -1,16 +1,20 @@
-import Button from "@mui/material/Button";
 import "@fontsource/roboto";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
+import { Grid, Box, Container, Typography, FormControl, RadioGroup, FormControlLabel, Radio, Button } from '@mui/material';
+import PatientIcon from "@mui/icons-material/PeopleAltOutlined";
+import ExperienceIcon from "@mui/icons-material/WorkspacePremiumOutlined";
+import StarIcon from "@mui/icons-material/StarBorderOutlined";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import dayjs from 'dayjs';
+import CancelIcon from '@mui/icons-material/EventBusyOutlined';
+
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import {useImmer} from 'use-immer';
 
-import "./CancelAppointment.css";
 import AppointmentCard from "../../components/AppointmentCard";
 
 export const CancelAppointment = () => {
@@ -29,7 +33,8 @@ export const CancelAppointment = () => {
     }
 
     const cancelAppointment=async ()=>{
-      const formattedStr = `http://localhost:3000/patient/consultations/cancel`;
+      if (appointment.status!=="Cancelled")
+      {const formattedStr = `http://localhost:3000/patient/consultations/cancel`;
       const appointmentList= await axios.put(formattedStr, {id: id, reason: reason}).then((response) => response.data);
       if (appointmentList.message==="Success")
       {
@@ -42,6 +47,10 @@ export const CancelAppointment = () => {
       else 
       {
         alert("Something went wrong"); 
+      }}
+      else 
+      {
+        alert ("Appointment already cancelled");
       }
     }
 
@@ -59,65 +68,138 @@ export const CancelAppointment = () => {
         setReason(event.target.value);
     }
 
-  return (
-    <div className="cancelAppointmentScreen">
-      <div className="ScreenBodyCA">
-        <div className="halfCA">
-          {
-            appointment && 
-            <div className="user">
-              <AppointmentCard type="doctor" appt={appointment} />
-            </div>
-          }
-          
-          <div className="reasonDiv">
-            <h2 style ={{color: '#2854C3'}}>Reason for Cancelling Appointment</h2>
-            <FormControl>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="Something urgent came up"
-                name="radio-buttons-group"
-              >
-                <FormControlLabel
-                  value="Something urgent came up"
-                  control={<Radio />}
-                  label="Something urgent came up"
-                  onChange={setReasonHandler}
-                />
-                <FormControlLabel
-                  value="I'm not feeling well"
-                  control={<Radio />}
-                  label="I'm not feeling well"
-                  onChange={setReasonHandler}
-                />
-                <FormControlLabel
-                  value="other"
-                  control={<Radio />}
-                  label="Other"
-                  onChange={setReasonHandler}
-                />
-              </RadioGroup>
-            </FormControl>
-            <textarea rows={10} disabled={reason === "other" ? false : true} onChange={setReasonHandler} style={{borderRadius: '10px'}}></textarea>
-          </div>
-          <div className="appointmentBtns">
-            <Button
-              onClick={cancelAppointment}
-              variant="contained"
-              style={{
-                background: "#2854c3",
-                margin: "10px",
-                width: "50%",
-                textTransform: "none",
-                borderRadius: "10px",
-                padding: '10px'
-              }}
-            >
-              Cancel Appointment
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+return (
+  <Container>
+     <Grid container spacing={2} alignItems="stretch">
+        <Grid item xs={12} sm={6}>
+          {appointment && <AppointmentCard type="doctor" appt={appointment} />}
+        </Grid>
+        <Grid item xs={12} sm={2}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            height="70%"
+            padding="10px"
+            sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+          >
+            <PatientIcon fontSize="large" />
+            <Typography variant="body1">
+              <b>90</b>
+            </Typography>
+            <Typography variant="body2">Patients</Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={2}>
+          <Box
+           display="flex"
+           flexDirection="column"
+           alignItems="center"
+           justifyContent="center"
+           height="70%"
+           padding="10px"
+           sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+          >
+            <ExperienceIcon fontSize="large" />
+            <Typography variant="body1">
+              <b>{appointment?.doctorId?.experience} Years</b>
+            </Typography>
+            <Typography variant="body2">Experience</Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={2}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            height="70%"
+            padding="10px"
+            sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+          >
+            <StarIcon fontSize="large" />
+            <Typography variant="body1">
+              <b>4.5</b>
+            </Typography>
+            <Typography variant="body2">Rating</Typography>
+          </Box>
+        </Grid>
+
+      </Grid>
+      <Grid container spacing={1} sx={{background:'#eeeeee', mt:2,mb:0, borderTopLeftRadius:10, borderTopRightRadius:10}}>
+  <Grid item xs={12} sm={6} >
+    <Container sx={{ width: '80%', mx: 'auto' }}>
+      <Typography variant="h6" component="div" color="primary">
+        Reason for Cancelling Appointment
+      </Typography>
+      <FormControl>
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+          defaultValue="Something urgent came up"
+          name="radio-buttons-group"
+        >
+          <FormControlLabel
+            value="Something urgent came up"
+            control={<Radio />} 
+            label="Something urgent came up"
+            onChange={setReasonHandler}
+          />
+          <FormControlLabel
+            value="I'm not feeling well"
+            control={<Radio />}
+            label="I'm not feeling well"
+            onChange={setReasonHandler}
+          />
+          <FormControlLabel
+            value="other"
+            control={<Radio />}
+            label="Other"
+            onChange={setReasonHandler}
+          />
+        </RadioGroup>
+      </FormControl>
+      <Box 
+  component="textarea" 
+  rows={10} 
+  disabled={reason !== "Something urgent came up" && reason !=="I'm not feeling well" ? false : true} 
+  onChange={setReasonHandler} 
+  sx={{ width: '80%', borderRadius: '10px', p: 1, mx: 'auto' }}
+/>
+    </Container>
+  </Grid>
+  <Grid item xs={12} sm={6}>
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateCalendar value={dayjs(appointment?.date)} readOnly disabled
+               sx={{ '& .Mui-selected': {  backgroundColor: appointment?.status==="Cancelled"?'red': appointment?.status==="Booked"?"#2854C3":"green" } }}/>
+            </LocalizationProvider>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+  <Button
+    onClick={cancelAppointment}
+    variant="contained"
+    color="primary"
+    sx={{
+      width: '50%',
+      textTransform: 'none',
+      borderRadius: '10px',
+      padding: '10px',
+      mx: 'auto',
+      mb: 2,
+      background: '#2854C3',
+      "&:hover": {
+        background: "#2854C3",
+        boxShadow: "10 10 10 0 rgba(0, 0, 0, 0.15)",
+      },
+    }}
+    startIcon={<CancelIcon />}
+  >
+    Cancel
+  </Button>
+</Box>
+  </Grid>
+
+</Grid>
+
+  </Container>
+);
 }

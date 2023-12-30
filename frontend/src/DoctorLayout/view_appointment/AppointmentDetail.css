@@ -167,7 +167,7 @@
 
 .sidePanel{
   width: 20%;
-  height: 80vh;
+  height: 100vh;
 }
 
 @media screen and (max-width: 900px) {

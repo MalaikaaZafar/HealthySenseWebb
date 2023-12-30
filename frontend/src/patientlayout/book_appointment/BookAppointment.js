@@ -71,7 +71,7 @@ export const BookAppointment = () => {
   
   const fetchAppointment = async () => {
     try {
-      const formattedStr = `http://localhost:3000/patient/doctors/658aeab2a07cfdec21fc4931`;
+      const formattedStr = `http://localhost:3000/patient/doctors/658aeab2a07cfdec21fc4989`;
       const doctorObj = await axios
         .get(formattedStr)
         .then((response) => response.data);
