@@ -6,7 +6,9 @@ import "./Report.css";
 import LoadingAnimation from "../../components/loader/LoadingAnimation";
 import { Box, Snackbar, Alert, Button, Table, TableBody, TableCell, TableHead, TableRow, Container, Typography, Avatar } from "@mui/material";
 import HealthySenseLogo from "../../components/healthySenseLogo.png";
-import { getSpecificReport } from "../../../../BackEnd/controllers/ReportController";
+import GetSpecificReport from "../../services/doctor/diagnosis/getSpecificReport";
+import DownloadReport from "../../components/Report/DownloadReport";
+
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
     display: 'flex',
@@ -41,7 +43,7 @@ const ViewReportDoctor = () => {
     const [open, setOpen] = useState(false);
 
     const getReportdata = async () => {
-        const data = await getSpecificReport(id);
+        const data = await GetSpecificReport(id);
         if (data) {
             if (data.message && data.message === 'Diagnosis not found') {
                 setMsg('Diagnosis not found');
@@ -599,18 +601,7 @@ const ViewReportDoctor = () => {
                                     py: 3,
                                 }}
                             >
-                                <Button
-                                    variant="contained"
-                                    onClick={() => {
-                                        navigate('/patient/reports');
-                                    }}
-                                    color="info"
-                                    style={{
-                                        fontSize: '12px',
-                                    }}
-                                >
-                                    Download Report
-                                </Button>
+                                <DownloadReport AppointmentData={report} />
                             </Container>
                         </Box>
                     </Container>

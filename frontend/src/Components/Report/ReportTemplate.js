@@ -162,7 +162,7 @@ const MyDocument = (props) => {
                             <Text>{Diagnosis.PatientEmail}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text>Patient DOB: </Text>
+                            <Text>Patient Problem: </Text>
                             <Text>{Diagnosis.PatientDob}</Text>
                         </View>
                     </View>
@@ -172,15 +172,15 @@ const MyDocument = (props) => {
                             <Text>{Diagnosis.DoctorName}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text>Doctor Phone: </Text>
+                            <Text>Doctor Specialization: </Text>
                             <Text>{Diagnosis.DoctorPhone}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text>Appointment Date: </Text>
+                            <Text>Doctor Location: </Text>
                             <Text>{Diagnosis.ApointmentDate}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text>Appointment Time: </Text>
+                            <Text>Appointment Date & Time: </Text>
                             <Text>{Diagnosis.ApointmentTime}</Text>
                         </View>
                     </View>
@@ -235,7 +235,7 @@ const MyDocument = (props) => {
                             <Text>{Diagnosis.PatientEmail}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text>Patient DOB: </Text>
+                            <Text>Patient Problem: </Text>
                             <Text>{Diagnosis.PatientDob}</Text>
                         </View>
                     </View>
@@ -245,15 +245,15 @@ const MyDocument = (props) => {
                             <Text>{Diagnosis.DoctorName}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text>Doctor Phone: </Text>
+                            <Text>Doctor Specialization: </Text>
                             <Text>{Diagnosis.DoctorPhone}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text>Appointment Date: </Text>
+                            <Text>Doctor Location: </Text>
                             <Text>{Diagnosis.ApointmentDate}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text>Appointment Time: </Text>
+                            <Text>Date & Time: </Text>
                             <Text>{Diagnosis.ApointmentTime}</Text>
                         </View>
                     </View>
@@ -273,7 +273,8 @@ const MyDocument = (props) => {
                             Diagnosis.prescriptions.map((prescription) => {
                                 return (
                                     <View style={styles.row}>
-                                        <Text>{prescription}</Text>
+                                        <Text>{prescription.Name}</Text>
+                                        <Text>{prescription.Dosage}</Text>
                                     </View>
                                 )
                             })

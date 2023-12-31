@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LoadingAnimation from "../../components/loader/LoadingAnimation";
 import { Box } from "@mui/system";
-import { Avatar, Container, Table, TableBody, TableCell, TableHead, TableRow, Typography, Snackbar, Alert } from "@mui/material";
+import {  Container, Table, TableBody, TableCell, TableHead, TableRow, Typography, Snackbar, Alert } from "@mui/material";
 import GetHistory from "../../services/doctor/diagnosis/getHistory";
+import {styled} from "@mui/system";
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
     display: 'flex',
@@ -31,7 +32,8 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 const PatientHistory = () => {
-    const { id } = useParams();
+    //const { id } = useParams();
+    const id = "6585484c797f80875a8a769f";
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
@@ -60,28 +62,34 @@ const PatientHistory = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        height: '100%'
+                        justifyContent: 'left',
+                        height: '100%',
+                        py: 3
                     }}
                 >
                     <Container
-                        maxWidth="md"
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'flex-start',
                             justifyContent: 'center',
                             gap: '20px',
-                            py: 3
+                            width: '100%',  
+                            backgroundColor: 'white',
+                            borderRadius: '10px',
+                            boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
+                            py: 3,
                         }}
                     >
                         <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Patient History</Typography>
-                        <Table sx={{ width: '100%' }}>
+                        <Table sx={{ width: '100%',
+                            border:'1px solid rgba(100, 100, 100, 1)',
+                        }}>
                             <TableHead>
                                 <CustomTableRow>
                                     <CustomTableCell sx={{ width: '20%', fontWeight:'bold', fontSize: '16px' }}>Type</CustomTableCell>
-                                    <CustomTableCell sx={{ width: '75%', fontWeight:'bold', fontSize: '16px' }}>Description</CustomTableCell>
-                                    <CustomTableCell sx={{ width: '15%', fontWeight:'bold', fontSize: '16px' }}>Date Created</CustomTableCell>
+                                    <CustomTableCell sx={{ width: '65%', fontWeight:'bold', fontSize: '16px' }}>Description</CustomTableCell>
+                                    <CustomTableCell sx={{ width: '15%', fontWeight:'bold', fontSize: '16px' }}>Date Added</CustomTableCell>
                                 </CustomTableRow>
                             </TableHead>
                             <TableBody>
@@ -90,7 +98,7 @@ const PatientHistory = () => {
                                         data.map((row, index) => (
                                             <CustomTableRow key={index}>
                                                 <CustomTableCell sx={{ width: '20%' }}>{row.type}</CustomTableCell>
-                                                <CustomTableCell sx={{ width: '75%' }}>{row.description}</CustomTableCell>
+                                                <CustomTableCell sx={{ width: '65%' }}>{row.description}</CustomTableCell>
                                                 <CustomTableCell sx={{ width: '15%' }}>{row.date.slice(0,10)}</CustomTableCell>
                                             </CustomTableRow>
                                         ))

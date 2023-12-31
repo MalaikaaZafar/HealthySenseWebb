@@ -4,28 +4,32 @@ import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
 import { useImmer } from "use-immer";
 import { Button } from "@mui/material";
 
-const ViewReport = () => {
+const DownloadReport = ({AppointmentData}) => {
     const [Diagnosis, setDiagnosis] = useImmer({
-        PaitentName: "Siddharth",
-        PatientPhone: "1234567890",
-        PatientEmail: "blah",
-        PatientDob: "20",
-        DoctorName: "Dr. XYZ",
-        DoctorPhone: "1234567890",
-        ApointmentDate: "20",
-        ApointmentTime: "20pm",
-        diagnosis: "The patient is suffering from blah blah blah",
-        tests: [],
-        prescriptions: [],
-        notes: "blah blah blah",
+        PaitentName: AppointmentData.PatientName,
+        PatientPhone: AppointmentData.PatientPhoneNumber,
+        PatientEmail: AppointmentData.PatientEmail,
+        PatientDob: AppointmentData.Problem,
+        DoctorName: AppointmentData.DoctorName,
+        DoctorPhone: AppointmentData.DoctorSpeciality,
+        ApointmentDate: AppointmentData.DoctorLocation,
+        ApointmentTime: AppointmentData.Date.slice(0,10) + " " + AppointmentData.Time, 
+        diagnosis: AppointmentData.Diagnosis,
+        tests: AppointmentData.Tests,
+        prescriptions: AppointmentData.Prescription,
+        notes: AppointmentData.Notes,
     });
     return (
         <PDFDownloadLink document={<MyDocument Diagnosis={Diagnosis} />} fileName={Diagnosis.PaitentName+"_"+Diagnosis.ApointmentDate+"_report.pdf"}>
             {({ blob, url, loading, error }) =>
-                loading ? "Loading document..." : <Button variant="contained" className="downloadReportbtn">Download Report</Button>
+                loading ? "Loading document..." : <Button variant="contained" color="info"
+                    sx={{width: "fit-content", margin: "auto", marginTop: "0px"}}
+                >
+                    Download Report
+                </Button>
             }
         </PDFDownloadLink>
     );
 };
 
-export default ViewReport;
+export default DownloadReport;

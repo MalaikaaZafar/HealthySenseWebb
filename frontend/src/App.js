@@ -41,7 +41,7 @@ import theme from './Theme.js';
 import AllReports from './patientlayout/reports/AllReports.js';
 import ViewReportPatient from './pages/report/ViewReportPatient.js';
 import ViewReportDoctor from './pages/report/ViewReportDoctor.js';
-import PatientHistory from './patientlayout/account/table/HistoryTable.js';
+import PatientHistory from './pages/doctor/PatientHisttory.js';
 
 function App() {
 
@@ -49,7 +49,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <Routes>
-          <Route path="*" element={<PatientHistory />} />
+          <Route path="*" element={<DiagnosisPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<RegisterDoctor />} />
