@@ -43,7 +43,7 @@ const AddMedicine = ({ setDiagnosis, MedicineModal, MedicineModalClose }) => {
                     id="outlined-multiline-static"
                     multiline
                     rows={4}
-                    label="Dosage"
+                    label="Dosage & Duration"
                     variant="outlined"
                     onChange={(e) => setMedicine(draft => { draft.Dosage = e.target.value })}
                     style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}

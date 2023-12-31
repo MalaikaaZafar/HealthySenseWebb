@@ -53,7 +53,7 @@ const EditMedicine = ({ Diagnosis, setDiagnosis, EditMedicineModal, EditMedicine
                     id="outlined-multiline-static"
                     multiline
                     rows={4}
-                    label="Dosage"
+                    label="Dosage & Duration"
                     variant="outlined"
                     defaultValue={Medicine.Dosage}
                     onChange={(e) => setMedicine(draft => { draft.Dosage = e.target.value })}

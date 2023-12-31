@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 
 const EditTest = ({ Diagnosis, setDiagnosis, EditTestModal, EditTestModalClose, TestIndex }) => {
     const [Test, setTest] = useState("");
-
     const HandleEditTests = () => {
         if (Test.Name.trim() === "") {
             alert("Please fill all the fields");
@@ -20,7 +19,7 @@ const EditTest = ({ Diagnosis, setDiagnosis, EditTestModal, EditTestModalClose, 
         if (TestIndex !== -1) {
             setTest(Diagnosis.tests[TestIndex]);
         }
-    }, []);
+    }, [TestIndex]);
 
     return (
         <Modal

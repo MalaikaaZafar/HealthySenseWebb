@@ -36,7 +36,6 @@ import DiagnosisPage from './doctorlayout/diagnosis/DiagnosisPage.js';
 import Payment from './patientlayout/payment/Payment.js';
 
 import './App.css';
-import ConfirmPayement from './patientlayout/payment/PaymentConfirm.js';
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
 import AllReports from './patientlayout/reports/AllReports.js';
@@ -48,7 +47,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <Routes>
-          <Route path="*" element={<AllReports />} />
+          <Route path="*" element={<DiagnosisPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<RegisterDoctor />} />
@@ -83,7 +82,6 @@ function App() {
             <Route path='favorites' element={<Favorites />} />
             <Route path='account' element={<PatientManageAccount />} />
             <Route path='payment' element={<Payment />} />
-            <Route path='payment/confirm' element={<ConfirmPayement />} />
             <Route path='reports' element={<AllReports />} />
             <Route path='report/:id' element={<ViewReportPatient />} />
           </Route>
