@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
-const stripe = require("stripe")(process.env.STRIPESECRET);
+const stripe = require("stripe")('sk_test_51ORCE8COwHOebIPaJCcA5KIonEpNVIL5NoNTFFquyPetGMIPuKMfbn7M3HQWa0NSM4Tih512nFrI2qfZrbWSFKLp00wwmvDQHk');
 const Appointment = require("../models/Apointments");
 const Payment = require("../models/Payment");
 
@@ -21,18 +21,15 @@ const paymentController = {
             if (payment) {
                 paymentId = payment._id;
                 client_secret = payment.clientSecret;
+                fee = payment.amount;
                 if (payment.status == true) {
                     status = true;  
                 }
             }
             else {
                 const type = appointment.type;
-                const doctorSessions = appointment.doctorId.session;
-                doctorSessions.forEach((session) => {
-                    if (session.type == type) {
-                        fee = session.fee;
-                    }
-                });
+                const index = appointment.doctorId.session.findIndex((session) => session.type == type);
+                fee = appointment.doctorId.session[index].fee;
                 const paymentIntent = await stripe.paymentIntents.create({
                     amount: (fee * 1000),
                     currency: "pkr",

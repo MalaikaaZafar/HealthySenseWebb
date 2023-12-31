@@ -465,13 +465,27 @@ const doctorController = {
             appointment.status = "Completed";
             await appointment.save();
             console.log(appointment);
-            return res.status(200).json({ message: "Success" });
+            return res.status(200).json({ message: "Success", ID: diagnosisData._id });
         }
         catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
         }
     },
+
+    getPatientHistory: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const patient = await Patient.findById(id);
+            if (!patient)
+                return res.status(404).json({ message: "Patient not found" });
+            return res.status(200).json({ message: "Success", History: patient.history });
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    }
 };
 
 module.exports = doctorController;

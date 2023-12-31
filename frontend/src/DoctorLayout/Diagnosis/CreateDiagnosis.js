@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDiagnosis } from './DiagnosisPage';
-import { Container, Typography, TextField, Button, Table, TableHead, TableCell, TableRow, TableBody, Modal, Tab } from '@mui/material';
+import { Container, Typography, TextField, Button, Table, TableHead, TableCell, TableRow, TableBody, Modal, Tab, Snackbar, Alert } from '@mui/material';
 import AddMedicine from './modals/AddMedicine';
 import EditMedicine from './modals/EditMedicine';
 import AddTest from './modals/AddTest';
@@ -41,6 +41,8 @@ const CreateDiagnosis = () => {
     const { AppointmentData, Diagnosis, PageChange, setDiagnosis } = useDiagnosis();
     const [MedicineModal, setMedicineModal] = useState(false);
     const [TestModal, setTestModal] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [msg, setMsg] = useState("");
 
     const [EditMedicineModal, setEditMedicine] = useState(false);
     const [MedicineIndex, setMedicineIndex] = useState(-1);
@@ -62,9 +64,10 @@ const CreateDiagnosis = () => {
 
     const EditTestModalClose = () => {
         setTestIndex(-1);
-        setEditTest(false) };
-    const EditTestModalOpen = () => { 
-        setEditTest(true) 
+        setEditTest(false)
+    };
+    const EditTestModalOpen = () => {
+        setEditTest(true)
     };
 
     const HandleEditTest = (index) => {
@@ -78,8 +81,21 @@ const CreateDiagnosis = () => {
     const TestModalClose = () => { setTestModal(false) };
     const TestModalOpen = () => { setTestModal(true) };
 
+    const HandleSubmission = (e) => {
+        if (Diagnosis.diagnosis.trim() === "") {
+            setOpen(true);
+            setMsg("Diagnosis is Required");
+            return;
+        }
+        if(Diagnosis.notes.trim() === ""){
+            setDiagnosis(draft => { draft.notes = "No Notes" });
+        }
+        setDiagnosis(draft => { draft.type = AppointmentData.type });
+        PageChange(2);
+    }
+
     return (
-        <Box
+        <><Box
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -368,13 +384,19 @@ const CreateDiagnosis = () => {
                 <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '70px' }}>
                     <Button variant="contained"
                         style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }}
-                        onClick={() => PageChange(2)}
+                        onClick={HandleSubmission}
                     >
                         Submit Diagnosis
                     </Button>
                 </Container>
             </Container>
         </Box>
+            <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
+                <Alert onClose={() => setOpen(false)} severity="error" sx={{ width: '100%' }}>
+                    {msg}
+                </Alert>
+            </Snackbar>
+        </>
     )
 
 };

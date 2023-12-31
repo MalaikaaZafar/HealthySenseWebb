@@ -40,6 +40,8 @@ import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
 import AllReports from './patientlayout/reports/AllReports.js';
 import ViewReportPatient from './pages/report/ViewReportPatient.js';
+import ViewReportDoctor from './pages/report/ViewReportDoctor.js';
+import PatientHistory from './patientlayout/account/table/HistoryTable.js';
 
 function App() {
 
@@ -47,7 +49,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <Routes>
-          <Route path="*" element={<DiagnosisPage />} />
+          <Route path="*" element={<PatientHistory />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<RegisterDoctor />} />
@@ -68,6 +70,8 @@ function App() {
             <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
             <Route path='patient-detail' element={<PatientDetail />} />
             <Route path='account' element={<DoctorManageAccount />} />
+            <Route path='diagnosis' element={<DiagnosisPage />} />
+            <Route path='report/:id' element={<ViewReportDoctor />} />
           </Route>
 
           <Route path='/patient' element={<NavBar />}>

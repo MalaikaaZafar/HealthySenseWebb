@@ -5,7 +5,8 @@ import "@fontsource/roboto";
 import GetReport from "../../services/user/getReport";
 import "./Report.css";
 import LoadingAnimation from "../../components/loader/LoadingAnimation";
-import { Box, Snackbar, Alert, Button, Table, TableBody, TableCell, TableHead, TableRow, Container, Typography } from "@mui/material";
+import { Box, Snackbar, Alert, Button, Table, TableBody, TableCell, TableHead, TableRow, Container, Typography, Avatar } from "@mui/material";
+import HealthySenseLogo from "../../components/healthySenseLogo.png";
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
     display: 'flex',
@@ -77,12 +78,12 @@ const ViewReportPatient = () => {
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'center',
-                            alignItems: 'center',
+                            alignItems: 'flex-start',
                             textAlign: 'left',
                             wordBreak: 'break-word',
                             overflowWrap: 'break-word',
-                            width: 'auto',
-                            gap: '30px',
+                            width: '100%',
+                            gap: '10px',
                             border: '1px solid rgba(224, 224, 224, 1)',
                             borderRadius: '10px',
                             padding: '20px',
@@ -90,29 +91,49 @@ const ViewReportPatient = () => {
                             backgroundColor: 'white',
                         }}
                     >
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                navigate('/patient/reports');
+                            }}
+                            color="info"
+                            style={{
+                                fontSize: '12px',
+                                justifySelf: 'left',
+                            }}
+                        >
+                            Back
+                        </Button>
                         <Box
                             sx={{
                                 display: 'grid',
-                                gridTemplateColumns: '0fr 3fr',
-                                justifyContent: 'left',
-                                alignItems: 'center',
+                                gridTemplateColumns: '1fr 1fr',
+                                backgroundColor: '#3f51b5',
+                                color: 'white',
                                 width: '100%',
                             }}
                         >
-                            <Button
-                                variant="contained"
-                                onClick={() => {
-                                    navigate('/patient/reports');
-                                }}
-                                color="info"
-                                style={{
-                                    fontSize: '12px',
-                                    justifySelf: 'left',
+                            <Container
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'left',
                                 }}
                             >
-                                Back
-                            </Button>
-                            <p style={{ fontSize: '30px', fontWeight: 'bold', justifySelf: 'center', textAlign: 'center', marginLeft: '-110px' }}>Report</p>
+                                <Avatar style={{ width: '50px', height: '50px', marginRight: '10px' }} src={HealthySenseLogo} />
+                                <Typography variant="h6" style={{ fontWeight: 'bold' }}>HealthySense </Typography>
+                            </Container>
+                            <Container
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'right',
+                                }}
+                            >
+                                <Typography variant="h6" style={{ fontWeight: 'bold' }}>Diagnosis Report</Typography>
+                            </Container>
                         </Box>
                         <Box
                             sx={{
@@ -129,186 +150,196 @@ const ViewReportPatient = () => {
                             <Box
                                 sx={{
                                     display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'flex-start',
-                                    textAlign: 'left',
-                                    wordBreak: 'break-word',
-                                    overflowWrap: 'break-word',
+                                    flexDirection: 'row',
                                     width: '100%',
-                                    gap: '10px',
-                                    py: 3,
                                     borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                                    borderTop: '1px solid rgba(224, 224, 224, 1)',
                                 }}
+                                className="changes"
                             >
-                                <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
-                                    Doctor Details
-                                </Typography>
                                 <Box
                                     sx={{
                                         display: 'flex',
                                         flexDirection: 'column',
                                         justifyContent: 'center',
-                                        alignItems: 'flex-end',
+                                        alignItems: 'flex-start',
                                         textAlign: 'left',
                                         wordBreak: 'break-word',
                                         overflowWrap: 'break-word',
                                         width: '100%',
                                         gap: '10px',
-                                        marginRight: '30px'
+                                        py: 3,
+                                        borderRight: '1px solid rgba(224, 224, 224, 1)',
                                     }}
                                 >
+                                    <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
+                                        Doctor Details
+                                    </Typography>
                                     <Box
                                         sx={{
                                             display: 'flex',
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
+                                            flexDirection: 'column',
+                                            justifyContent: 'center',
+                                            alignItems: 'flex-end',
                                             textAlign: 'left',
                                             wordBreak: 'break-word',
                                             overflowWrap: 'break-word',
                                             width: '100%',
+                                            gap: '10px',
+                                            marginRight: '30px'
                                         }}
                                     >
-                                        <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
-                                            Doctor Name
-                                        </Typography>
-                                        <Typography variant="h6" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
-                                            Dr. {report.DoctorName}
-                                        </Typography>
-                                    </Box>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            textAlign: 'left',
-                                            wordBreak: 'break-word',
-                                            overflowWrap: 'break-word',
-                                            width: '100%',
-                                        }}
-                                    >
-                                        <Typography variant="body1"  component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
-                                            Doctor Specialization
-                                        </Typography>
-                                        <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
-                                            {report.DoctorSpeciality}
-                                        </Typography>
-                                    </Box>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            textAlign: 'left',
-                                            wordBreak: 'break-word',
-                                            overflowWrap: 'break-word',
-                                            width: '100%',
-                                        }}
-                                    >
-                                        <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
-                                            Doctor Location
-                                        </Typography>
-                                        <Typography variant="body2" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
-                                            {report.DoctorLocation}
-                                        </Typography>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                textAlign: 'left',
+                                                wordBreak: 'break-word',
+                                                overflowWrap: 'break-word',
+                                                width: '100%',
+                                            }}
+                                        >
+                                            <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
+                                                Doctor Name
+                                            </Typography>
+                                            <Typography variant="h6" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
+                                                Dr. {report.DoctorName}
+                                            </Typography>
+                                        </Box>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                textAlign: 'left',
+                                                wordBreak: 'break-word',
+                                                overflowWrap: 'break-word',
+                                                width: '100%',
+                                            }}
+                                        >
+                                            <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
+                                                Doctor Specialization
+                                            </Typography>
+                                            <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
+                                                {report.DoctorSpeciality}
+                                            </Typography>
+                                        </Box>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                textAlign: 'left',
+                                                wordBreak: 'break-word',
+                                                overflowWrap: 'break-word',
+                                                width: '100%',
+                                            }}
+                                        >
+                                            <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
+                                                Doctor Location
+                                            </Typography>
+                                            <Typography variant="body2" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
+                                                {report.DoctorLocation}
+                                            </Typography>
+                                        </Box>
                                     </Box>
                                 </Box>
-                            </Box>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'flex-start',
-                                    textAlign: 'left',
-                                    wordBreak: 'break-word',
-                                    overflowWrap: 'break-word',
-                                    width: '100%',
-                                    gap: '10px',
-                                    py: 3,
-                                    borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                                }}
-                            >
-                                <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
-                                    Patient Details
-                                </Typography>
                                 <Box
                                     sx={{
                                         display: 'flex',
                                         flexDirection: 'column',
                                         justifyContent: 'center',
-                                        alignItems: 'flex-end',
+                                        alignItems: 'flex-start',
                                         textAlign: 'left',
                                         wordBreak: 'break-word',
                                         overflowWrap: 'break-word',
                                         width: '100%',
                                         gap: '10px',
-                                        marginRight: '30px'
+                                        py: 3,
+                                        marginLeft: '30px',
                                     }}
                                 >
+                                    <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
+                                        Patient Details
+                                    </Typography>
                                     <Box
                                         sx={{
                                             display: 'flex',
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
+                                            flexDirection: 'column',
+                                            justifyContent: 'center',
+                                            alignItems: 'flex-end',
                                             textAlign: 'left',
                                             wordBreak: 'break-word',
                                             overflowWrap: 'break-word',
                                             width: '100%',
+                                            gap: '10px',
+                                            marginRight: '30px'
                                         }}
                                     >
-                                        <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
-                                            Patient Name
-                                        </Typography>
-                                        <Typography variant="h6" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
-                                            {report.PatientName}
-                                        </Typography>
-                                    </Box>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            textAlign: 'left',
-                                            wordBreak: 'break-word',
-                                            overflowWrap: 'break-word',
-                                            width: '100%',
-                                        }}
-                                    >
-                                        <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
-                                            Patient Email
-                                        </Typography>
-                                        <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
-                                            {report.PatientEmail}
-                                        </Typography>
-                                    </Box>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            textAlign: 'left',
-                                            wordBreak: 'break-word',
-                                            overflowWrap: 'break-word',
-                                            width: '100%',
-                                        }}
-                                    >
-                                        <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
-                                            Patient Phone No
-                                        </Typography>
-                                        <Typography variant="body2" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
-                                            {report.PatientPhoneNumber}
-                                        </Typography>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                textAlign: 'left',
+                                                wordBreak: 'break-word',
+                                                overflowWrap: 'break-word',
+                                                width: '100%',
+                                            }}
+                                        >
+                                            <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
+                                                Patient Name
+                                            </Typography>
+                                            <Typography variant="h6" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
+                                                {report.PatientName}
+                                            </Typography>
+                                        </Box>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                textAlign: 'left',
+                                                wordBreak: 'break-word',
+                                                overflowWrap: 'break-word',
+                                                width: '100%',
+                                            }}
+                                        >
+                                            <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
+                                                Patient Email
+                                            </Typography>
+                                            <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
+                                                {report.PatientEmail}
+                                            </Typography>
+                                        </Box>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                textAlign: 'left',
+                                                wordBreak: 'break-word',
+                                                overflowWrap: 'break-word',
+                                                width: '100%',
+                                            }}
+                                        >
+                                            <Typography variant="body1" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginLeft: '30px' }}>
+                                                Patient Phone No
+                                            </Typography>
+                                            <Typography variant="body2" component="div" style={{ fontWeight: 'bold', color: 'GrayText', marginRight: '30px' }}>
+                                                {report.PatientPhoneNumber}
+                                            </Typography>
+                                        </Box>
                                     </Box>
                                 </Box>
                             </Box>
+
                             <Box
                                 sx={{
                                     display: 'flex',

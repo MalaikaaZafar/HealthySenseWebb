@@ -12,5 +12,6 @@ router.get('/messages', userController.getMessages);
 router.post('/messages', userController.sendMessage);
 
 router.get('/report/:id', reportController.getReport);
+router.get('/report/appointment/:id', reportController.getSpecificReport);
 
 module.exports = router;
