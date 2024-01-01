@@ -88,7 +88,6 @@ function App() {
             </Route>
           </Route>
           <Route path="/" element={<NavBar />}>
-            <Route index element={<ViewReportDoctor />} />
             <Route path='doctor-detail' element={<DoctorDetail />} />
           </Route>
           <Route path='*' element={<NotFoundPage />} />
