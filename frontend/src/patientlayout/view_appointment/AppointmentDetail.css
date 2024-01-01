@@ -91,7 +91,9 @@ body{
 
 .viewApptDetailsLeft{
   width: 100%;
+
 }
+
 
 .viewApptBottomRight{
   width: 100%;
@@ -99,6 +101,7 @@ body{
   display: flex;
   flex-direction: column;
 }
+
 
 @media only screen and (max-width: 950px)
 {
@@ -123,15 +126,22 @@ body{
   padding: 0px;
   color: #8C8FA5;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center; */
+  /* justify-content: center; */
+
 }
 
 .headingPatient{
   display: flex;
   flex-direction: row;
   font-weight: bold;
+  align-items: center;
 }
+
+.detailPatient p{
+  margin-left: 30px;
+}
+
 
 
 @media screen and (max-width: 650px)

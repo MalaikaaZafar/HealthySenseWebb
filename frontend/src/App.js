@@ -32,6 +32,7 @@ import DoctorReview from './pages/patient/DoctorReview.js';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
+import AppointmentList from './DoctorLayout/view_appointment_list/ViewAppointmentList.js';
 
 function App() {
   return (
@@ -76,7 +77,8 @@ function App() {
           <Route path="/" element={<NavBar />}>
             <Route path='doctor-detail' element={<DoctorDeatil />} />
             <Route index element={<Search />} />
-          </Route>
+            <Route path='messages/:id' element={<Messages />} />          
+        </Route>
 
         </Routes>
       </div >

@@ -10,6 +10,7 @@ router.get("/consultations", doctorController.consultations);
 router.get("/consultations/:id", doctorController.getConsultationById);
 router.post("/consultations/reschedule", doctorController.rescheduleAppt);
 router.put("/consultations/cancel", doctorController.cancelAppt);
+router.put("/consultations/complete", doctorController.completeAppt);
 
 router.put("/addSlots", doctorController.addSlots);
 router.get("/slots", doctorController.getSlots);
