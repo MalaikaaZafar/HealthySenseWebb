@@ -23,7 +23,7 @@ const Favorites = () => {
                 {
                     favourites?.length > 0 ? (favourites.map((doctor) => {
                         return (
-                            <DoctorCard user={doctor} buttons={true} onFavChanged={() => setFavouritesChanged(!favouritesChanged)} />
+                            <DoctorCard user={doctor} buttons={true} onFavChanged={() => setFavouritesChanged(!favouritesChanged)} isFav={true} />
                         );
                     })) :
 
@@ -54,7 +54,7 @@ const Favorites = () => {
 
                             icon={
                                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                                    <img src={require("../../assets/images/favorites.png")} alt="loading" style={{ width: '30%', height: '30%',marginLeft:'5px' }} />
+                                    <img src={require("../../assets/images/favorites.png")} alt="loading" style={{ width: '30%', height: '30%', marginLeft: '5px' }} />
                                 </div>
                             }
                         >

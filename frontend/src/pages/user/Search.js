@@ -10,6 +10,7 @@ import './Search.css';
 import styles from '../../styles/searchStyles';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import SearchErrorMessage from '../../components/SearchErrorMessage';
+import fetchFavorites from '../../services/fetchFavorites';
 
 const Search = () => {
 
@@ -24,6 +25,7 @@ const Search = () => {
     const [actionCompleted, setActionCompleted] = React.useState(true);
     const [error, setError] = React.useState(false);
     const initialRender = useRef(true);
+    const [favorites, setFavorites] = useState([]);
 
     // ...
 
@@ -38,7 +40,21 @@ const Search = () => {
         setDoctors(doctors.concat(moreDoctors));
     };
 
+    const onFavChange = async () => {
+        await getFavs();
+    }
+
+    const getFavs = async () => {
+        const res = await fetchFavorites();
+        if (res === -1) {
+            return;
+        }
+        console.log(res);
+        setFavorites(res);
+    };
     useEffect(() => {
+
+        getFavs();
         if (initialRender.current) {
             initialRender.current = false;
             return;
@@ -101,6 +117,15 @@ const Search = () => {
         setHasMore(true);
 
 
+    };
+
+    const isFavorite = (doctor) => {
+        for (let i = 0; i < favorites.length; i++) {
+            if (favorites[i]._id === doctor._id) {
+                return true;
+            }
+        }
+        return false;
     };
     return (
         <div style={{ marginTop: 50 }}>
@@ -167,7 +192,7 @@ const Search = () => {
                 <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
                     {doctors?.length > 0 && doctors.map((doctor, index) => {
                         return (
-                            <DoctorCard user={doctor} buttons={true} key={index} />
+                            isFavorite(doctor) ? <DoctorCard user={doctor} buttons={true} key={index} isFav={true} onFavChanged={onFavChange} /> : <DoctorCard user={doctor} buttons={true} key={index} onFavChanged={onFavChange} />
                         );
                     })}
                 </Box>

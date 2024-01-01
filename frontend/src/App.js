@@ -11,7 +11,7 @@ import { AppointmentDetail as ApptDetail } from './patientLayout/view_appointmen
 import { BookAppointment } from './patientLayout/book_appointment/BookAppointment.js';
 import Meet from './pages/meet/Meet.js';
 import Search from './pages/user/Search.js';
-import Favorites from './pages/patient/Favorites.js';
+import Favorites from './pages/patient/Favorites.jsx';
 import AdminDoctor from './pages/admin/AdminDoctor.js';
 import AdminPatient from './pages/admin/AdminPatient.js';
 import AdminActivity from './pages/admin/AdminActivity.js';

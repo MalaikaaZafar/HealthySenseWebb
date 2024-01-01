@@ -94,46 +94,49 @@ const userController = {
 
     getMessages: async (req, res) => {
         try {
-          const secondaryId = req.params.id;
-          console.log(secondaryId)
-          const userId = "658aeab2a07cfdec21fc4946";
-          let doctorChats = await Chat.findOne({ $or: [{ primary: userId, secondary: new mongoose.Types.ObjectId(secondaryId) }, { primary: new mongoose.Types.ObjectId(secondaryId), secondary: userId }] }).populate('primary');
-          console.log(doctorChats)
-          if (!doctorChats) {
-            console.log("heelllooo")
-            doctorChats = await Chat.create({ primary: new mongoose.Types.ObjectId(userId), secondary: new mongoose.Types.ObjectId(secondaryId), date: new Date(), messages: [] });
-            await doctorChats.save();
-          }
-          const chat = await Chat.find({$or:[{primary:userId}, {secondary:userId}]})
-          .populate('primary')
-          .populate('secondary');
-          console.log(chat)
-          return res.status(200).json({ message: "Success", chat: chat });
+            const secondaryId = req.params.id;
+            console.log(secondaryId)
+            const userId = "658aeab2a07cfdec21fc4946";
+            let doctorChats = await Chat.findOne({ $or: [{ primary: userId, secondary: new mongoose.Types.ObjectId(secondaryId) }, { primary: new mongoose.Types.ObjectId(secondaryId), secondary: userId }] }).populate('primary');
+            console.log(doctorChats)
+            if (!doctorChats) {
+                console.log("heelllooo")
+                doctorChats = await Chat.create({ primary: new mongoose.Types.ObjectId(userId), secondary: new mongoose.Types.ObjectId(secondaryId), date: new Date(), messages: [] });
+                await doctorChats.save();
+            }
+            const chat = await Chat.find({ $or: [{ primary: userId }, { secondary: userId }] })
+                .populate('primary')
+                .populate('secondary');
+            console.log(chat)
+            return res.status(200).json({ message: "Success", chat: chat });
         } catch (error) {
-          console.log(error.message);
-          return res.status(500).json({ message: "Something went wrong" });
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
         }
-      },
+    },
 
     sendMessage: async (req, res) => {
         try {
             console.log(req.body)
             const { message, secondary } = req.body;
             console.log(message)
-            
+
             const doctorChats = await Chat.findOneAndUpdate(
-              { $or: [{ primary: message.senderId, secondary: secondary }, { primary: secondary, secondary: message.senderId }] },
-              { $push: { messages: message } },
-              { new: true }
+                { $or: [{ primary: message.senderId, secondary: secondary }, { primary: secondary, secondary: message.senderId }] },
+                { $push: { messages: message } },
+                { new: true }
             );
+
             if (!doctorChats)
-              return res.status(404).json({ message: "Doctor not found" });
-          
+                return res.status(404).json({ message: "Doctor not found" });
+
+            const user = await User.findById(secondary);
+            user.notifications.push({ message: `You have a new message from ${message.senderName}` });
             return res.status(200).json({ message: "Success", messages: doctorChats });
-          } catch (err) {
+        } catch (err) {
             console.log(err);
             return res.status(500).json({ message: "Something went wrong" });
-          }
+        }
     },
 
     getDoctorDetails: async (req, res) => {
@@ -159,7 +162,7 @@ const userController = {
                 checkupRating += reviews[i].checkupRating;
             }
 
-            if(reviews.length > 0) {
+            if (reviews.length > 0) {
                 staffRating /= reviews.length;
                 clinicRating /= reviews.length;
                 checkupRating /= reviews.length;
@@ -199,6 +202,47 @@ const userController = {
             return res.status(500).json({ message: 'Something went wrong' });
         }
     },
+
+    getNotifications: async (req, res) => {
+        try {
+            const userId = req.user._id;
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            const notifications = user.notifications;
+            return res.status(200).json(notifications);
+        }
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({ message: 'Something went wrong' });
+        }
+    },
+    readNotifications: async (req, res) => {
+
+        try {
+            const userId = req.user._id;
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            const notifications = user.notifications;
+
+            // Mark all notifications as read
+            for (let notification of notifications) {
+                notification.isRead = true;
+            }
+            // Save the user document
+            await user.save();
+
+            return res.status(200).json(notifications);
+        }
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({ message: 'Something went wrong' });
+        }
+
+    }
 };
 
 module.exports = userController;
