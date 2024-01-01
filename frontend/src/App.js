@@ -33,6 +33,9 @@ import DocNavbar from './components/DocNavbar.js';
 import AdminNavbar from './components/AdminNavbar.js';
 import NotFoundPage from './pages/NotFound.jsx';
 import Payment from './patientLayout/Payment/Payment.js';
+import AllReports from './patientLayout/reports/AllReports.js';
+import PatientHistory from './pages/doctor/PatientHisttory.js';
+import ViewReportPatient from './pages/report/ViewReportPatient.js';
 
 function App() {
 
@@ -57,8 +60,9 @@ function App() {
             <Route path="appointmentSlots" element={<AppointmentSlots />} />
             <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
             <Route path='patient-detail' element={<PatientDetail />} />
+            <Route path='patient-history/:id' element={<PatientHistory />} />
             <Route path='account/:id' element={<DoctorManageAccount />} />
-            <Route path='diagnosis' element={<DiagnosisPage />} />
+            <Route path='diagnosis/:id' element={<DiagnosisPage />} />
             <Route path='report/:id' element={<ViewReportDoctor />} />
           </Route>
 
@@ -70,7 +74,9 @@ function App() {
             <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
             <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
             <Route path='book-appointment/:id' element={<BookAppointment />} />
+            <Route path='reports/:id' element={<AllReports />} />
             <Route path='payment/:id' element={<Payment />} />
+            <Route path='your-report/:id' element={<ViewReportPatient />} />
             <Route path='review' element={<DoctorReview />} />
             <Route path="account/:id" element={<PatientManageAccount />} />
           </Route>
