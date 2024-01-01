@@ -280,7 +280,8 @@ const patientController = {
   getPatientDiagnosis: async (req, res) => {
     const { id } = req.params;
     try {
-      const AllAppointments = await Appointment.find({ patientId: id }).exec();
+      const patient = await Patient.findOne({ user: id });
+      const AllAppointments = await Appointment.find({ patientId: patient._id }).exec();
       var AllDiagnosis = [];
       for (var i = 0; i < AllAppointments.length; i++) {
         const diagnosis = await Diagnosis.findOne({ appointmentId: AllAppointments[i]._id }).populate('appointmentId').exec();
