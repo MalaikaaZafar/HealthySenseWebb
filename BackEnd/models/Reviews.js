@@ -9,40 +9,24 @@ const reviewSchema = new mongoose.Schema({
         required: true,
         min: 0,
         max: 5,
-        validate: {
-            validator: Number.isInteger,
-            message: '{VALUE} is not an integer value for experience.',
-        },
     },
     checkupRating: {
         type: Number,
         required: true,
         min: 0,
         max: 5,
-        validate: {
-            validator: Number.isInteger,
-            message: '{VALUE} is not an integer value for experience.',
-        },
     },
     environmentRating: {
         type: Number,
         required: true,
         min: 0,
         max: 5,
-        validate: {
-            validator: Number.isInteger,
-            message: '{VALUE} is not an integer value for experience.',
-        },
     },
     staffRating: {
         type: Number,
         required: true,
         min: 0,
         max: 5,
-        validate: {
-            validator: Number.isInteger,
-            message: '{VALUE} is not an integer value for experience.',
-        },
     },
     recommendation: { type: Boolean, required: true },
     date: { type: Date, required: true },

@@ -64,27 +64,26 @@ function App() {
               <Route path="appointmentSlots" element={<AppointmentSlots />} />
               <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
               <Route path='patient-detail' element={<PatientDetail />} />
-              <Route path='patient-history/:id' element={<PatientHistory />} />
-              <Route path='account/:id' element={<DoctorManageAccount />} />
-              <Route path='diagnosis/:id' element={<DiagnosisPage />} />
-              <Route path='report/:id' element={<ViewReportDoctor />} />
+              <Route path='patient-history/:appid/:patid' element={<PatientHistory />} />
+              <Route path='account' element={<DoctorManageAccount />} />
+              <Route path='diagnosis/:appid' element={<DiagnosisPage />} />
+              <Route path='report/:appid' element={<ViewReportDoctor />} />
             </Route>
           </Route>
 
           <Route path='/:patientId/patient' element={<ProtectedRoute />}>
             <Route element={<NavBar />}>
-
               <Route index element={<Search />} />
               <Route path='appointments' element={<AppointmentListPatient />} />
               <Route path='appointments/:id' element={<ApptDetail />} />
               <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
               <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
-              <Route path='book-appointment/:id' element={<BookAppointment />} />
+              <Route path='book-appointment/:docId' element={<BookAppointment />} />
               <Route path='reports/:id' element={<AllReports />} />
-              <Route path='payment/:id' element={<Payment />} />
-              <Route path='your-report/:id' element={<ViewReportPatient />} />
+              <Route path='payment/:appid' element={<Payment />} />
+              <Route path='your-report/:diagid' element={<ViewReportPatient />} />
               <Route path='review' element={<DoctorReview />} />
-              <Route path="account/:id" element={<PatientManageAccount />} />
+              <Route path="account" element={<PatientManageAccount />} />
               <Route path='favorites' element={<Favorites />} />
               <Route path='doctor-detail' element={<DoctorDetail />} />
               <Route path='faq' element={<FAQ />} />

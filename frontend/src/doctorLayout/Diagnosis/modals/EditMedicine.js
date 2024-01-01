@@ -30,7 +30,7 @@ const EditMedicine = ({ Diagnosis, setDiagnosis, EditMedicineModal, EditMedicine
                 draft.Dosage = Diagnosis.prescription[MedicineIndex].Dosage;
             })
         }
-    }, []);
+    }, [MedicineIndex]);
 
     return (
         <Modal

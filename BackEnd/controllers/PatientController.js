@@ -320,9 +320,9 @@ const patientController = {
   },
 
   getCompactDoctor: async (req, res) => {
-    const { id } = req.params;
     try {
-      const doctor = await Doctor.findOne({ user: userId }).populate('user').exec();
+      const doctorId = req.params.id;
+      const doctor = await Doctor.findOne({ user: doctorId }).populate('user').exec();
       if (!doctor) {
         return res.status(404).json({ message: 'Doctor not found' });
       }
@@ -337,9 +337,10 @@ const patientController = {
         patients: patientCount.length,
       };
 
-      return res.status(200).json(doctor);
+      return res.status(200).json(temp);
     }
     catch (error) {
+      console.log(error);
       return res.status(500).json({ message: 'Something went wrong' });
     }
   },
@@ -354,9 +355,11 @@ const patientController = {
 
       const count = await Review.countDocuments({ doctorId });
 
+      const doctor = await Doctor.findOne({ user: doctorId });
+
       const review = new Review({
-        doctorId,
-        patientId: req.user.userId,
+        doctorId: doctor._id,
+        patientId: req.user._id,
         comment,
         experience,
         checkupRating,
@@ -366,11 +369,12 @@ const patientController = {
         date: new Date()
       });
 
+      console.log(req.user);
+      console.log(review);
+
       await review.save();
 
-      const doctor = await Doctor.findById(doctorId);
-
-      doctor.rating = (doctor.experience + experience) / (count + 1);
+      doctor.rating = (doctor.rating + experience) / (count + 1);
 
       await doctor.save();
 

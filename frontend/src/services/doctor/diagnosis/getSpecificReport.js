@@ -1,7 +1,6 @@
 import api from "../../api";
 
 
-
 const GetSpecificReport = async (appointment) => {
     try {
         const response = await api.get(`/report/appointment/${appointment}`);

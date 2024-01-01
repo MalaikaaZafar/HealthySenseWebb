@@ -4,6 +4,7 @@ import DoneIcon from "@mui/icons-material/DoneOutlined";
 import ReschedIcon from "@mui/icons-material/EditCalendarOutlined";
 import ReportIcon from "@mui/icons-material/AssessmentOutlined";
 import DiagnosisIcon from "@mui/icons-material/MedicationOutlined";
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import axios from "axios";
 import { List, ListItemButton, ListItemText, Box } from "@mui/material";
 import { useState } from "react";
@@ -102,6 +103,10 @@ const DoctorSidePanel = ({ appt }) => {
         <ListItemButton onClick={cancelNav}>
           <CancelIcon sx={styles.icon} />
           <ListItemText primary="Cancel" sx={styles.listItemText} />
+        </ListItemButton>
+        <ListItemButton>
+          <MedicalServicesIcon sx={styles.icon} />
+          <ListItemText primary="History" sx={styles.listItemText} />
         </ListItemButton>
         <ListItemButton>
           <DiagnosisIcon sx={styles.icon} />

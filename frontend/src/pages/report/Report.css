@@ -1,3 +1,25 @@
-@media screen and (max-width: 768px) {
-    
+@media screen and (max-width: 900px) {
+    .change {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+
+    .changes {
+        margin-right: 0% !important;
+    }
+
+    .changes1 .MuiTypography-root{
+        font-size: 0.8rem !important;
+    }
+
+    .changes2{
+        flex-direction: column !important;
+    }
+
+    .changes3{
+        margin-right: 0% !important;
+        margin-left: 0% !important;
+        border-right: none !important;
+        border-top: 1px solid rgba(224, 224, 224, 1) !important;
+    }
 }
