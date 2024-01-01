@@ -2,7 +2,7 @@ import axios from "axios";
 
 const GetAllDiagnosis = async (patientId) => {
     try {
-        const response = await axios.get(`http://localhost:5000/patient/diagnosis/${patientId}`);
+        const response = await axios.get(`http://localhost:3000/patient/diagnosis/${patientId}`);
         const data = await response.data;
         if (data.message){
             return [];
