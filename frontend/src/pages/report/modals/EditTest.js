@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 const EditTest = ({ Diagnosis, setDiagnosis, EditTestModal, EditTestModalClose, TestIndex }) => {
     const [Test, setTest] = useState("");
     const HandleEditTests = () => {
-        if (Test.Name.trim() === "") {
+        if (Test.trim() === "") {
             alert("Please fill all the fields");
             return;
         }
@@ -34,7 +34,7 @@ const EditTest = ({ Diagnosis, setDiagnosis, EditTestModal, EditTestModalClose, 
                     id="outlined-multiline-static"
                     label="Test Name"
                     variant="outlined"
-                    defaultValue={Test}
+                    value={Test}
                     onChange={(e) => setTest(e.target.value)}
                     style={{ width: '600px', marginBottom: '20px' }}
                 />
