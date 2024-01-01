@@ -21,6 +21,7 @@ import AccountCircleOutlined from '@mui/icons-material/AccountCircleOutlined';
 
 import { style } from '@mui/system';
 import UserNotifications from './UserNotifications';
+import Cookies from 'js-cookie';
 
 function NavBar() {
   const navigate = useNavigate();
@@ -49,6 +50,13 @@ function NavBar() {
     navigate(path);
     setSelectedButton(path);
   };
+
+  const handleLogout = () => {
+    //clear cookies
+    Cookies.remove('token');
+
+    navigate('/login');
+  }
   return (
     <>
 
@@ -77,7 +85,7 @@ function NavBar() {
               </ListItemIcon>
               <ListItemText sx={styles.btnText} primary="Profile" />
             </MenuItem>
-            <MenuItem onClick={() => handleButtonClick('/logout')} sx={styles.menuItem} >
+            <MenuItem onClick={() => handleLogout()} sx={styles.menuItem} >
               <ListItemIcon sx={styles.menuItemIcon}>
                 <LogoutIcon fontSize="small" />
               </ListItemIcon>
@@ -140,6 +148,7 @@ function NavBar() {
               </ListItemButton>
               <ListItemButton
                 sx={selectedButton === '/logout' ? styles.selectedListItem : null}
+                onClick={() => handleLogout()}
               >
                 <ListItemIcon sx={selectedButton === '/logout' ? styles.selectedListItemIcon : styles.listItemIcon}><LogoutIcon /></ListItemIcon>
                 <ListItemText sx={selectedButton === '/logout' ? styles.selectedBtnText : styles.btnText} primary="Logout" />

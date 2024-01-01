@@ -54,7 +54,11 @@ export default function Login() {
             .then(res => {
                 console.log(res);
                 document.cookie = `token=${res.data.token}`;
-                navigate('/', { replace: true });
+                if (res.data.result.type === 'Doctor') {
+                    navigate(`/${res.data.result._id}/doctor`);
+                } else {
+                    navigate(`/${res.data.result._id}/patient`);
+                }
             })
             .catch(err => {
                 console.log(err);

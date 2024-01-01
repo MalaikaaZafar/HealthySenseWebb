@@ -8,6 +8,12 @@ const Chat = require('../models/Message');
 const secret = process.env.SECRET;
 
 const userController = {
+
+    getUserType: async (req, res) => {
+        console.log(req.user);
+        const userType = req.user.type;
+        return res.status(200).json(userType);
+    },
     signup: async (req, res) => {
         const { name, email, password, dob, country, phoneNumber, gender, type } = req.body;
 
@@ -52,29 +58,36 @@ const userController = {
         }
     },
 
-    login: login = async (req, res) => {
+    login: async (req, res) => {
         const { email, password } = req.body;
 
         try {
+            // Fetch the user with the provided email
+            const existingUser = await User.findOne({ email });
+
+            if (!existingUser) {
+                return res.status(404).json({ message: "User not found" });
+            }
 
             const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
 
-            if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+            if (!isPasswordCorrect) {
+                return res.status(400).json({ message: "Invalid credentials" });
+            }
 
             const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, secret);
-
             return res.status(200).json({ result: existingUser, token });
         } catch (error) {
             res.status(500).json({ message: "Something went wrong" });
         }
     },
 
-    getMessages: async (req, res) =>{
-        try{
+    getMessages: async (req, res) => {
+        try {
             const userId = "658aeab2a07cfdec21fc4968";
             const doctorChats = await Chat.find({ primary: userId })
-            .populate({ path: 'primary', populate: { path: 'user' } })
-            .populate({ path: 'secondary', populate: { path: 'user' } });
+                .populate({ path: 'primary', populate: { path: 'user' } })
+                .populate({ path: 'secondary', populate: { path: 'user' } });
             if (!doctorChats)
                 return res.status(404).json({ message: "Doctor not found" });
             return res.status(200).json({ message: "Success", messages: doctorChats });
@@ -86,25 +99,20 @@ const userController = {
     },
 
     sendMessage: async (req, res) => {
-        try{
-            const {message, secondary}=req.body;
+        try {
+            const { message, secondary } = req.body;
             const userId = "658aeab2a07cfdec21fc4968";
-            const doctorChats = await Chat.findOneAndUpdate({primary: userId, secondary: secondary}, {$push: {messages: message}});
+            const doctorChats = await Chat.findOneAndUpdate({ primary: userId, secondary: secondary }, { $push: { messages: message } });
             if (!doctorChats)
                 return res.status(404).json({ message: "Doctor not found" });
             return res.status(200).json({ message: "Success", messages: doctorChats });
         }
-        catch(err)
-        {
+        catch (err) {
             console.log(err);
             return res.status(500).json({ message: "Something went wrong" });
         }
     },
 
-    getUser: async (req, res) => {
-        const arr = await User.find({ type: 'Patient' });
-        return res.status(200).json(arr);
-    }
 };
 
 module.exports = userController;
