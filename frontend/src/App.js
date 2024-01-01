@@ -11,7 +11,7 @@ import { AppointmentDetail as ApptDetail } from './patientLayout/view_appointmen
 import { BookAppointment } from './patientLayout/book_appointment/BookAppointment.js';
 import Meet from './pages/meet/Meet.js';
 import Search from './pages/user/Search.js';
-import Favorites from './pages/patient/Favorites.js';
+import Favorites from './pages/patient/Favorites.jsx';
 import AdminDoctor from './pages/admin/AdminDoctor.js';
 import AdminPatient from './pages/admin/AdminPatient.js';
 import AdminActivity from './pages/admin/AdminActivity.js';
@@ -42,42 +42,11 @@ import { Messages }  from './pages/messages/Messages.js';
 import Footer from './components/Footer.jsx';
 import AboutUs from './pages/about/AboutUs.jsx';
 import { Box } from '@mui/system';
-import {Messages } from './pages/messages/Messages.js';
 
 function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/:id/register" element={<RegisterDoctor />} />
-          <Route path="/:id/meet" element={<Meet />} />
-          <Route path="/admin" element={<AdminNavbar />}>
-            <Route path='' index element={<AdminActivity />} />
-            <Route path="doctors" element={<AdminDoctor />} />
-            <Route path='patients' element={<AdminPatient />} />
-            <Route path='doctor-detail' element={<DoctorDetail type='admin' />} />
-          </Route>
-          <Route path="/:docId/doctor" element={<ProtectedRoute />}>
-            <Route element={<DocNavbar />}>
-              <Route index element={<CustomTabPanel />} />
-              <Route path="appointments/:id" element={<AppointmentDetail />} />
-              <Route path="appointments" element={<CustomTabPanel />} />
-              <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
-              <Route path="appointmentSlots" element={<AppointmentSlots />} />
-              <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
-              <Route path='patient-detail' element={<PatientDetail />} />
-              <Route path='patient-history/:appid/:patid' element={<PatientHistory />} />
-              <Route path='account' element={<DoctorManageAccount />} />
-              <Route path='diagnosis/:appid' element={<DiagnosisPage />} />
-              <Route path='report/:appid' element={<ViewReportDoctor />} />
-              <Route path='doctor-detail' element={<DoctorDetail type='doctor' />} />
-              <Route path='messages' element={<Messages />} />
-              <Route path="messages/:id" element={<Messages />} />
-            </Route>
-          </Route>
       <Box display="flex" flexDirection="column" minHeight="100vh">
         <Box flexGrow={1}>
           <Routes>
@@ -107,6 +76,8 @@ function App() {
                 <Route path='diagnosis/:appid' element={<DiagnosisPage />} />
                 <Route path='report/:appid' element={<ViewReportDoctor />} />
                 <Route path='doctor-detail' element={<DoctorDetail type='doctor' />} />
+                <Route path='messages' element={<Messages />} />
+              <Route path="messages/:id" element={<Messages />} />
               </Route>
             </Route>
 
@@ -126,6 +97,8 @@ function App() {
               <Route path='favorites' element={<Favorites />} />
               <Route path='doctor-detail' element={<DoctorDetail type='patient' />} />
               <Route path='faq' element={<FAQ />} />
+              <Route path='messages' element={<Messages />} />
+              <Route path="messages/:id" element={<Messages />} />
               
             </Route>
           </Route>
