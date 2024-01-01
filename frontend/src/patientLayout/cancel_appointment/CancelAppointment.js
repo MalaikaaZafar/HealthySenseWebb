@@ -47,7 +47,7 @@ export const CancelAppointment = () => {
         if (appointment.status!=="Cancelled"){
         try{
         const formattedStr = `http://localhost:3000/patient/consultations/cancel`;
-        const appointmentList= await axios.put(formattedStr, {id: id, reason: reason}).then((response) => response.data);
+        const appointmentList= await api.put(formattedStr, {id: id, reason: reason}).then((response) => response.data);
         if (appointmentList.message==="Success")
         {
           setOpen(true);
