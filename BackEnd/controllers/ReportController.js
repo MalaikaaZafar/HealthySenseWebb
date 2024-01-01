@@ -55,7 +55,6 @@ const reportController = {
             if (!appointment) {
                 return res.status(404).json({ message: 'Appointment not found' });
             }
-            console.log(appointment);
             const data = {
                 DoctorName: appointment.doctorId.user.name,
                 DoctorSpeciality: appointment.doctorId.specialization,
@@ -72,6 +71,7 @@ const reportController = {
                 Prescription: diagnosis.prescription,
                 Tests: diagnosis.tests,
                 Notes: diagnosis.notes,
+                appt: appointment,
             }
             return res.status(200).json({ message: 'Success', data });
 
