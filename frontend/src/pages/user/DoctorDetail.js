@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
     Button,
     Typography,
@@ -21,7 +20,7 @@ import {
     Divider,
     Hidden,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import { Link as MuiLink } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import PeopleIcon from '@mui/icons-material/People';
@@ -35,6 +34,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import styles from './DoctorDetail.module.css';
 import { styled } from '@mui/system';
+import api from '../../services/api';
+import axios from 'axios';
+import { red } from '@mui/material/colors';
+import Ban from '../../components/Ban';
 
 const BlackLinearProgress = styled(LinearProgress)({
     '& .MuiLinearProgress-bar': {
@@ -62,6 +65,12 @@ function DoctorDeatils({ type }) {
         name: '',
         file: null
     });
+    const { docId } = useParams();
+    const [banClickCount, setBanClickCount] = useState(0);
+
+    const handleBanClick = () => {
+        setBanClickCount(prevCount => prevCount + 1);
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -125,7 +134,7 @@ function DoctorDeatils({ type }) {
 
         const fetchData = () => {
             console.log("cookie: ", document.cookie);
-            axios.get('http://localhost:3000/doctor-detail/658c46d48180f6a9f753706c', { withCredentials: true })
+            api.get(`/doctor-detail/${docId}`, { withCredentials: true })
                 .then(res => {
                     console.log(res.data);
                     const doctorData = {
@@ -143,7 +152,7 @@ function DoctorDeatils({ type }) {
 
         fetchData();
 
-    }, []);
+    }, [banClickCount]);
 
     return (
         <div>
@@ -423,9 +432,14 @@ function DoctorDeatils({ type }) {
                                         </Button>
                                     }
                                     {type === 'admin' &&
-                                        <Button variant="contained" color="primary" fullWidth>
-                                            Verify Doctor
-                                        </Button>
+                                        <>
+                                            {doctor.isBanned ? <Ban text={'Unban Doctor'} onChange={handleBanClick} /> : <Ban text={'Ban Doctor'} onChange={handleBanClick} />}
+                                            <Button variant="contained"
+                                                sx={{ marginLeft: '10px', width: '20%', textTransform: 'none', borderRadius: '10px', alignSelf: 'center' }}
+                                                fullWidth>
+                                                Verify Doctor
+                                            </Button>
+                                        </>
                                     }
 
                                 </Grid>

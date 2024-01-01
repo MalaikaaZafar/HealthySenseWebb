@@ -39,6 +39,10 @@ import ViewReportPatient from './pages/report/ViewReportPatient.js';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
 import FAQ from './pages/faqs/FAQ.js';
 import { Messages }  from './pages/messages/Messages.js';
+import Footer from './components/Footer.jsx';
+import AboutUs from './pages/about/AboutUs.jsx';
+import { Box } from '@mui/system';
+import {Messages } from './pages/messages/Messages.js';
 
 function App() {
 
@@ -74,6 +78,37 @@ function App() {
               <Route path="messages/:id" element={<Messages />} />
             </Route>
           </Route>
+      <Box display="flex" flexDirection="column" minHeight="100vh">
+        <Box flexGrow={1}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/:id/register" element={<RegisterDoctor />} />
+            <Route path="/:id/meet" element={<Meet />} />
+            <Route path="/:adminId/admin" element={<ProtectedRoute />}>
+              <Route element={<AdminNavbar />}>
+                <Route path='' index element={<AdminActivity />} />
+                <Route path="doctors" element={<AdminDoctor />} />
+                <Route path='patients' element={<AdminPatient />} />
+                <Route path='doctor-detail/:docId' element={<DoctorDetail type='admin' />} />
+              </Route>
+            </Route>
+            <Route path="/:docId/doctor" element={<ProtectedRoute />}>
+              <Route element={<DocNavbar />}>
+                <Route index element={<CustomTabPanel />} />
+                <Route path="appointments/:id" element={<AppointmentDetail />} />
+                <Route path="appointments" element={<CustomTabPanel />} />
+                <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
+                <Route path="appointmentSlots" element={<AppointmentSlots />} />
+                <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
+                <Route path='patient-detail' element={<PatientDetail />} />
+                <Route path='patient-history/:appid/:patid' element={<PatientHistory />} />
+                <Route path='account' element={<DoctorManageAccount />} />
+                <Route path='diagnosis/:appid' element={<DiagnosisPage />} />
+                <Route path='report/:appid' element={<ViewReportDoctor />} />
+                <Route path='doctor-detail' element={<DoctorDetail type='doctor' />} />
+              </Route>
+            </Route>
 
           <Route path='/:patientId/patient' element={<ProtectedRoute />}>
             <Route element={<NavBar />}>
@@ -91,15 +126,16 @@ function App() {
               <Route path='favorites' element={<Favorites />} />
               <Route path='doctor-detail' element={<DoctorDetail type='patient' />} />
               <Route path='faq' element={<FAQ />} />
-              <Route path='messages' element={<Messages />} />
-              <Route path="messages/:id" element={<Messages />} />
+              
             </Route>
           </Route>
           <Route path="/" element={<NavBar />}>
           </Route>
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
-      </div >
+     </Box>
+     <Footer />
+    </Box>
     </ThemeProvider>
   );
 }

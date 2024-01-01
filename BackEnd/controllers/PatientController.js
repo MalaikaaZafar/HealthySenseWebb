@@ -28,7 +28,7 @@ const patientController = {
 
   getConsultationById: async (req, res) => {
     const { id } = req.params;
-    try { 
+    try {
       const appt = await Appointment.findById(id)
         .populate({ path: "doctorId", populate: { path: "user" } })
         .populate({ path: "patientId", populate: { path: "user" } })
@@ -99,7 +99,7 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
-  
+
   getDoctors: async (req, res) => {
     try {
       const doctors = await Doctor.find().populate("user").exec();
@@ -125,10 +125,10 @@ const patientController = {
 
   bookAppointment: async (req, res) => {
     const { doctorId, date, time, type, problem } = req.body;
-    const patientId= req.user._id;
+    const patientId = req.user._id;
     try {
       const newDate = new Date(date);
-      const patient= await Patient.findOne({user:patientId});
+      const patient = await Patient.findOne({ user: patientId });
       console.log(patient);
       const appointment = new Appointment({
         patientId: patient._id,
@@ -141,7 +141,7 @@ const patientController = {
         paymentStatus: 'Unpaid',
       });
       await appointment.save();
-      const doctor = await Doctor.findById({_id: new mongoose.Types.ObjectId(doctorId)});
+      const doctor = await Doctor.findById({ _id: new mongoose.Types.ObjectId(doctorId) });
       doctor.appointmentSlots.forEach((slot) => {
         console.log(date, slot.time, time);
         if (slot.date.getDate() === newDate.getDate()
@@ -161,7 +161,7 @@ const patientController = {
 
 
   getFavorites: async (req, res) => {
-    const patient = await Patient.findOne({ user: req.userId });
+    const patient = await Patient.findOne({ user: req.user._id });
     if (!patient)
       return res.status(404).json({ message: "Patient not found" });
     const doctors = await Doctor.find({ 'user': { $in: patient.favoriteDoctors } }).populate("user").select("-password").exec();
@@ -196,7 +196,7 @@ const patientController = {
     console.log(doctorId);
     if (!doctorId)
       return res.status(400).json({ message: "Doctor ID not provided" });
-    const patient = await Patient.findOne({ user: req.userId });
+    const patient = await Patient.findOne({ user: req.user._id });
     if (!patient)
       return res.status(404).json({ message: "Patient not found" });
 

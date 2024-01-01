@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import logo from './healthySenseLogo.png';
 import './NavBar.css';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { useState } from 'react';
 
@@ -22,7 +22,7 @@ function AdminNavbar() {
     const [selectedButton, setSelectedButton] = useState('/admin');
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
-
+    const { adminId: id } = useParams();
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -120,18 +120,18 @@ function AdminNavbar() {
             </Box >
             <Box className="navBar" sx={{ display: { xs: 'none', md: 'flex' } }}>
                 <Button
-                    sx={selectedButton === '/admin' ? styles.selectedBtn : styles.btn}
-                    onClick={() => handleButtonClick('/admin')}
+                    sx={selectedButton === `/${id}/admin` ? styles.selectedBtn : styles.btn}
+                    onClick={() => handleButtonClick(`/${id}/admin`)}
                 >
                     Home
                 </Button>
                 <Button
-                    sx={selectedButton === '/admin/doctors' ? styles.selectedBtn : styles.btn}
-                    onClick={() => handleButtonClick('/admin/doctors')}
+                    sx={selectedButton === 'doctors' ? styles.selectedBtn : styles.btn}
+                    onClick={() => handleButtonClick('doctors')}
                 >Doctors</Button>
                 <Button
-                    sx={selectedButton === '/admin/patients' ? styles.selectedBtn : styles.btn}
-                    onClick={() => handleButtonClick('/admin/patients')}
+                    sx={selectedButton === 'patients' ? styles.selectedBtn : styles.btn}
+                    onClick={() => handleButtonClick('patients')}
                 >Patients</Button>
             </Box>
 

@@ -230,9 +230,10 @@ const doctorController = {
             if (specialty) {
                 filter.specialization = specialty;
             }
-            // if (minRating) {
-            //     filter.rating = { $gte: minRating };
-            // }
+            if (minRating) {
+                console.log(minRating)
+                filter.rating = { $gte: Number(minRating) , $exists: true};
+            }
             let doctors = await Doctor.find(filter).where('approvedStatus').equals(true).populate('user');
             if (doctors.length !== 0) {
                 if (sort == 'A-Z') {
@@ -283,11 +284,13 @@ const doctorController = {
 
 
                 }
-                // else if(sort==='Rating'){
-                //     doctors = doctors.sort((a, b) => {
-                //         return direction === 'asc' ? a.rating - b.rating : b.rating - a.rating;
-                //     });
-                // }
+                else if (sort === 'Rating') {
+                    doctors = doctors.sort((a, b) => {
+                        const aRating = a?.rating === undefined ? 0 : a?.rating;
+                        const bRating = b?.rating === undefined ? 0 : b?.rating;
+                        return sortOrder === 'asc' ? aRating - bRating : bRating - aRating;
+                    });
+                }
             }
             doctors = doctors.slice(skip, skip + 6);
             return res.status(200).json(doctors);
@@ -521,6 +524,42 @@ const doctorController = {
         catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
+
+    getPatientDetails: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const patient = await Patient.findOne({ user: id }).populate({ path: 'user' }).exec();
+            if (!patient)
+                return res.status(404).json({ message: "Patient not found" });
+
+            const appointments = await Appointment.find({ patientId: id, status: "Completed" }).populate({ path: 'doctorId', populate: { path: 'user' } }).exec();
+            const completedAppointments = appointments.map(appointment => {
+                return {
+                    doctor: appointment.doctorId.user.name,
+                    date: appointment.date,
+                    id: appointment._id
+                }
+            });
+            let temp = {
+                name: patient.user.name,
+                email: patient.user.email,
+                dob: patient.user.dob,
+                country: patient.user.country,
+                gender: patient.user.gender,
+                phoneNumber: patient.user.phoneNumber,
+                medicalHistory: patient.history,
+                previousAppointments: completedAppointments,
+                complaints: patient.complaints,
+                image: patient.user.profilePicture
+            }
+
+            return res.status(200).json(temp);
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(502).json({ message: "Something went wrong" });
         }
     },
 };

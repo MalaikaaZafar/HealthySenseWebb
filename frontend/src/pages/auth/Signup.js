@@ -41,6 +41,9 @@ import { styled } from '@mui/system';
 import styles from './Login.module.css';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 
 const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -100,6 +103,11 @@ const Signup = () => {
         gender: '',
         blood: '',
     });
+
+    const [showPassword, setShowPassword] = React.useState(false);
+
+    const handleShowPassword = () => setShowPassword(!showPassword);
+  
 
     const [contryCode, setCountryCode] = useState('');
 
@@ -259,7 +267,7 @@ const Signup = () => {
                             fullWidth
                             name='password'
                             label='Password'
-                            type='password'
+                            type={showPassword ? 'text' : 'password'}
                             id='password'
                             onChange={handleChange}
                             InputProps={{
@@ -268,6 +276,16 @@ const Signup = () => {
                                         <VpnKeyOutlinedIcon />
                                     </InputAdornment>
                                 ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                      <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleShowPassword}
+                                      >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                      </IconButton>
+                                    </InputAdornment>
+                                  ),
                             }}
                         />
                         <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -27,6 +27,7 @@ router.put("/account/:id", doctorController.updateAccount);
 router.get("/:appid/history/:id", doctorController.getPatientHistory);
 router.put("/diagnosis/update/:id", doctorController.updateDiagnosis);
 
-router.post("/complaint/:id",auth, doctorController.addComplaint); //add doctor auth
+router.post("/complaint/:id",auth, doctorController.addComplaint);
+router.get("/patient-detail/:id", doctorController.getPatientDetails);
 
 module.exports = router;
