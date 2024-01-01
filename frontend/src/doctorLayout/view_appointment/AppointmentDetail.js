@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import DoctorSidePanel from "../../components/doctorSidePanel";
 import AppointmentCard from "../../components/AppointmentCard";
 import { Box, Container, Typography } from '@mui/material';
+import api from "../../services/api";
 
 function AppointmentDetail() {
   const [appointment, setAppointment] = useState(null);
@@ -16,12 +17,7 @@ function AppointmentDetail() {
   const getAppointment = async () => {
     try {
       const formattedStr = `/doctor/consultations/${id}`;
-      const appoinmentList = await fetch(formattedStr, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((response) => response.json());
+      const appoinmentList = await api.get(formattedStr).then((response) => response.data);
       if (appoinmentList.message === "Success") {
         setAppointment(appoinmentList.appt);
         console.log(appoinmentList);
@@ -49,7 +45,7 @@ function AppointmentDetail() {
       <Box sx={{ flex: 1}}>
         <DoctorSidePanel appt={appointment} />
       </Box>
-      <Box sx={{ flex: {xs:1, sm:2, md:3}, display:'flex',flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+      <Box sx={{ flex: {xs:1, sm:2, md:3}, display:'flex',flexDirection:'column', mt:2, justifyContent:'center' }}>
         {appointment && (
           <>
             <AppointmentCard appt={appointment} type="patient" />

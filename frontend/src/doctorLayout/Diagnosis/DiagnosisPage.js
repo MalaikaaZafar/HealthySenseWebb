@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CreateDiagnosis from './CreateDiagnosis';
 import FinalReport from './FinalReport';
 import getAppointmentData from '../../services/doctor/diagnosis/getAppointmentData';
-import DoctorSidePanel from './doctorSidePanel';
+import DoctorSidePanel from '../../components/doctorSidePanel';
 import { set } from 'date-fns';
 
 const DiagnosisContext = createContext();
