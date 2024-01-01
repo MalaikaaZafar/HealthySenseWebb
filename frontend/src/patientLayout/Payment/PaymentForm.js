@@ -64,11 +64,12 @@ const PaymentForm = ({ id }) => {
         <form id="payment-form" onSubmit={handleSubmit}>
             <Container
                 sx={{
-                    marginTop: '5rem',
+                    border: '1px solid #e0e0e0',    
                     borderRadius: '1rem',
-                    boxShadow: '0 0 10px rgba(0,0,0,0.2)',
                     padding: '2rem',
                     backgroundColor:'white',
+                    my:3,
+                    maxWidth:'500px'
                 }}
             >
                 <PaymentElement id="card-element" options={{ layout: 'tabs' }} />

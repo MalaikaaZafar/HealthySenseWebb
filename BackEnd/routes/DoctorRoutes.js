@@ -1,10 +1,11 @@
 const express = require('express');
 const auth = require('../middleware/auth/UserAuth');
+const doctorAuth = require('../middleware/auth/DoctorAuth');
 const doctorController = require('../controllers/DoctorController');
 
 const router = express.Router();
 
-router.post('/register', auth, doctorController.registerDoctor);
+router.post('/register', auth, doctorAuth, doctorController.registerDoctor);
 
 router.get("/consultations", doctorController.consultations);
 router.get("/consultations/:id", doctorController.getConsultationById);
