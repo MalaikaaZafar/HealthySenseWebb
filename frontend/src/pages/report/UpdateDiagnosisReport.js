@@ -1,14 +1,11 @@
-import React, { useState } from 'react'
-import { useDiagnosis } from './DiagnosisPage';
-import { Container, Typography, TextField, Button, Table, TableHead, TableCell, TableRow, TableBody, Modal, Tab, Snackbar, Alert } from '@mui/material';
-import AddMedicine from './modals/AddMedicine';
-import EditMedicine from './modals/EditMedicine';
-import AddTest from './modals/AddTest';
-import EditTest from './modals/EditTest';
-import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
+import React, { useState, useEffect } from "react";
 import { Box, styled } from "@mui/system";
-import { useNavigate, useParams } from "react-router-dom";
-import "@fontsource/roboto";
+import { Container, Typography, TextField, Button, Table, TableHead, TableCell, TableRow, TableBody, Modal, Tab, Snackbar, Alert } from '@mui/material';
+import AddMedicine from "./modals/AddMedicine";
+import AddTest from "./modals/AddTest";
+import EditTest from "./modals/EditTest";
+import EditMedicine from "./modals/EditMedicine";
+import { AddCircleOutline } from "@mui/icons-material";
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
     display: 'flex',
@@ -35,14 +32,9 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
     gap: '10px'
 }));
 
-
-
-const CreateDiagnosis = () => {
-    const { AppointmentData, Diagnosis, PageChange, setDiagnosis } = useDiagnosis();
+const UpdateDiagnosisReport = ({ diagnosis, setDiagnosis, updatediagnosisreport, PageChange }) => {
     const [MedicineModal, setMedicineModal] = useState(false);
     const [TestModal, setTestModal] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [msg, setMsg] = useState("");
 
     const [EditMedicineModal, setEditMedicine] = useState(false);
     const [MedicineIndex, setMedicineIndex] = useState(-1);
@@ -55,13 +47,10 @@ const CreateDiagnosis = () => {
         setMedicineIndex(-1);
         setEditMedicine(true)
     };
-
     const HandleEditMedicine = (index) => {
         setMedicineIndex(index);
         EditMedicineModalOpen();
     }
-
-
     const EditTestModalClose = () => {
         setTestIndex(-1);
         setEditTest(false)
@@ -69,33 +58,18 @@ const CreateDiagnosis = () => {
     const EditTestModalOpen = () => {
         setEditTest(true)
     };
-
     const HandleEditTest = (index) => {
         setTestIndex(index);
         EditTestModalOpen();
     }
-
     const MedicineModalClose = () => { setMedicineModal(false) };
     const MedicineModalOpen = () => { setMedicineModal(true) };
 
     const TestModalClose = () => { setTestModal(false) };
     const TestModalOpen = () => { setTestModal(true) };
 
-    const HandleSubmission = (e) => {
-        if (Diagnosis.diagnosis.trim() === "") {
-            setOpen(true);
-            setMsg("Diagnosis is Required");
-            return;
-        }
-        if(Diagnosis.notes.trim() === ""){
-            setDiagnosis(draft => { draft.notes = "No Notes" });
-        }
-        setDiagnosis(draft => { draft.type = AppointmentData.type });
-        PageChange(2);
-    }
-
     return (
-        <><Box
+        <Box
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -138,25 +112,9 @@ const CreateDiagnosis = () => {
                         marginTop: '-20px',
                     }}
                 >
-                    <Typography variant="h4" style={{ textAlign: 'center' }}>Create Diagnosis</Typography>
+                    <Typography variant="h4" style={{ textAlign: 'center' }}>Update Diagnosis</Typography>
                 </Box>
                 <Container className="Diagnosis-Diag">
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            width: '100%',
-                            height: '100%',
-                            py: 3,
-                            borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                            borderTop: '1px solid rgba(224, 224, 224, 1)',
-                        }}
-                    >
-                        <Typography variant="h6" style={{ fontWeight: 'bold' }}>Patient Problem: </Typography>
-                        <Typography variant="h6" style={{ color: 'GrayText', fontWeight: 'bold' }}>{AppointmentData.problem}</Typography>
-                    </Box>
                     <Box
                         sx={{
                             display: 'flex',
@@ -173,7 +131,7 @@ const CreateDiagnosis = () => {
                             id="outlined-multiline-static"
                             multiline
                             rows={4}
-                            defaultValue={Diagnosis.diagnosis}
+                            value={diagnosis.diagnosis}
                             label="Diagnosis"
                             variant="outlined"
                             onChange={(e) => setDiagnosis(draft => { draft.diagnosis = e.target.value })}
@@ -207,8 +165,8 @@ const CreateDiagnosis = () => {
                                 </CustomTableRow>
                             </TableHead>
                             <TableBody>
-                                {Diagnosis.prescription.length > 0 ?
-                                    Diagnosis.prescription.map((item, index) => {
+                                {diagnosis.prescription.length > 0 ?
+                                    diagnosis.prescription.map((item, index) => {
                                         return (
                                             <CustomTableRow
                                                 key={index}
@@ -264,7 +222,7 @@ const CreateDiagnosis = () => {
                             MedicineModalClose={MedicineModalClose}
                         />
                         <EditMedicine
-                            Diagnosis={Diagnosis}
+                            Diagnosis={diagnosis}
                             setDiagnosis={setDiagnosis}
                             EditMedicineModal={EditMedicineModal}
                             EditMedicineModalClose={EditMedicineModalClose}
@@ -297,8 +255,8 @@ const CreateDiagnosis = () => {
                                 </CustomTableRow>
                             </TableHead>
                             <TableBody>
-                                {Diagnosis.tests.length > 0 ?
-                                    Diagnosis.tests.map((item, index) => {
+                                {diagnosis.tests.length > 0 ?
+                                    diagnosis.tests.map((item, index) => {
                                         return (
                                             <CustomTableRow>
                                                 <CustomTableCell style={{ width: '80%' }}>{item}</CustomTableCell>
@@ -351,7 +309,7 @@ const CreateDiagnosis = () => {
                             TestModalClose={TestModalClose}
                         />
                         <EditTest
-                            Diagnosis={Diagnosis}
+                            Diagnosis={diagnosis}
                             setDiagnosis={setDiagnosis}
                             EditTestModal={EditTestModal}
                             EditTestModalClose={EditTestModalClose}
@@ -374,7 +332,7 @@ const CreateDiagnosis = () => {
                             id="outlined-multiline-static"
                             multiline
                             rows={4}
-                            defaultValue={Diagnosis.notes}
+                            defaultValue={diagnosis.notes}
                             variant="outlined"
                             label="Notes"
                             onChange={(e) => setDiagnosis(draft => { draft.notes = e.target.value })}
@@ -385,21 +343,14 @@ const CreateDiagnosis = () => {
                 <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '70px' }}>
                     <Button variant="contained"
                         style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }}
-                        onClick={HandleSubmission}
+                        onClick={updatediagnosisreport}
                     >
-                        Submit Diagnosis
+                        Update Diagnosis
                     </Button>
                 </Container>
             </Container>
         </Box>
-            <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
-                <Alert onClose={() => setOpen(false)} severity="error" sx={{ width: '100%' }}>
-                    {msg}
-                </Alert>
-            </Snackbar>
-        </>
-    )
+    );
+}
 
-};
-
-export default CreateDiagnosis;
+export default UpdateDiagnosisReport;

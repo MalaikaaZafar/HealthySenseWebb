@@ -10,6 +10,7 @@ import GetSpecificReport from "../../services/doctor/diagnosis/getSpecificReport
 import DownloadReport from "../../components/Report/DownloadReport";
 import { useImmer } from "use-immer";
 import updateDiagnosis from "../../services/doctor/diagnosis/updateDiagnosis";
+import UpdateDiagnosisReport from "./UpdateDiagnosisReport";
 
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
@@ -111,7 +112,7 @@ const ViewReportDoctor = () => {
             <>
                 <LoadingAnimation isVisible={loading} />
                 {
-                    !loading && report &&
+                    !loading && report && page === 1 &&
                     <Box
                         sx={{
                             backgroundColor: 'lightgrey',
@@ -633,17 +634,29 @@ const ViewReportDoctor = () => {
                                     sx={{
                                         display: 'flex',
                                         flexDirection: 'row',
-                                        justifyContent: 'right',
+                                        justifyContent: 'space-between',
                                         alignItems: 'center',
                                         gap: '10px',
                                         py: 3,
                                     }}
                                 >
+                                    <Button variant="contained" onClick={() => setPage(2)} color="info" style={{ fontSize: '12px' }}>
+                                        Update Diagnosis
+                                    </Button>
                                     <DownloadReport AppointmentData={report} />
                                 </Container>
                             </Box>
                         </Container>
                     </Box>
+                }
+                {
+                    !loading && report && page === 2 &&
+                    <UpdateDiagnosisReport
+                        diagnosis={diagnosis}
+                        setDiagnosis={setDiagnosis}
+                        updatediagnosisreport={updatediagnosisreport}
+                        PageChange={setPage}
+                    />
                 }
                 {
                     !loading && !report &&
