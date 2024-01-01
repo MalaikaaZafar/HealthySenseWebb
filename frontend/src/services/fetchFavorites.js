@@ -1,8 +1,8 @@
-import axios from 'axios';
+import api from './api';
 
 const fetchFavorites = async () => {
     try {
-        const response = await axios.get(`http://localhost:3000/favorites`);
+        const response = await api.get(`/favorites`);
         return response.data;
     } catch (error) {
         console.error(error);

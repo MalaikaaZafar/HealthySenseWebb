@@ -1,9 +1,9 @@
-import axios from 'axios';
+import api from "./api";
 
 const removeFavorite = async (doctorId) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.delete(`http://localhost:3000/favorites/${doctorId}`, {
+        const response = await api.delete(`/favorites/${doctorId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

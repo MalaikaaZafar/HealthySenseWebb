@@ -6,6 +6,7 @@ const paymentSchema = new mongoose.Schema({
     date: { type: Date, required: true },
     time: { type: String, required: true },
     status: { type: Boolean, required: true },
+    clientSecret: { type: String, required: true },
 });
 
 const Payment = mongoose.model('Payment', paymentSchema);

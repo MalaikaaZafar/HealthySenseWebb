@@ -9,7 +9,6 @@ import FilterPopover from '../../components/FilterPopover';
 import './Search.css';
 import styles from '../../styles/searchStyles';
 import useUserStore from '../../stores/userStore';
-import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import SearchErrorMessage from '../../components/SearchErrorMessage';
 
@@ -33,7 +32,7 @@ const Search = () => {
     const fetchMoreData = async () => {
         console.log("fetching more data")
         const skip = doctors.length;
-        let moreDoctors = await searchDoctors(searchText, selectedButton, direction, specialtyFilter, minRating, skip);
+        let moreDoctors = await searchDoctors(searchText, selectedButton, sortDirection, specialtyFilter, minRating, skip);
         if (moreDoctors.length === 0) {
             setHasMore(false);
             return;
@@ -70,19 +69,20 @@ const Search = () => {
     const toggleSortDirection = () => {
         setSortDirection(prevDirection => {
             const newDirection = prevDirection === 'asc' ? 'desc' : 'asc';
+            console.log(newDirection);
             direction = newDirection;
+            searchPressed();
             return newDirection;
         });
-        searchPressed();
     };
 
-    const searchPressed = async () => {
+    const searchPressed = async (direction=sortDirection) => {
         // if (searchText === '') {
         //     alert('Please enter a search query');
         // }
         setActionCompleted(false);
         console.log("searching", direction);
-        const result = await searchDoctors(searchText, selectedButton, direction, specialtyFilter, minRating, 0);
+        const result = await searchDoctors(searchText, selectedButton, sortDirection, specialtyFilter, minRating, 0);
         console.log(result);
         if (result == -1) {
             setError(true);
@@ -166,15 +166,15 @@ const Search = () => {
 
             >
                 <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
-                    {doctors?.length > 0 && doctors.map((doctor) => {
+                    {doctors?.length > 0 && doctors.map((doctor, index) => {
                         return (
-                            <DoctorCard user={doctor} buttons={true} />
+                            <DoctorCard user={doctor} buttons={true} key={index} />
                         );
                     })}
                 </Box>
             </InfiniteScroll>
                 :
-                <SearchErrorMessage notFound={notFound} error={error} role={'doctor'}/>
+                <SearchErrorMessage notFound={notFound} error={error} role={'doctor'} />
             }
         </div >
     );

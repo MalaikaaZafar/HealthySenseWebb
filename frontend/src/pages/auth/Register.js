@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/system';
 import {
     Button,
@@ -13,6 +13,10 @@ import {
     Container,
     CssBaseline,
     Paper,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    Hidden,
 } from '@mui/material';
 import { TimePicker, DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -31,7 +35,10 @@ import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseIcon from '@mui/icons-material/Close';
 import styles from './Register.module.css';
+import api from '../../services/api';
 
 const CustomTextField = styled(TextField)({
     '& .MuiInputAdornment-root.MuiInputAdornment-positionStart': {
@@ -60,7 +67,10 @@ const RegisterDoctor = () => {
         description: '',
         location: '',
         experience: '',
-        session: [],
+        session: [
+            { type: 'Online', fee: '' },
+            { type: 'Clinic', fee: '' },
+        ],
         services: [],
         appointmentSlots: [],
         certificates: [],
@@ -82,6 +92,27 @@ const RegisterDoctor = () => {
         file: null
     });
     const [showCertificateInput, setShowCertificateInput] = useState(false);
+
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    const navigate = useNavigate();
+
+    const openDialog = () => {
+        setDialogOpen(true);
+    }
+
+    const closeDialog = () => {
+        setDialogOpen(false);
+    }
+
+    const downloadFile = () => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(currentCertificate.file);
+        link.download = currentCertificate.file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     const handleAddCertificate = () => {
         if (!showCertificateInput) {
@@ -119,6 +150,10 @@ const RegisterDoctor = () => {
 
     const handleCertificateFileChange = (e) => {
         setCurrentCertificate({ ...currentCertificate, file: e.target.files[0] });
+    };
+
+    const handleRemoveCertificateFileChange = (e) => {
+        setCurrentCertificate({ ...currentCertificate, file: null });
     };
 
     const containsCertificate = (certificate) => {
@@ -212,10 +247,6 @@ const RegisterDoctor = () => {
         setDoctor(prevDoctor => ({ ...prevDoctor, appointmentSlots: prevDoctor.appointmentSlots.filter(s => s !== appointment) }));
     };
 
-    const handleChange = (e) => {
-        setDoctor({ ...doctor, [e.target.name]: e.target.value });
-    }
-
     const handleAddService = () => {
         if (!showServiceInput) {
             setShowServiceInput(true);
@@ -244,30 +275,46 @@ const RegisterDoctor = () => {
         setDoctor(prevDoctor => ({ ...prevDoctor, services: prevDoctor.services.filter(s => s !== service) }));
     };
 
+    const handleSessionChange = (event) => {
+        setDoctor(prevDoctor => ({
+            ...prevDoctor,
+            session: prevDoctor.session.map(s => s.type === event.target.name ? { ...s, fee: event.target.value } : s)
+        }));
+    };
+
+    const handleChange = (e) => {
+        setDoctor({ ...doctor, [e.target.name]: e.target.value });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
         Object.keys(doctor).forEach(key => {
             if (key === 'certificates') {
-                Array.from(doctor.certificates).forEach((file, index) => {
-                    formData.append(`certificates[${index}]`, file);
+                doctor.certificates.forEach((certificate, index) => {
+                    formData.append(`certificates[${index}]`, certificate.file);
                 });
-            } else if (key === 'services') {
-                doctor.services.forEach((service, index) => {
-                    formData.append(`services[${index}]`, service);
-                });
+                formData.append('certificates', JSON.stringify(doctor.certificates.map(certificate => {
+                    const { file, ...certificateWithoutFile } = certificate;
+                    return certificateWithoutFile;
+                })));
             } else {
-                formData.append(key, doctor[key]);
+                formData.append(key, JSON.stringify(doctor[key]));
             }
         });
 
-        try {
-            const res = await axios.post('/api/doctors/register', formData);
-            console.log(res.data);
-        } catch (err) {
-            console.error(err);
-        }
+        console.log(doctor);
+
+        api.post('/doctor/register', formData, { withCredentials: true })
+            .then(res => {
+                navigate('/doctor');
+            })
+            .catch(err => {
+                console.log(err);
+                if (err.response)
+                    alert(err.response.data.message);
+            });
     }
 
     return (
@@ -276,8 +323,17 @@ const RegisterDoctor = () => {
                 <CssBaseline />
                 <StyledBox>
                     <Typography variant="h6">Register</Typography>
-                    <form noValidate autoComplete='off' onSubmit={handleSubmit}>
-                        <Grid container spacing={3}>
+                    <form
+                        noValidate
+                        autoComplete='off'
+                        onSubmit={handleSubmit}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                                e.preventDefault();
+                            }
+                        }}
+                    >
+                        <Grid container>
                             <Grid item xs={12} >
                                 <CustomTextField
                                     name="description"
@@ -287,7 +343,6 @@ const RegisterDoctor = () => {
                                     required
                                     multiline
                                     margin='normal'
-                                    placeholder='Write about yourself'
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -306,7 +361,6 @@ const RegisterDoctor = () => {
                                     margin='normal'
                                     fullWidth
                                     required
-                                    placeholder='Enter how many years of experience you have'
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -321,14 +375,33 @@ const RegisterDoctor = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    name="fee"
+                                    name="Online"
                                     margin='normal'
-                                    onChange={handleChange}
-                                    label="Fee(Rs.)"
+                                    onChange={handleSessionChange}
+                                    label="Online Fee(Rs.)"
+                                    type="number"
+                                    fullWidth
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Money />
+                                            </InputAdornment>
+                                        ),
+                                        inputProps: {
+                                            min: 1000,
+                                        },
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    name="Clinic"
+                                    margin='normal'
+                                    onChange={handleSessionChange}
+                                    label="Clininc Fee(Rs.)"
                                     type="number"
                                     fullWidth
                                     required
-                                    placeholder='Enter your consultation fee in Rupees'
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -347,7 +420,6 @@ const RegisterDoctor = () => {
                                     onChange={handleChange}
                                     label="Specialization"
                                     fullWidth
-                                    placeholder='Enter your specialization'
                                     margin='normal'
                                     InputProps={{
                                         startAdornment: (
@@ -362,10 +434,9 @@ const RegisterDoctor = () => {
                                 <TextField
                                     name="location"
                                     onChange={handleChange}
-                                    label="Location"
+                                    label="Clininc Location"
                                     margin='normal'
                                     fullWidth
-                                    placeholder='Enter your clinic address'
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -379,8 +450,8 @@ const RegisterDoctor = () => {
                                 <Typography variant="subtitle1" color="gray">Services</Typography>
                                 <Button onClick={handleAddService} startIcon={<AddCircleOutline />}>Add Service</Button>
                                 {showServiceInput && (
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={10}>
+                                    <Grid container>
+                                        <Grid item xs={12} mb={1} sm={10}>
                                             <TextField
                                                 value={currentService}
                                                 onChange={handleServiceChange}
@@ -396,14 +467,14 @@ const RegisterDoctor = () => {
                                                 }}
                                             />
                                         </Grid>
-                                        <Grid item xs={10}>
+                                        <Grid item xs={12} mb={1} sm={10}>
                                             <StyledButton onClick={handleServiceSubmit} variant="contained" color="secondary" fullWidth> Add </StyledButton>
                                         </Grid>
                                     </Grid>
                                 )}
-                                <Grid container spacing={2} marginTop='0.1rem'>
+                                <Grid container marginTop='0.1rem'>
                                     {doctor.services.map((service, index) => (
-                                        <Grid item key={index}>
+                                        <Grid item key={index} mr={1} mb={1}>
                                             <Chip
                                                 label={service}
                                                 onDelete={() => handleRemoveService(service)}
@@ -419,7 +490,7 @@ const RegisterDoctor = () => {
                                 <Typography variant="subtitle1" color="gray">Appointment Slots</Typography>
                                 <Button onClick={handleAddAppointmentSlot} startIcon={<AddCircleOutline />}>Add Appointment Slots</Button>
                                 {showAppointmentInput && (
-                                    <Grid container spacing={2}>
+                                    <Grid item container justifyContent={'space-between'} xs={10}>
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <Grid item xs={5}>
                                                 <DatePicker
@@ -434,9 +505,11 @@ const RegisterDoctor = () => {
                                                             margin: 'normal',
                                                             InputProps: {
                                                                 startAdornment: (
-                                                                    <InputAdornment position="start">
-                                                                        <CalendarToday />
-                                                                    </InputAdornment>
+                                                                    <Hidden xsUp>
+                                                                        <InputAdornment position="start">
+                                                                            <CalendarToday />
+                                                                        </InputAdornment>
+                                                                    </Hidden>
                                                                 ),
                                                             }
                                                         },
@@ -466,7 +539,7 @@ const RegisterDoctor = () => {
                                             <Grid item xs={5}>
                                                 <Paper
                                                     elevation={selectedType === 'Online' ? 4 : 1}
-                                                    style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
+                                                    style={{ padding: '5px', borderRadius: '5px', cursor: 'pointer' }}
                                                     onClick={() => setSelectedType('Online')}
                                                 >
                                                     <IconButton color={selectedType === 'Online' ? 'primary' : 'default'}>
@@ -478,7 +551,7 @@ const RegisterDoctor = () => {
                                             <Grid item xs={5}>
                                                 <Paper
                                                     elevation={selectedType === 'Clinic' ? 4 : 1}
-                                                    style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
+                                                    style={{ padding: '5px', borderRadius: '5px', cursor: 'pointer' }}
                                                     onClick={() => setSelectedType('Clinic')}
                                                 >
                                                     <IconButton color={selectedType === 'Clinic' ? 'primary' : 'default'}>
@@ -500,15 +573,7 @@ const RegisterDoctor = () => {
                                                 onDelete={() => handleRemoveAppointment(appointment)}
                                                 color="primary"
                                                 variant="outlined"
-                                                label={
-                                                    <Box display="flex" alignItems="center">
-                                                        <Typography>{dayjs(appointment.date).format('DD/MM/YYYY')}</Typography>
-                                                        <Box mx={1}>|</Box>
-                                                        <Typography>{appointment.time}</Typography>
-                                                        <Box mx={1}>|</Box>
-                                                        <Typography>{appointment.type}</Typography>
-                                                    </Box>
-                                                }
+                                                label={`${dayjs(appointment.date).format('DD/MM/YYYY')} | ${appointment.time} | ${appointment.type}`}
                                             />
                                         </Grid>
                                     ))}
@@ -600,27 +665,111 @@ const RegisterDoctor = () => {
                                             <Grid item xs={5}>
                                                 <Button variant="contained" component="label" fullWidth margin='normal' startIcon={<UploadFile />} sx={{ mt: 2, mb: 2, ml: 2 }}>
                                                     Upload
-                                                    <input type="file" name="file" onChange={handleCertificateFileChange} hidden required />
+                                                    <input
+                                                        type="file"
+                                                        name="file"
+                                                        onChange={handleCertificateFileChange}
+                                                        hidden
+                                                        required
+                                                        accept="image/png, image/jpeg, image/jpg,.pdf"
+                                                    />
                                                 </Button>
                                             </Grid>
                                             {currentCertificate.file && (
                                                 <Grid item xs={5}>
                                                     <Box display="flex" alignItems="center" height="100%" justifyContent="center">
-                                                        {currentCertificate.file.type.startsWith('image/') ? (
-                                                            <img src={URL.createObjectURL(currentCertificate.file)} alt="Uploaded" style={{ width: '100px', height: '100px' }} />
-                                                        ) : (
-                                                            <Chip
-                                                                icon={<Description />}
-                                                                label={`${currentCertificate.file.name}`}
-                                                                clickable
-                                                                color="primary"
-                                                                variant="outlined"
-                                                                component="a"
-                                                                sx={{ mt: 2, mb: 2 }}
-                                                                href={URL.createObjectURL(currentCertificate.file)}
-                                                                download={currentCertificate.file.name}
-                                                            />
-                                                        )}
+                                                        <Chip
+                                                            icon={<Description />}
+                                                            label={`${currentCertificate.file.name}`}
+                                                            clickable
+                                                            color="primary"
+                                                            variant="outlined"
+                                                            component="a"
+                                                            sx={{ mt: 2, mb: 2 }}
+                                                            href="#"
+                                                            onClick={e => { e.preventDefault(); openDialog(); }}
+                                                            onDelete={handleRemoveCertificateFileChange}
+                                                        />
+                                                        <Dialog
+                                                            open={dialogOpen}
+                                                            onClose={closeDialog}
+                                                            aria-labelledby="file-dialog-title"
+                                                            aria-describedby="file-dialog-description"
+                                                            maxWidth="md"
+                                                            fullWidth
+                                                            PaperProps={{
+                                                                sx: {
+                                                                    position: 'relative',
+                                                                    backgroundColor: 'transparent',
+                                                                    '&::before': {
+                                                                        content: '""',
+                                                                        position: 'absolute',
+                                                                        top: 0,
+                                                                        left: 0,
+                                                                        width: '100%',
+                                                                        height: '100%',
+                                                                        backgroundColor: 'white',
+                                                                        opacity: 0.7,
+                                                                        zIndex: -1,
+                                                                    },
+                                                                },
+                                                            }}
+                                                        >
+                                                            <DialogTitle id="file-dialog-title" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+                                                                <Typography variant="h7" fontSize={18} fontWeight={600}>Certificate File</Typography>
+                                                                <IconButton aria-label="close" onClick={closeDialog} sx={{ position: 'absolute', right: 8 }}>
+                                                                    <CloseIcon />
+                                                                </IconButton>
+                                                            </DialogTitle>
+                                                            <DialogContent sx={{
+                                                                display: 'flex',
+                                                                flexDirection: 'column',
+                                                                justifyContent: 'center',
+                                                                alignItems: 'center',
+                                                                overflow: 'auto',
+                                                                height: 'auto',
+                                                                padding: '2.5rem',
+                                                            }}
+                                                            >
+                                                                {currentCertificate.file.type.startsWith('image/') ? (
+                                                                    <Box
+                                                                        component="img"
+                                                                        src={URL.createObjectURL(currentCertificate.file)}
+                                                                        title="Certificate File"
+                                                                        sx={{
+                                                                            maxWidth: '100%',
+                                                                            maxHeight: '100%',
+                                                                            objectFit: 'contain',
+                                                                            border: 'none',
+                                                                            marginBottom: '1rem',
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    <>
+                                                                        <Hidden smDown>
+                                                                            <Box
+                                                                                component="iframe"
+                                                                                src={URL.createObjectURL(currentCertificate.file)}
+                                                                                title="Certificate File"
+                                                                                sx={{
+                                                                                    width: '100%',
+                                                                                    height: '70vh',
+                                                                                    border: 'none',
+                                                                                    marginBottom: '1rem',
+                                                                                }}
+                                                                            />
+                                                                        </Hidden>
+                                                                    </>
+                                                                )}
+                                                                <Button
+                                                                    variant='contained'
+                                                                    startIcon={<DownloadIcon />}
+                                                                    onClick={downloadFile}
+                                                                >
+                                                                    Download PDF
+                                                                </Button>
+                                                            </DialogContent>
+                                                        </Dialog>
                                                     </Box>
                                                 </Grid>
                                             )}

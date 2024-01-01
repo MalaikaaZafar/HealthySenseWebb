@@ -1,9 +1,8 @@
-import axios from 'axios';
+import api from "./api";
 
 const fetchMessages = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:3000/messages/${id}`);
-      console.log(response.data); 
+      const response = await api.get(`/messages`);
       return response.data;
     } catch (error) {
       console.error(error);

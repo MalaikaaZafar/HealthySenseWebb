@@ -8,10 +8,9 @@ import './Search.css';
 import styles from '../../styles/searchStyles';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import SearchErrorMessage from '../../components/SearchErrorMessage';
-import ViewAllPatients from '../../adminlayout/ViewAllPatients';
+import ViewAllPatients from '../../adminLayout/ViewAllPatients';
 import searchPatients from '../../services/admin/searchPatient';
 import PatientCard from '../../components/PatientCard';
-
 
 const AdminPatient = () => {
     const [sortDirection, setSortDirection] = React.useState('asc');
@@ -140,9 +139,9 @@ const AdminPatient = () => {
 
             >
                 <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
-                    {patients?.length > 0 && patients.map((patient) => {
+                    {patients?.length > 0 && patients.map((patient, index) => {
                         return (
-                            <PatientCard user={patient} />
+                            <PatientCard user={patient} key={index} />
                         );
                     })}
                 </Box>

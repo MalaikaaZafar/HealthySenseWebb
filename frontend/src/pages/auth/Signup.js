@@ -38,8 +38,8 @@ import PatientIcon from '@mui/icons-material/Person';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { styled } from '@mui/system';
 import styles from './Login.module.css';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
 const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -162,7 +162,7 @@ const Signup = () => {
         data.append('gender', formData.gender);
         data.append('type', accountType);
 
-        axios.post('http://localhost:3000/signup', data)
+        api.post('/signup', data)
             .then(res => {
                 console.log(res);
                 document.cookie = `token=${res.data.token}`;

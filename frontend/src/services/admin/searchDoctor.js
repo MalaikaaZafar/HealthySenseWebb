@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from "../api";
 
 const searchDoctors = async (searchText, sortDirection, specialtyFilter, skip) => {
     try {
@@ -11,7 +11,7 @@ const searchDoctors = async (searchText, sortDirection, specialtyFilter, skip) =
             params.specialty = specialtyFilter;
         }
 
-        const response = await axios.get(`http://localhost:3000/admin/doctor/search`, {
+        const response = await api.get(`/admin/doctor/search`, {
             params: params
         });
         console.log(response);
