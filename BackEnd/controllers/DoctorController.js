@@ -218,7 +218,7 @@ const doctorController = {
         const { query, sort, sortOrder, specialty, minRating, skip } = req.query;
 
         try {
-            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor');
+            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor').where('approvedStatus').equals(true);
             const users = await q.exec();
             const userIds = users.map(user => user._id);
             let filter = { user: { $in: userIds } };
