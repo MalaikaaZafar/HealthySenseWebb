@@ -166,15 +166,15 @@ const Search = () => {
 
             >
                 <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
-                    {doctors?.length > 0 && doctors.map((doctor) => {
+                    {doctors?.length > 0 && doctors.map((doctor, index) => {
                         return (
-                            <DoctorCard user={doctor} buttons={true} />
+                            <DoctorCard user={doctor} buttons={true} key={index} />
                         );
                     })}
                 </Box>
             </InfiniteScroll>
                 :
-                <SearchErrorMessage notFound={notFound} error={error} role={'doctor'}/>
+                <SearchErrorMessage notFound={notFound} error={error} role={'doctor'} />
             }
         </div >
     );

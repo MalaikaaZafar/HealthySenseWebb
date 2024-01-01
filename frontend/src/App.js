@@ -1,4 +1,5 @@
 import NavBar from './components/NavBar.js';
+<<<<<<< HEAD
 
 import CustomTabPanel from './doctorlayout/view_appointment_list/ViewAppointmentList.js'
 import CancelAppointment from './doctorlayout/cancel_appointment/CancelAppointment.js';
@@ -8,14 +9,25 @@ import AppointmentDetail from './doctorlayout/view_appointment/AppointmentDetail
 
 import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
+=======
+import CustomTabPanel from './DoctorLayout/view_appointment_list/ViewAppointmentList.js'
+import CancelAppointment from './DoctorLayout/cancel_appointment/CancelAppointment.js';
+import AppointmentSlots from './DoctorLayout/appointment_slots/AppointmentSlots.js';
+import RescheduleAppointment from './DoctorLayout/reschedule_appointment/RescheduleAppointment.js';
+import AppointmentDetail from './DoctorLayout/view_appointment/AppointmentDetail.js';
+>>>>>>> abdullah
 import { RescheduleAppointment as ReschedulePatient } from './patientlayout/reschedule_appointment/RescheduleAppointment.js';
 import { AppointmentList as AppointmentListPatient } from './patientlayout/view_appointment_list/ViewAppointmentList.js';
 import { CancelAppointment as CancelPatientAppt } from './patientlayout/cancel_appointment/CancelAppointment.js';
 import { AppointmentDetail as ApptDetail } from './patientlayout/view_appointment/AppointmentDetail.js';
 import { BookAppointment } from './patientlayout/book_appointment/BookAppointment.js';
+<<<<<<< HEAD
 
 import { Messages } from './pages/messages/Messages.js';
 import Meet from './pages/meet/Meet.js';
+=======
+import { Routes, Route } from 'react-router-dom';
+>>>>>>> abdullah
 import Search from './pages/user/Search.js';
 import Favorites from './pages/patient/Favorites.js';
 import AdminDoctor from './pages/admin/AdminDoctor.js';
@@ -24,7 +36,7 @@ import AdminActivity from './pages/admin/AdminActivity.js';
 import Login from './pages/auth/Login.js';
 import Signup from './pages/auth/Signup.js';
 import RegisterDoctor from './pages/auth/Register.js';
-import DoctorDeatil from './pages/user/DoctorDetail.js';
+import DoctorDetail from './pages/user/DoctorDetail.js';
 import PatientDetail from './pages/doctor/PatientDetail.js';
 import DoctorReview from './pages/patient/DoctorReview.js';
 
@@ -38,10 +50,17 @@ import Payment from './patientlayout/payment/Payment.js';
 import './App.css';
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
+<<<<<<< HEAD
 import AllReports from './patientlayout/reports/AllReports.js';
 import ViewReportPatient from './pages/report/ViewReportPatient.js';
 import ViewReportDoctor from './pages/report/ViewReportDoctor.js';
 import PatientHistory from './pages/doctor/PatientHisttory.js';
+=======
+import ViewAllPatients from './adminlayout/ViewAllPatients.js';
+import DocNavbar from './components/DocNavbar.js';
+import AdminNavbar from './components/AdminNavbar.js';
+import NotFoundPage from './pages/NotFound.jsx';
+>>>>>>> abdullah
 
 function App() {
 
@@ -55,14 +74,17 @@ function App() {
           <Route path="/register" element={<RegisterDoctor />} />
           <Route path="/meet" element={<Meet />} />
 
-          <Route path="/admin" element={<NavBar />}>
-            <Route index element={<ViewAllPatients />} />
+          <Route path="/admin" element={<AdminNavbar />}>
+            <Route path='' index element={<AdminActivity />} />
             <Route path="doctors" element={<AdminDoctor />} />
             <Route path='patients' element={<AdminPatient />} />
-            <Route path='activity' element={<AdminActivity />} />
           </Route>
+<<<<<<< HEAD
 
           <Route path="/doctor" element={<NavBar />}>
+=======
+          <Route path="/doctor" element={<DocNavbar />}>
+>>>>>>> abdullah
             <Route index element={<CustomTabPanel />} />
             <Route path="appointments/:id" element={<AppointmentDetail />} />
             <Route path="appointments" element={<CustomTabPanel />} />
@@ -84,6 +106,7 @@ function App() {
             <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
             <Route path='book-appointment/:id' element={<BookAppointment />} />
             <Route path='review' element={<DoctorReview />} />
+<<<<<<< HEAD
             <Route path='favorites' element={<Favorites />} />
             <Route path='account' element={<PatientManageAccount />} />
             <Route path='payment' element={<Payment />} />
@@ -97,6 +120,15 @@ function App() {
             <Route path='messages/:id' element={<Messages />} />          
         </Route>
 
+=======
+          </Route>
+          <Route path="/" element={<NavBar />}>
+            <Route path='doctor-detail' element={<DoctorDetail />} />
+            <Route path='favorites' element={<Favorites />} />
+            <Route index element={<Search />} />
+          </Route>
+          <Route path='*' element={<NotFoundPage />} />
+>>>>>>> abdullah
         </Routes>
       </div >
     </ThemeProvider>

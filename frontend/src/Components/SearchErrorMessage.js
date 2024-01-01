@@ -3,7 +3,7 @@ import noResultsImage from '../assets/images/noResults.png';
 
 const SearchErrorMessage = ({ notFound, error, role }) => (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-        <img src={noResultsImage} alt="No results" style={{ width: '25%', height: '25%', p: 0 }} />
+        <img src={noResultsImage} alt="No results" style={{ minWidth:'200px', width: '25%', height: '25%', p: 0,marginTop:5 }} />
         <h1 style={{ textAlign: 'center', fontSize: 40, fontWeight: 'bold', lineHeight: 'normal' }}>
             {notFound ? (role === 'doctor' ? 'No Doctors Found' : 'No Patients Found') : error ? 'Something went wrong' : (role === 'doctor' ? 'Search for a doctor' : 'Search for a patient')}
         </h1>

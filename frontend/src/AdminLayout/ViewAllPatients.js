@@ -25,9 +25,9 @@ function ViewAllPatients() {
   return (
 
     <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
-      {patientList?.length > 0 && patientList.map((pat) => {
+      {patientList?.length > 0 && patientList.map((pat, index) => {
         return (
-          <PatientCard user={pat} />
+          <PatientCard user={pat} key={index} />
         );
       })}
     </Box>
@@ -52,10 +52,10 @@ const styles = {
   },
   userCard: {
     width: { xs: "100%", md: "45%" },
-    marginLeft: { xs: "0%", md: "1%"},
-    marginRight: { xs: "0%", md: "1%"},
+    marginLeft: { xs: "0%", md: "1%" },
+    marginRight: { xs: "0%", md: "1%" },
     marginBottom: "2%",
-    
+
   },
 };
 
