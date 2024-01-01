@@ -365,9 +365,11 @@ const patientController = {
 
       const doctor = await Doctor.findOne({ user: doctorId });
 
+      const patient = await Patient.findOne({ user: req.user._id });
+
       const review = new Review({
         doctorId: doctor._id,
-        patientId: req.user._id,
+        patientId: patient._id,
         comment,
         experience,
         checkupRating,

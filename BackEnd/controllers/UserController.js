@@ -165,6 +165,12 @@ const userController = {
                 checkupRating /= reviews.length;
             }
 
+            staffRating = staffRating * 20;
+            clinicRating = clinicRating * 20;
+            checkupRating = checkupRating * 20;
+
+            const minFee = doctor.session.reduce((min, session) => session.fee < min ? session.fee : min, doctor.session[0].fee);
+
             let temp = {
                 name: doctor.user.name,
                 specialization: doctor.specialization,
@@ -182,6 +188,7 @@ const userController = {
                 location: doctor.location,
                 services: doctor.services,
                 availability: doctor.availability,
+                fees: minFee,
             };
 
             return res.status(200).json(temp);

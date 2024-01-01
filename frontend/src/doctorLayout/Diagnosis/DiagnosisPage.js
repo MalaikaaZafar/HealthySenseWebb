@@ -14,7 +14,7 @@ export function useDiagnosis() {
 }
 
 const DiagnosisPage = () => {
-    const { id, appid } = useParams();
+    const { docId, appid } = useParams();
     const navigate = useNavigate();
     const [CurrentPage, setCurrentPage] = useState(0);
     const [AppointmentData, setAppointmentData] = useImmer({});
@@ -49,7 +49,7 @@ const DiagnosisPage = () => {
                 setOpen(true);
                 setMsg("Diagnosis Already Exists");
                 setTimeout(() => {
-                    navigate(`/${id}/doctor/reports/${appid}`);
+                    navigate(`/${docId}/doctor/reports/${appid}`);
                 }, 2000);
                 return;
             }

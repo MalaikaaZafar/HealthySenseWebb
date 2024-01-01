@@ -36,7 +36,7 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 const FinalReport = () => {
-    const { id } = useParams();
+    const { docId } = useParams();
     const { AppointmentData, Diagnosis, PageChange, setDiagnosis } = useDiagnosis();
     const [open, setOpen] = React.useState(false);
     const [msg, setMsg] = React.useState("");
@@ -56,7 +56,7 @@ const FinalReport = () => {
             setMsg("Diagnosis Saved Successfully");
             setVariant("success");
             setTimeout(() => {
-                navigate(`/${id}/doctor/reports/${AppointmentData._id}`);
+                navigate(`/${docId}/doctor/reports/${AppointmentData._id}`);
             }, 2000);
         }
         else {

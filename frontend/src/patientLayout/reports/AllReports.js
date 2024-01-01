@@ -34,14 +34,14 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 
 const AllReports = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { patientId } = useParams();
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [msg, setMsg] = useState('');
     const [open, setOpen] = useState(false);
 
     const getReports = async () => {
-        const response = await GetAllDiagnosis(id);
+        const response = await GetAllDiagnosis(patientId);
         if (response !== null) {
             console.log(response);
             setReports(response);
