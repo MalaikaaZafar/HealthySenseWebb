@@ -38,7 +38,7 @@ export const BookAppointment = () => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [problem, setProblem] = useState(null);
   const [groupedSlots, setGroupedSlots] = useState(null);
-  const { id } = useParams();
+  const { id, docId } = useParams();
   const [open, setOpen] = useState(false);
   const [openErr, setOpenErr] = useState(false);
   const [appt, setAppt] = useState(null);
@@ -76,13 +76,13 @@ export const BookAppointment = () => {
 
   const fetchAppointment = async () => {
     try {
-      const formattedStr = `/patient/doctors/658aeab2a07cfdec21fc4931`;
+      const formattedStr = `/patient/doctors/${docId}`;
       const doctorObj = await api
         .get(formattedStr)
         .then((response) => response.data);
       if (doctorObj.message === "Success") {
         setDoctor(doctorObj.doctor);
-        const grp = groupSlotsByDate(doctorObj?.doctor?.appointmentSlots);
+        const grp = groupSlotsByDate(doctorObj.doctor?.appointmentSlots);
         setGroupedSlots(grp);
       }
     } catch (err) {
@@ -95,7 +95,7 @@ export const BookAppointment = () => {
       try {
         const resched = await api
           .post("/patient/consultations/bookAppt", {
-            patientId: "6585484c797f80875a8a769c",
+            patientId: id,
             doctorId: doctor._id,
             date: selectedDate,
             time: selectedTime,
