@@ -19,5 +19,6 @@ router.get("/diagnosis/:id", patientController.getPatientDiagnosis);
 router.get("/doctors", patientController.getDoctors);
 router.get("/doctors/:id", patientController.getDoctorById);
 router.post("/consultations/bookAppt", patientController.bookAppointment);
-router.post("/doctor-compact/:id", patientController.getCompactDoctor);
+router.post("/doctor-compact/:id", auth, patientController.getCompactDoctor);
+router.post("/review/:id", auth, patientController.addReview);
 module.exports = router;

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
     Button,
     Typography,
@@ -59,39 +60,83 @@ function DoctorDeatils() {
         setOpen(false);
     };
 
-    const rating = 3;
-    const checkupRating = 80;
-    const clinicRating = 60;
-    const staffRating = 40;
+    // const rating = 3;
+    // const checkupRating = 80;
+    // const clinicRating = 60;
+    // const staffRating = 40;
 
-    const ratingPercentage = (rating / 5) * 100;
+    // const ratingPercentage = (rating / 5) * 100;
 
-    const doctor = {
-        name: "Dr. Amna Irum hvjviiviv",
-        specialization: "Dermatologist",
-        rating: 3,
-        experience: 5,
-        patients: 100,
-        certifications: ["MBBS", "FCPS"],
-        services: ["Hair Transplant", "Laser Treatment", "Skin Care"],
-        reviews: [
-            {
-                comment: "Good",
-                rating: 5,
-                date: "2021-10-10 12:00:00",
-            },
-            {
-                comment: "I expected more",
-                rating: 3,
-                date: "2021-10-10 13:00:00",
-            },
-            {
-                comment: "I have to wait for 30 minutes",
-                rating: 1,
-                date: "2021-10-10 14:00:00",
-            },
-        ],
-    };
+    // const doctor = {
+    //     name: "Dr. Amna Irum hvjviiviv",
+    //     specialization: "Dermatologist",
+    //     rating: 3,
+    //     experience: 5,
+    //     patients: 100,
+    //     certifications: ["MBBS", "FCPS"],
+    //     services: ["Hair Transplant", "Laser Treatment", "Skin Care"],
+    //     reviews: [
+    //         {
+    //             comment: "Good",
+    //             rating: 5,
+    //             date: "2021-10-10 12:00:00",
+    //         },
+    //         {
+    //             comment: "I expected more",
+    //             rating: 3,
+    //             date: "2021-10-10 13:00:00",
+    //         },
+    //         {
+    //             comment: "I have to wait for 30 minutes",
+    //             rating: 1,
+    //             date: "2021-10-10 14:00:00",
+    //         },
+    //     ],
+    // };
+
+    const [doctor, setDoctor] = useState({
+        name: "",
+        specialization: "",
+        rating: 0,
+        experience: 0,
+        patients: 0,
+        certifications: [],
+        services: [],
+        reviews: [],
+        staffRating: 0,
+        clinicRating: 0,
+        checkupRating: 0,
+        description: "",
+        fees: 0,
+        location: "",
+        availability: false,
+    });
+
+    useEffect(() => {
+
+        console.log("cookie: ", document.cookie);
+
+        const fetchData = () => {
+            console.log("cookie: ", document.cookie);
+            axios.get('http://localhost:3000/doctor/658c46d48180f6a9f753706c', { withCredentials: true })
+                .then(res => {
+                    console.log(res.data);
+                    const doctorData = {
+                        ...res.data,
+                        certificate: res.data.certificate || [],
+                        services: res.data.services || [],
+                    };
+                    setDoctor(doctorData);
+                })
+                .catch(err => {
+                    console.log(err);
+                    alert(err.response.data.message);
+                });
+        };
+
+        fetchData();
+
+    }, []);
 
     return (
         <div>
@@ -158,7 +203,7 @@ function DoctorDeatils() {
                             <Grid container alignItems={'center'} spacing={1}>
                                 <Grid item xs={3}>
                                     <Box position="relative" display="inline-flex">
-                                        <CircularProgress variant="determinate" value={ratingPercentage} style={{ color: 'black' }} size={50} />
+                                        <CircularProgress variant="determinate" value={(doctor.rating / 5.0 * 100)} style={{ color: 'black' }} size={50} />
                                         <Box
                                             top={0}
                                             left={0}
@@ -171,7 +216,7 @@ function DoctorDeatils() {
                                             mr={1}
                                         >
                                             <Typography variant="subtitle1" fontWeight="bold" component="div" color="textSecondary">
-                                                {`${Math.round(ratingPercentage)}%`}
+                                                {`${Math.round((doctor.rating / 5.0 * 100))}%`}
                                             </Typography>
                                         </Box>
                                     </Box>
@@ -190,11 +235,11 @@ function DoctorDeatils() {
                                 </Grid>
                                 <Grid item xs={8} md={6} mr={3}>
                                     <Grid container direction="column">
-                                        <BlackLinearProgress value={checkupRating} variant="determinate" className={styles.linearProgress} />
+                                        <BlackLinearProgress value={doctor.checkupRating} variant="determinate" className={styles.linearProgress} />
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={2} md={1}>
-                                    <Typography variant="body2" color="textSecondary">{`${checkupRating}%`}</Typography>
+                                    <Typography variant="body2" color="textSecondary">{`${doctor.checkupRating}%`}</Typography>
                                 </Grid>
                             </Grid>
                             <Grid container alignItems={'center'}>
@@ -205,11 +250,11 @@ function DoctorDeatils() {
                                 </Grid>
                                 <Grid item xs={8} md={6} mr={3}>
                                     <Grid container direction="column">
-                                        <BlackLinearProgress value={clinicRating} variant="determinate" className={styles.linearProgress} />
+                                        <BlackLinearProgress value={doctor.clinicRating} variant="determinate" className={styles.linearProgress} />
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={2} md={1}>
-                                    <Typography variant="body2" color="textSecondary">{`${clinicRating}%`}</Typography>
+                                    <Typography variant="body2" color="textSecondary">{`${doctor.clinicRating}%`}</Typography>
                                 </Grid>
                             </Grid>
                             <Grid container alignItems={'center'}>
@@ -220,11 +265,11 @@ function DoctorDeatils() {
                                 </Grid>
                                 <Grid item xs={8} md={6} mr={3}>
                                     <Grid container direction="column">
-                                        <BlackLinearProgress value={staffRating} variant="determinate" className={styles.linearProgress} />
+                                        <BlackLinearProgress value={doctor.staffRating} variant="determinate" className={styles.linearProgress} />
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={2} md={1}>
-                                    <Typography variant="body2" color="textSecondary">{`${staffRating}%`}</Typography>
+                                    <Typography variant="body2" color="textSecondary">{`${doctor.staffRating}%`}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -257,7 +302,7 @@ function DoctorDeatils() {
                                 About Doctor
                             </Typography>
                             <Typography variant="body2" color="text.secondary" gutterBottom fontSize={14}>
-                                Dr. Amna Irum is the top most dermatologist specialist in NUCES hospital at FAST. She achieved several awards for her wonderful contribution in her own field. She is available for private consultation.
+                                {doctor.description}
                             </Typography>
                         </Grid>
                         <Grid container spacing={2} alignItems="flex-end">
@@ -289,7 +334,7 @@ function DoctorDeatils() {
                                             </Grid>
                                             <Grid item xs={10}>
                                                 <Typography variant="body2" color="text.secondary" gutterBottom fontSize={14} align='right'>
-                                                    Rs. 1000
+                                                    {doctor.fees}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -305,7 +350,7 @@ function DoctorDeatils() {
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Typography variant="body2" color="text.secondary" gutterBottom fontSize={14} align='right'>
-                                                    NUCES Hospital, FAST, Karachi
+                                                    {doctor.location}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -316,7 +361,7 @@ function DoctorDeatils() {
                                             </Grid>
                                             <Grid item xs={12} md={10} ml={1}>
                                                 <Typography variant="h6" color="text.secondary" gutterBottom fontSize={14} fontWeight={'bold'}>
-                                                    <span style={{ color: '#26b937' }}>Available</span>
+                                                    <span style={{ color: '#26b937' }}>{doctor.availability ? 'Available' : 'Not Available'}</span>
                                                 </Typography>
                                             </Grid>
                                         </Grid>

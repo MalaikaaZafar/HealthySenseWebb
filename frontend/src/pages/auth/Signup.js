@@ -36,6 +36,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import DoctorIcon from '@mui/icons-material/LocalHospital';
 import PatientIcon from '@mui/icons-material/Person';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import { styled } from '@mui/system';
 import styles from './Login.module.css';
 import axios from 'axios';
@@ -97,6 +98,7 @@ const Signup = () => {
         country: '',
         phoneNumber: '',
         gender: '',
+        blood: '',
     });
 
     const [contryCode, setCountryCode] = useState('');
@@ -161,6 +163,7 @@ const Signup = () => {
         data.append('phoneNumber', formatPhoneNumber(formData.phoneNumber));
         data.append('gender', formData.gender);
         data.append('type', accountType);
+        data.append('bloodGroup', formData.blood);
 
         axios.post('http://localhost:3000/signup', data)
             .then(res => {
@@ -399,7 +402,7 @@ const Signup = () => {
                                     <Paper
                                         elevation={accountType === 'Doctor' ? 4 : 1}
                                         style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
-                                        onClick={() => setAccountType('Doctor')}
+                                        onClick={() => {setAccountType('Doctor'); setFormData({...formData, blood: ''})}}
                                     >
                                         <IconButton color={accountType === 'Doctor' ? 'primary' : 'default'}>
                                             <DoctorIcon fontSize="large" />
@@ -409,6 +412,33 @@ const Signup = () => {
                                 </Grid>
                             </Grid>
                         </Box>
+                        {accountType === 'Patient' && (
+                            <FormControl variant="outlined" margin='normal' required fullWidth style={{ marginTop: '30px' }}>
+                                <InputLabel id="blood">Blood Group</InputLabel>
+                                <StyledSelect
+                                    labelId="blood-label"
+                                    id="blood"
+                                    name="blood"
+                                    label="blood group"
+                                    value={formData.blood}
+                                    onChange={handleChange}
+                                    startAdornment={
+                                        <InputAdornment position='start'>
+                                            <LocalHospitalIcon />
+                                        </InputAdornment>
+                                    }
+                                >
+                                    <MenuItem value={'A+'}>A+</MenuItem>
+                                    <MenuItem value={'A-'}>A-</MenuItem>
+                                    <MenuItem value={'B+'}>B+</MenuItem>
+                                    <MenuItem value={'B-'}>B-</MenuItem>
+                                    <MenuItem value={'AB+'}>AB+</MenuItem>
+                                    <MenuItem value={'AB-'}>AB-</MenuItem>
+                                    <MenuItem value={'O+'}>O+</MenuItem>
+                                    <MenuItem value={'O-'}>O-</MenuItem>
+                                </StyledSelect>
+                            </FormControl>
+                        )}
                         <StyledButton
                             type='submit'
                             fullWidth

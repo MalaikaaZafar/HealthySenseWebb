@@ -3,48 +3,54 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const User = require('../models/User');
 const Chat = require('../models/Message');
+const Patient = require('../models/Patient');
+const Doctor = require('../models/Doctor');
+const Appointment = require("../models/Apointments");
+const Review = require("../models/Reviews");
 
 
 const secret = process.env.SECRET;
 
 const userController = {
     signup: async (req, res) => {
-        const { name, email, password, dob, country, phoneNumber, gender, type } = req.body;
-
-        const file = req.files.profilePicture;
+        const { name, email, password, dob, country, phoneNumber, gender, type, bloodGroup } = req.body;
 
         try {
+            const file = req.files.profilePicture;
+
             const existingUser = await User.findOne({ email });
 
             if (existingUser) return res.status(400).json({ message: "User already exists" });
 
-            const fileName = Date.now() + file.md5 + path.extname(file.name);
+            const hashedPassword = await bcrypt.hash(String(password), 12);
 
-            const URL = './uploads/' + fileName;
+            const result = await User.create({ name, email, password: hashedPassword, dob, country, phoneNumber, gender, type, profilePicture: null });
 
-            file.mv(URL)
-                .then(
-                    async () => {
-                        const hashedPassword = await bcrypt.hash(password, 12);
+            const token = jwt.sign({ email: result.email, id: result._id }, secret);
 
-                        const result = await User.create({ name, email, password: hashedPassword, dob, country, phoneNumber, gender, type, profilePicture: fileName });
+            const temp = {
+                name: result.name,
+                email: result.email,
+                dob: result.dob,
+                country: result.country,
+                phoneNumber: result.phoneNumber,
+                gender: result.gender,
+                type: result.type,
+            };
 
-                        const token = jwt.sign({ email: result.email, id: result._id }, secret);
+            const fileName = `${result._id}${path.extname(file.name)}`;
 
-                        const temp = {
-                            name: result.name,
-                            email: result.email,
-                            dob: result.dob,
-                            country: result.country,
-                            phoneNumber: result.phoneNumber,
-                            gender: result.gender,
-                            type: result.type,
-                            profilePicture: result.profilePicture,
-                        };
+            await file.mv("./uploads/" + fileName);
 
-                        return res.status(201).json({ result: temp, token });
-                    })
-                .catch((err) => console.log(err));
+            result.profilePicture = fileName;
+
+            await result.save();
+
+            if (result.type === 'Patient') {
+                await Patient.create({ user: result._id, bloodGroup: bloodGroup });
+            }
+
+            return res.status(201).json({ result: temp, token });
 
         } catch (error) {
             console.log(error);
@@ -56,8 +62,11 @@ const userController = {
         const { email, password } = req.body;
 
         try {
+            const existingUser = await User.findOne({ email });
 
-            const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
+            if (!existingUser) return res.status(404).json({ message: "User doesn't exist" });
+
+            const isPasswordCorrect = await bcrypt.compare(String(password), existingUser.password);
 
             if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
 
@@ -65,16 +74,17 @@ const userController = {
 
             return res.status(200).json({ result: existingUser, token });
         } catch (error) {
+            console.log(error);
             res.status(500).json({ message: "Something went wrong" });
         }
     },
 
-    getMessages: async (req, res) =>{
-        try{
+    getMessages: async (req, res) => {
+        try {
             const userId = "658aeab2a07cfdec21fc4968";
             const doctorChats = await Chat.find({ primary: userId })
-            .populate({ path: 'primary', populate: { path: 'user' } })
-            .populate({ path: 'secondary', populate: { path: 'user' } });
+                .populate({ path: 'primary', populate: { path: 'user' } })
+                .populate({ path: 'secondary', populate: { path: 'user' } });
             if (!doctorChats)
                 return res.status(404).json({ message: "Doctor not found" });
             return res.status(200).json({ message: "Success", messages: doctorChats });
@@ -86,16 +96,15 @@ const userController = {
     },
 
     sendMessage: async (req, res) => {
-        try{
-            const {message, secondary}=req.body;
+        try {
+            const { message, secondary } = req.body;
             const userId = "658aeab2a07cfdec21fc4968";
-            const doctorChats = await Chat.findOneAndUpdate({primary: userId, secondary: secondary}, {$push: {messages: message}});
+            const doctorChats = await Chat.findOneAndUpdate({ primary: userId, secondary: secondary }, { $push: { messages: message } });
             if (!doctorChats)
                 return res.status(404).json({ message: "Doctor not found" });
             return res.status(200).json({ message: "Success", messages: doctorChats });
         }
-        catch(err)
-        {
+        catch (err) {
             console.log(err);
             return res.status(500).json({ message: "Something went wrong" });
         }
@@ -104,7 +113,63 @@ const userController = {
     getUser: async (req, res) => {
         const arr = await User.find({ type: 'Patient' });
         return res.status(200).json(arr);
-    }
+    },
+
+    getDoctorDetails: async (req, res) => {
+        try {
+            const doctorId = req.params.id;
+            const doctor = await Doctor.findOne({ user: doctorId }).populate('user').exec();
+            if (!doctor) {
+                return res.status(404).json({ message: 'Doctor not found' });
+            }
+
+            const patientCount = await Appointment.distinct('patientId', { doctorId: doctor._id, status: 'Completed' });
+
+            const reviews = await Review.find({ doctorId: doctor._id });
+            let staffRating = 0;
+            let clinicRating = 0;
+            let checkupRating = 0;
+
+            console.log(doctor._id)
+
+            for (let i = 0; i < reviews.length; i++) {
+                staffRating += reviews[i].staffRating;
+                clinicRating += reviews[i].environmentRating;
+                checkupRating += reviews[i].checkupRating;
+            }
+
+            if(reviews.length > 0) {
+                staffRating /= reviews.length;
+                clinicRating /= reviews.length;
+                checkupRating /= reviews.length;
+            }
+
+            let temp = {
+                name: doctor.user.name,
+                specialization: doctor.specialization,
+                rating: doctor.rating,
+                experience: doctor.experience,
+                patients: patientCount.length,
+                profilePicture: doctor.user.profilePicture,
+                certifications: doctor.certificates,
+                reviews: reviews,
+                staffRating: staffRating,
+                clinicRating: clinicRating,
+                checkupRating: checkupRating,
+                description: doctor.description,
+                fees: doctor.fees,
+                location: doctor.location,
+                services: doctor.services,
+                availability: doctor.availability,
+            };
+
+            return res.status(200).json(temp);
+        }
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({ message: 'Something went wrong' });
+        }
+    },
 };
 
 module.exports = userController;

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Button,
   Typography,
@@ -32,10 +33,12 @@ const CustomTextField = styled(TextField)({
 function DoctorReviewForm() {
 
   const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
   const [checkupRating, setCheckupRating] = useState(0);
   const [clinicRating, setClinicRating] = useState(0);
   const [staffRating, setStaffRating] = useState(0);
   const [recommend, setRecommend] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onRatingChange = (e) => {
     setRating(e);
@@ -57,23 +60,70 @@ function DoctorReviewForm() {
     console.log(staffRating);
   };
 
-  const doctor = {
-
-  }
+  const [doctor, setDoctor] = useState({
+    name: '',
+    specialization: '',
+    patients: 0,
+    experience: 0,
+    rating: 0,
+  });
 
   useEffect(() => {
 
-    axios.post('http://localhost:3000/doctor-compact/658c46d48180f6a9f753706c', { withCredentials: true })
-            .then(res => {
-                console.log(res);
-                doctor = res.data;
-            })
-            .catch(err => {
-                console.log(err);
-                alert(err.response.data.message);
-            });
+    const fetchData = () => {
+      console.log("cookie: ", document.cookie);
+      axios.post('http://localhost:3000/doctor-compact/658c46d48180f6a9f753706c', {}, { withCredentials: true })
+        .then(res => {
+          setDoctor({
+            name: res.data.name,
+            specialization: res.data.specialization,
+            patients: res.data.patients,
+            experience: res.data.experience,
+            rating: res.data.rating,
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          alert(err.response.data.message);
+        });
+    };
+
+    fetchData();
 
   }, []);
+
+  const handleSubmit = () => {
+
+    if (isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const review = {
+      experience: rating,
+      comment: comment,
+      checkupRating: checkupRating,
+      environmentRating: clinicRating,
+      staffRating: staffRating,
+      recommendation: recommend,
+    };
+
+    console.log(review);
+
+    axios.post('http://localhost:3000/patient/review/658c46d48180f6a9f753706c', review, { withCredentials: true })
+      .then(res => {
+        console.log(res);
+        alert(res.data.message);
+      }
+      )
+      .catch(err => {
+        console.log(err);
+        alert(err.response.data.message);
+      });
+
+    setIsSubmitting(false);
+  };
 
   return (
     <div>
@@ -159,6 +209,8 @@ function DoctorReviewForm() {
                     label="Comment"
                     multiline
                     margin='normal'
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
                     fullWidth
                     InputProps={{
                       startAdornment: (
@@ -233,6 +285,7 @@ function DoctorReviewForm() {
                 color="primary"
                 size="large"
                 fullWidth
+                onClick={handleSubmit}
               >
                 Submit
               </Button>

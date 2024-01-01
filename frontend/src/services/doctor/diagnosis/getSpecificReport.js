@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const GetSpecificReport = async (appointment) => {
     try {
         const response = await axios.get(`http://localhost:3000/report/appointment/${appointment}`);
