@@ -11,12 +11,12 @@ import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import getAccountDetails from "../../services/patient/account/getAccountDetails";
 import saveAccountChanges from "../../services/patient/account/saveAccountChanges";
 import MedicalServicesRoundedIcon from '@mui/icons-material/MedicalServicesRounded';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 const PatientManageAccount = () => {
     const navigate = useNavigate();
-    
+    const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [Changes, setChanges] = useState(false);
     const [PatientData, setPatientData] = useImmer({});
@@ -37,7 +37,7 @@ const PatientManageAccount = () => {
         setHistoryEditModal(false)
     };
     const HistoryEditModalOpen = () => { setHistoryEditModal(true) };
-    const id = "6585484c797f80875a8a769f";
+
 
     const SaveData = async (e) => {
         e.preventDefault();
@@ -79,7 +79,7 @@ const PatientManageAccount = () => {
             setSeverity('error')
             setOpen(true);
             setTimeout(() => {
-                navigate('/login');   
+                navigate('/login');
             }, 2000);
         }
     }
@@ -94,18 +94,18 @@ const PatientManageAccount = () => {
             <LoadingAnimation isVisible={isLoading} />
             {
                 isLoading ? null :
-                    <Container style={{ 
-                        marginBottom: '70px', 
-                        display: 'flex', 
-                        justifyContent: 'center', 
-                        flexDirection: 'column', 
-                        alignItems: 'center' ,
-                        padding:'20px',
-                        backgroundColor:'white',
-                        borderRadius:'20px',
-                        marginTop:'30px',
+                    <Container style={{
+                        marginBottom: '70px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: '20px',
+                        backgroundColor: 'white',
+                        borderRadius: '20px',
+                        marginTop: '30px',
                         boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
-                        marginBottom:'30px'
+                        marginBottom: '30px'
                     }}
                     >
                         <div className="column211">
@@ -128,7 +128,7 @@ const PatientManageAccount = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '10px',
-                                    fontWeight:'bold'
+                                    fontWeight: 'bold'
                                 }}
                             >
                                 <MedicalServicesRoundedIcon />
@@ -165,7 +165,7 @@ const PatientManageAccount = () => {
                             Index={Index}
                         />
 
-                        <Container style={{ display: 'flex', justifyContent: 'space-around', marginBottom:'20px' }}>
+                        <Container style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '20px' }}>
                             <Button variant="contained"
                                 style={{ backgroundColor: 'red', color: 'white', marginTop: '20px' }}
                                 onClick={() => {

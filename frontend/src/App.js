@@ -32,6 +32,8 @@ import ViewReportDoctor from './pages/report/ViewReportDoctor.js';
 import DocNavbar from './components/DocNavbar.js';
 import AdminNavbar from './components/AdminNavbar.js';
 import NotFoundPage from './pages/NotFound.jsx';
+import Payment from './patientLayout/Payment/Payment.js';
+
 function App() {
 
   return (
@@ -69,6 +71,7 @@ function App() {
             <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
             <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
             <Route path='book-appointment/:id' element={<BookAppointment />} />
+            <Route path='payment/:id' element={<Payment />} />
             <Route path='review' element={<DoctorReview />} />
             <Route path="account/:id" element={<PatientManageAccount />} />
           </Route>
