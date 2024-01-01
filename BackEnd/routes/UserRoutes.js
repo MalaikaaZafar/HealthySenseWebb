@@ -15,6 +15,6 @@ router.post('/messages', userController.sendMessage);
 router.get('/report/:id', reportController.getReport);
 router.get('/report/appointment/:id', reportController.getSpecificReport);
 
-router.get('/doctor/:id', auth, userController.getDoctorDetails);
+router.get('/doctor-detail/:id', auth, userController.getDoctorDetails);
 
 module.exports = router;

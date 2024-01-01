@@ -118,7 +118,7 @@ function DoctorDeatils() {
 
         const fetchData = () => {
             console.log("cookie: ", document.cookie);
-            axios.get('http://localhost:3000/doctor/658c46d48180f6a9f753706c', { withCredentials: true })
+            axios.get('http://localhost:3000/doctor-detail/658c46d48180f6a9f753706c', { withCredentials: true })
                 .then(res => {
                     console.log(res.data);
                     const doctorData = {

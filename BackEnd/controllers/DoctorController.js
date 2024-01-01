@@ -106,6 +106,7 @@ const doctorController = {
     },
 
     getSpecialties: async (req, res) => {
+        console.log("hello");
         const specialties = await Doctor.distinct("specialization");
         return res.status(200).json({ specialties });
     },
