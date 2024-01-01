@@ -42,9 +42,12 @@ export const BookAppointment = () => {
   const [open, setOpen] = useState(false);
   const [openErr, setOpenErr] = useState(false);
   const [appt, setAppt] = useState(null);
+
+
+
   const groupSlotsByDate = (slotData) => {
-    console.log(slotData);
     const groupedSlots = {};
+    if (slotData && slotData.length !== 0) {
     if (slotData && slotData.length !== 0) {
       slotData.forEach((slot) => {
         let date = slot.date;
@@ -55,6 +58,7 @@ export const BookAppointment = () => {
         groupedSlots[date].push(slot);
       });
     }
+  }
     return groupedSlots;
   };
 
@@ -78,7 +82,7 @@ export const BookAppointment = () => {
         .then((response) => response.data);
       if (doctorObj.message === "Success") {
         setDoctor(doctorObj.doctor);
-        const grp = groupSlotsByDate(doctorObj.doctor.appointmentSlots);
+        const grp = groupSlotsByDate(doctorObj?.doctor?.appointmentSlots);
         setGroupedSlots(grp);
       }
     } catch (err) {

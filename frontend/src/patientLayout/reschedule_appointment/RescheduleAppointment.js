@@ -120,13 +120,13 @@ export const RescheduleAppointment = () => {
   }
 
   return (
-    <Container >
-      <Box >
-      <Grid container spacing={2} alignItems="stretch">
-        <Grid item md={6} sm={12}>
+    <Container width="100%" sx={{m:0, display:'flex', flexDirection: 'column', p:0, alignItems:'center'}} >
+      <Box sx={{width:{xs:"100%", md:"80%"}}}>
+      <Grid container alignItems="stretch">
+        <Grid item md={6} sm={14}>
           {appointment && <AppointmentCard type="doctor" appt={appointment} />}
         </Grid>
-        <Grid item xs={5} sm={4} md={2}>
+        <Grid item xs={4} sm={4} md={2}>
           <Box
             display="flex"
             flexDirection="column"
@@ -134,7 +134,7 @@ export const RescheduleAppointment = () => {
             justifyContent="center"
             height="70%"
             padding="10px"
-            sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+            sx={{margin:{xs:1,md:3}, backgroundColor: "#eeeeee", borderRadius: "10px" }}
           >
             <PatientIcon fontSize="large" />
             <Typography variant="body1">
@@ -143,7 +143,7 @@ export const RescheduleAppointment = () => {
             <Typography variant="body2">Patients</Typography>
           </Box>
         </Grid>
-        <Grid item xs={5} sm={4} md={2}>
+        <Grid item xs={4} sm={4} md={2}>
           <Box
            display="flex"
            flexDirection="column"
@@ -151,7 +151,7 @@ export const RescheduleAppointment = () => {
            justifyContent="center"
            height="70%"
            padding="10px"
-           sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+           sx={{margin:{xs:1, md:3}, backgroundColor: "#eeeeee", borderRadius: "10px" }}
           >
             <ExperienceIcon fontSize="large" />
             <Typography variant="body1">
@@ -160,7 +160,7 @@ export const RescheduleAppointment = () => {
             <Typography variant="body2">Experience</Typography>
           </Box>
         </Grid>
-        <Grid item xs={5} sm={4} md={2}>
+        <Grid item xs={4} sm={4} md={2}>
           <Box
             display="flex"
             flexDirection="column"
@@ -168,7 +168,7 @@ export const RescheduleAppointment = () => {
             justifyContent="center"
             height="70%"
             padding="10px"
-            sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+            sx={{margin:{xs:1,md:3}, backgroundColor: "#eeeeee", borderRadius: "10px" }}
           >
             <StarIcon fontSize="large" />
             <Typography variant="body1">
@@ -222,13 +222,13 @@ export const RescheduleAppointment = () => {
     <Box width="100%">
     {appointment?.doctorId?.session && appointment?.doctorId?.session.map((session) => {
   return (
-    <Card sx={{ display: 'flex', mb: 2, width: "100%", color: type===session.type? "white":"#2854C3", background: type===session.type? "#2854C3":"white"  }}>
+    <Card sx={{ display: 'flex', mb: 2, width: {md: "100%"}, color: type===session.type? "white":"#2854C3", background: type===session.type? "#2854C3":"white"  }}>
       <Box
       onClick={()=>{setType(session.type)}} 
       sx={{ display: 'flex', alignItems: 'center'}}>
 {session.type === "Online" ? 
-                        <VideoCameraFrontIcon sx={{color: type===session.type? "white":"#2854C3", ml:1}}/>:
-                        <NoteAltIcon sx={{color: type===session.type? "white":"#2854C3", ml:1}}/>}      </Box>
+                        <VideoCameraFrontIcon sx={{color: type===session.type? "white":"#2854C3", ml:{xs:0, md:1}}}/>:
+                        <NoteAltIcon sx={{color: type===session.type? "white":"#2854C3", ml:{xs:0, md:1}}}/>}      </Box>
       <CardContent>
       <Box
   onClick={()=>{setType(session.type)}}  

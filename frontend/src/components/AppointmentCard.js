@@ -46,11 +46,11 @@ function AppointmentCard({ type, appt }) {
       variant="outlined"
       onClick={goToDetails}
       sx={{
-        minWidth:'350px',
+        minWidth:'300px',
         maxWidth:'100%',
         background: "#white",
         borderRadius: 3,
-        margin: 2,
+        margin: 1,
         boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .1)',
       }}
     >

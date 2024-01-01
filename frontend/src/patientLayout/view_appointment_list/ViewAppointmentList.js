@@ -30,7 +30,7 @@ export const AppointmentList = () => {
   }, []);
 
   return (
-    <Container maxWidth="md" width="100%">
+    <Container width="100%">
       <Box display="flex" justifyContent="center" width="100%">
         <Tabs
           value={value}
