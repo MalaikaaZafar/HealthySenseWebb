@@ -8,8 +8,7 @@ import "@fontsource/roboto";
 
 import { Form, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import  DoctorCard  from "../../components/DoctorCard";
+import DoctorCard from "../../components/DoctorCard";
 
 import "./BookAppointment.css";
 import Button from "@mui/material/Button";
@@ -21,6 +20,7 @@ import Select from "@mui/material/Select";
 import { format } from "date-fns";
 import Card from "@mui/material/Card";
 import { CardContent } from "@mui/material";
+import api from "../../services/api";
 
 
 export const BookAppointment = () => {
@@ -68,16 +68,16 @@ export const BookAppointment = () => {
     setType("Clinic");
   }
 
-  
+
   const fetchAppointment = async () => {
     try {
-      const formattedStr = `http://localhost:3000/patient/doctors/658aeab2a07cfdec21fc4931`;
-      const doctorObj = await axios
+      const formattedStr = `/patient/doctors/658aeab2a07cfdec21fc4931`;
+      const doctorObj = await api
         .get(formattedStr)
         .then((response) => response.data);
       if (doctorObj.message === "Success") {
         setDoctor(doctorObj.doctor);
-        const grp=groupSlotsByDate(doctorObj.doctor.appointmentSlots);
+        const grp = groupSlotsByDate(doctorObj.doctor.appointmentSlots);
         setGroupedSlots(grp);
       }
     } catch (err) {
@@ -86,22 +86,22 @@ export const BookAppointment = () => {
   };
 
   const bookAppt = async () => {
-    try{
-        const resched=await axios.post("http://localhost:3000/patient/consultations/bookAppt", ({
-          patientId:"6585484c797f80875a8a769c",
-          doctorId:doctor._id,
-          date: selectedDate,
-          time: selectedTime,
-          problem: problem,
-          type:type,
-        }))
-        .then(response=>response.data);
-        if (resched.message==="Success") {
-          Navigate(`/patient/appointments/${resched.id}`);
-        }
+    try {
+      const resched = await api.post("/patient/consultations/bookAppt", ({
+        patientId: "6585484c797f80875a8a769c",
+        doctorId: doctor._id,
+        date: selectedDate,
+        time: selectedTime,
+        problem: problem,
+        type: type,
+      }))
+        .then(response => response.data);
+      if (resched.message === "Success") {
+        Navigate(`/patient/appointments/${resched.id}`);
+      }
     }
-    catch(err){
-        alert(err);
+    catch (err) {
+      alert(err);
     }
   }
   useEffect(() => {
@@ -154,13 +154,13 @@ export const BookAppointment = () => {
         <div className="bookApptBottom">
           <div className="bookApptSlotSelector">
             <div className="apptTypeSelect">
-              <Card 
-              onClick={setOnline}
-              sx={type === "Online" ? styles.cardSelected : styles.card}>
+              <Card
+                onClick={setOnline}
+                sx={type === "Online" ? styles.cardSelected : styles.card}>
                 <CardContent>Online Session</CardContent>
               </Card>
               <Card
-              onClick={setClinic}
+                onClick={setClinic}
                 sx={type === "Clinic" ? styles.cardSelected : styles.card}>
                 <CardContent>Clinic Session</CardContent>
               </Card>
@@ -197,7 +197,7 @@ export const BookAppointment = () => {
                   groupedSlots &&
                   groupedSlots[selectedDate].map(
                     (slot) =>
-                      slot.availability === true && slot.type===type && (
+                      slot.availability === true && slot.type === type && (
                         <MenuItem key={slot.time} value={slot.time}>
                           {slot.time}
                         </MenuItem>
@@ -210,35 +210,35 @@ export const BookAppointment = () => {
               <textarea
                 rows={10}
                 value={problem ? problem : ""}
-                disabled={(selectedDate && selectedTime )? false : true}
+                disabled={(selectedDate && selectedTime) ? false : true}
                 onChange={setReasonHandler}
                 style={{ borderRadius: "10px", padding: "10px" }}
               ></textarea>
             </FormControl>
           </div>
           <div className="bookApptBottomRight">
-          
-              
-                {doctor?.session && doctor.session.map((session) => {
-                    return (
-                      <div className="feeInfo">
-                      <div className="feeInfoLeft">
-                        <img
-                          src={ClinicIcon}
-                          alt="Clinic Icon"
-                          style={{ width: "50px", height: "50px" }}
-                        />
-                      </div>
-                      <div className="feeInfoRight">
-                      <div className="feeInfoTop">
-                        <p>{session.type} Session</p>
-                        <p>Rs. {session.fee} /Session</p>
-                      </div>
-                      </div>
-                      </div>
-                    );
-                  }
-                )}
+
+
+            {doctor?.session && doctor.session.map((session) => {
+              return (
+                <div className="feeInfo">
+                  <div className="feeInfoLeft">
+                    <img
+                      src={ClinicIcon}
+                      alt="Clinic Icon"
+                      style={{ width: "50px", height: "50px" }}
+                    />
+                  </div>
+                  <div className="feeInfoRight">
+                    <div className="feeInfoTop">
+                      <p>{session.type} Session</p>
+                      <p>Rs. {session.fee} /Session</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+            )}
             <Button
               onClick={bookAppt}
               variant="contained"

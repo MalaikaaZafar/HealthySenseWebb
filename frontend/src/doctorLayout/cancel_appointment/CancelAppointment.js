@@ -8,20 +8,20 @@ import FormControl from '@mui/material/FormControl';
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import {useImmer} from 'use-immer';
 
 import "./CancelAppointment.css";
 import AppointmentCard from "../../components/AppointmentCard";
 import DoctorSidePanel from "../../components/doctorSidePanel";
+import api from "../../services/api";
 
 const CancelAppointment = () => {
     const [reason, setReason]= useState("Something urgent came up");
     const [appointment, setAppointment] = useImmer(null);
     const {id}= useParams();
     const fetchAppointment=async ()=>{
-      const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
-      const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
+      const formattedStr = `/doctor/consultations/${id}`;
+      const appoinmentList = await api.get(formattedStr).then((response) => response.data);
       if (appoinmentList.message==="Success")
       {
         return appoinmentList.appt;
@@ -33,8 +33,8 @@ const CancelAppointment = () => {
     }
 
     const cancelAppointment=async ()=>{
-      const formattedStr = `http://localhost:3000/doctor/consultations/cancel`;
-      const appoinmentList = await axios.put(formattedStr,{id: id, reason: reason}).then((response) => response.data);
+      const formattedStr = `/doctor/consultations/cancel`;
+      const appoinmentList = await api.put(formattedStr,{id: id, reason: reason}).then((response) => response.data);
       if (appoinmentList.message==="Success")
       {
         alert("Appointment Cancelled");

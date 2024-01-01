@@ -4,15 +4,15 @@ import StarIcon from '@mui/icons-material/StarBorderOutlined';
 import Button from '@mui/material/Button';
 import "@fontsource/roboto";
 
-import {format} from "date-fns"
+import { format } from "date-fns"
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 import './AppointmentDetail.css';
 import DetailComponent from './DetailComponent';
 import AppointmentCard from '../../components/AppointmentCard';
 import PersonOutlineOutlined from '@mui/icons-material/PersonOutlineOutlined';
+import api from '../../services/api';
 
 export const AppointmentDetail = () => {
   const [appointment, setAppointment] = useState(null);
@@ -20,17 +20,16 @@ export const AppointmentDetail = () => {
 
   const Navigate = useNavigate();
   console.log(appointment);
-  const date=appointment?.date;
+  const date = appointment?.date;
   const fetchAppointment = async () => {
-    try{
-      const formattedStr = `http://localhost:3000/patient/consultations/${id}`;
-      const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
+    try {
+      const formattedStr = `/patient/consultations/${id}`;
+      const appoinmentList = await api.get(formattedStr).then((response) => response.data);
       if (appoinmentList)
         setAppointment(appoinmentList);
-     
+
     }
-    catch(err)
-    {
+    catch (err) {
       alert(err);
     }
   }
@@ -86,30 +85,30 @@ export const AppointmentDetail = () => {
           <div className="viewAppt">
             <div className="viewApptDetails">
               {appointment && <div className="viewApptDetailsLeft"><DetailComponent appt={appointment} /></div>}
-          </div>
-          {appointment && !appointment.status==="Completed" && !appointment.status==="Cancelled" &&
-          <div className="viewApptBottomRight">
-            <Button sx={styles.button} onClick={reschedAppt}>
-              Reschedule Appointment
-            </Button>
-            <Button sx={styles.button} onClick={cancelAppt}>
-              Cancel Appointment
-            </Button>
-          </div>
-          }
-          {appointment && appointment.status==="Completed" && 
-          <div className="viewApptBottomRight">
-            <Button sx={styles.button} onClick={reschedAppt}>
-              View Diagnosis
-            </Button>
-            <Button sx={styles.button} onClick={cancelAppt}>
-            View Report
-            </Button>
             </div>
-          }
+            {appointment && !appointment.status === "Completed" && !appointment.status === "Cancelled" &&
+              <div className="viewApptBottomRight">
+                <Button sx={styles.button} onClick={reschedAppt}>
+                  Reschedule Appointment
+                </Button>
+                <Button sx={styles.button} onClick={cancelAppt}>
+                  Cancel Appointment
+                </Button>
+              </div>
+            }
+            {appointment && appointment.status === "Completed" &&
+              <div className="viewApptBottomRight">
+                <Button sx={styles.button} onClick={reschedAppt}>
+                  View Diagnosis
+                </Button>
+                <Button sx={styles.button} onClick={cancelAppt}>
+                  View Report
+                </Button>
+              </div>
+            }
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }

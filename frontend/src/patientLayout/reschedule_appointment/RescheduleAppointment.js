@@ -22,10 +22,11 @@ import { format } from "date-fns";
 import { useImmer } from "use-immer";
 import { useState, useEffect, createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+
 
 import "./RescheduleAppointment.css";
-import  AppointmentCard from "../../components/AppointmentCard";
+import AppointmentCard from "../../components/AppointmentCard";
+import api from "../../services/api";
 
 const apptContext = createContext();
 
@@ -59,47 +60,46 @@ export const RescheduleAppointment = () => {
   }
 
 
- 
+
   const getAppointment = async () => {
-    try{
-      const formattedStr = `http://localhost:3000/patient/consultations/${id}`;
-      const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
+    try {
+      const formattedStr = `/patient/consultations/${id}`;
+      const appoinmentList = await api.get(formattedStr).then((response) => response.data);
       setAppointment(appoinmentList);
       setGroupedSlots(groupSlotsByDate(appoinmentList.doctorId.appointmentSlots));
     }
-    catch(err)
-    {
+    catch (err) {
       alert(err);
     }
-    
+
   };
 
   const rescheduleAppt = async () => {
-   try{ 
-      const resched=await axios.post("http://localhost:3000/patient/consultations/reschedule", ({
+    try {
+      const resched = await api.post("/patient/consultations/reschedule", ({
         id: id,
         date: selectedDate,
         time: selectedTime,
         type: type,
         reason: reason,
       }))
-      .then(response=>response.data);
-      if (resched.message==="Success") {
+        .then(response => response.data);
+      if (resched.message === "Success") {
         alert("Appointment Rescheduled Successfully! Please check your email for further details.");
-        setAppointment(draft=>{
-          draft.date=resched.appointment.date;
-          draft.time=resched.appointment.time;
-          draft.updateReason=reason;
-          draft.doctorId.appointmentSlots=resched.appointment.doctorId.appointmentSlots;
-          draft.type=resched.appointment.type;
-      })
-      setGroupedSlots(groupSlotsByDate(resched.appointment.doctorId.appointmentSlots));  
-    } 
-    else {
-      alert("Something went wrong");
-    }}
-    catch(err)
-    {
+        setAppointment(draft => {
+          draft.date = resched.appointment.date;
+          draft.time = resched.appointment.time;
+          draft.updateReason = reason;
+          draft.doctorId.appointmentSlots = resched.appointment.doctorId.appointmentSlots;
+          draft.type = resched.appointment.type;
+        })
+        setGroupedSlots(groupSlotsByDate(resched.appointment.doctorId.appointmentSlots));
+      }
+      else {
+        alert("Something went wrong");
+      }
+    }
+    catch (err) {
       alert(err);
     }
   };
@@ -131,7 +131,7 @@ export const RescheduleAppointment = () => {
 
 
   return (
-  <div className="reschedApptScreen">
+    <div className="reschedApptScreen">
       <div className="reschedApptScreenBody">
         <div className="reschedApptTop">
           {appointment && (
@@ -166,113 +166,113 @@ export const RescheduleAppointment = () => {
         <div className="reschedApptBottom">
           <div className="reschedAppt">
             <div className="reschedApptBottomLeft">
-             <h2 style={{ color: "#2854C3" }}>Reason for Rescheduling</h2>
-             <FormControl>
-               <RadioGroup
-                 aria-labelledby="demo-radio-buttons-group-label"
-                 defaultValue="Something urgent came up"
-                 name="radio-buttons-group"
-               >
-                 <FormControlLabel
-                   value="Something urgent came up"
-                   control={<Radio />}
-                   label="Something urgent came up"
-                   onChange={setReasonHandler}
-                 />
-                 <FormControlLabel
-                   value="I'm not feeling well"
-                   control={<Radio />}
-                   label="I'm not feeling well"
-                   onChange={setReasonHandler}
-                 />
-                 <FormControlLabel
-                   value="other"
-                   control={<Radio />}
-                   label="Other"
-                   onChange={setReasonHandler}
-                 />
-               </RadioGroup>
-             </FormControl>
-             <textarea
-               rows={10}
-               disabled={reason === "other" ? false : true}
-               onChange={setReasonHandler}
-               style={{ borderRadius: "10px" }}
-             ></textarea>
-          </div>
-          <div className="reschedApptBottomRight">
-          <div className="reschedApptSlotSelector">
-          <h2 style={{ color: "#2854C3" }}>Select a New Slot</h2>
-            <div className="apptTypeSelect">
-              <Card 
-              onClick={setOnline}
-              sx={type === "Online" ? styles.cardSelected : styles.card}>
-                <CardContent>Online Session</CardContent>
-              </Card>
-              <Card
-              onClick={setClinic}
-                sx={type === "Clinic" ? styles.cardSelected : styles.card}>
-                <CardContent>Clinic Session</CardContent>
-              </Card>
-            </div>
-            <FormControl sx={styles.selector}>
-              <InputLabel sx={styles.text}>
-                <CalendarIcon sx={styles.icon2} /> YYYY - MM - DD
-              </InputLabel>
-              <Select
-                labelId="date-label"
-                id="demo-simple-select-filled"
-                value={selectedDate ? selectedDate : ""}
-                onChange={setDate}
-              >
-                {groupedSlots &&
-                  Object.keys(groupedSlots).map((slot) => (
-                    <MenuItem key={slot} value={slot}>
-                      {slot}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-            <FormControl sx={styles.selector}>
-              <InputLabel id="time-label" sx={styles.text}>
-                <TimeIcon sx={styles.icon2} />
-                HH:MM (AM/PM)
-              </InputLabel>
-              <Select
-                labelId="time-label"
-                value={selectedTime ? selectedTime : ""}
-                onChange={setTime}
-              >
-                {selectedDate &&
-                  groupedSlots &&
-                  groupedSlots[selectedDate].map(
-                    (slot) =>
-                      slot.availability === true && slot.type===type && (
-                        <MenuItem key={slot.time} value={slot.time}>
-                          {slot.time}
-                        </MenuItem>
-                      )
-                  )}
-              </Select>
-            </FormControl>
-
-            <FormControl sx={styles.selector}>
+              <h2 style={{ color: "#2854C3" }}>Reason for Rescheduling</h2>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="Something urgent came up"
+                  name="radio-buttons-group"
+                >
+                  <FormControlLabel
+                    value="Something urgent came up"
+                    control={<Radio />}
+                    label="Something urgent came up"
+                    onChange={setReasonHandler}
+                  />
+                  <FormControlLabel
+                    value="I'm not feeling well"
+                    control={<Radio />}
+                    label="I'm not feeling well"
+                    onChange={setReasonHandler}
+                  />
+                  <FormControlLabel
+                    value="other"
+                    control={<Radio />}
+                    label="Other"
+                    onChange={setReasonHandler}
+                  />
+                </RadioGroup>
+              </FormControl>
               <textarea
                 rows={10}
-                value={reason ? reason : ""}
-                disabled={(selectedDate && selectedTime )? false : true}
+                disabled={reason === "other" ? false : true}
                 onChange={setReasonHandler}
                 style={{ borderRadius: "10px" }}
               ></textarea>
-            </FormControl>
-          </div>
-            <Button sx={styles.button} onClick={rescheduleAppt}>
-              Reschedule Appointment
-            </Button>
+            </div>
+            <div className="reschedApptBottomRight">
+              <div className="reschedApptSlotSelector">
+                <h2 style={{ color: "#2854C3" }}>Select a New Slot</h2>
+                <div className="apptTypeSelect">
+                  <Card
+                    onClick={setOnline}
+                    sx={type === "Online" ? styles.cardSelected : styles.card}>
+                    <CardContent>Online Session</CardContent>
+                  </Card>
+                  <Card
+                    onClick={setClinic}
+                    sx={type === "Clinic" ? styles.cardSelected : styles.card}>
+                    <CardContent>Clinic Session</CardContent>
+                  </Card>
+                </div>
+                <FormControl sx={styles.selector}>
+                  <InputLabel sx={styles.text}>
+                    <CalendarIcon sx={styles.icon2} /> YYYY - MM - DD
+                  </InputLabel>
+                  <Select
+                    labelId="date-label"
+                    id="demo-simple-select-filled"
+                    value={selectedDate ? selectedDate : ""}
+                    onChange={setDate}
+                  >
+                    {groupedSlots &&
+                      Object.keys(groupedSlots).map((slot) => (
+                        <MenuItem key={slot} value={slot}>
+                          {slot}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+                <FormControl sx={styles.selector}>
+                  <InputLabel id="time-label" sx={styles.text}>
+                    <TimeIcon sx={styles.icon2} />
+                    HH:MM (AM/PM)
+                  </InputLabel>
+                  <Select
+                    labelId="time-label"
+                    value={selectedTime ? selectedTime : ""}
+                    onChange={setTime}
+                  >
+                    {selectedDate &&
+                      groupedSlots &&
+                      groupedSlots[selectedDate].map(
+                        (slot) =>
+                          slot.availability === true && slot.type === type && (
+                            <MenuItem key={slot.time} value={slot.time}>
+                              {slot.time}
+                            </MenuItem>
+                          )
+                      )}
+                  </Select>
+                </FormControl>
+
+                <FormControl sx={styles.selector}>
+                  <textarea
+                    rows={10}
+                    value={reason ? reason : ""}
+                    disabled={(selectedDate && selectedTime) ? false : true}
+                    onChange={setReasonHandler}
+                    style={{ borderRadius: "10px" }}
+                  ></textarea>
+                </FormControl>
+              </div>
+              <Button sx={styles.button} onClick={rescheduleAppt}>
+                Reschedule Appointment
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
-import axios from "axios";
 
 const EditCertificate = ({ DoctorData, setDoctorData, CertificateEditModal, CertificateEditModalClose, setChanges, CertificateIndex, setFiles }) => {
     const [Certificates, setCertificates] = useImmer({

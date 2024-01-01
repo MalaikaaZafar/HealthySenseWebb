@@ -6,7 +6,7 @@ import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
 import { styled } from '@mui/system';
 import styles from './Login.module.css';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../services/api';
 
 const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -50,7 +50,7 @@ export default function Login() {
             password: password
         }
 
-        axios.post('http://localhost:3000/login', data)
+        api.post('/login', data)
             .then(res => {
                 console.log(res);
                 document.cookie = `token=${res.data.token}`;

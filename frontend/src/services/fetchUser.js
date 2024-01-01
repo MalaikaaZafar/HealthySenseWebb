@@ -1,8 +1,8 @@
-import axios from 'axios';
+import api from "./api";
 
 const fetchUser = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:3000/users/${id}`);
+        const response = await api.get(`/users/${id}`);
         const fetchedUser = await response.data;
 
         return fetchedUser;

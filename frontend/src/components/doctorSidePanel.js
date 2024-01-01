@@ -4,38 +4,37 @@ import DoneIcon from "@mui/icons-material/DoneOutlined";
 import ReschedIcon from "@mui/icons-material/EditCalendarOutlined";
 import ReportIcon from "@mui/icons-material/AssessmentOutlined";
 import DiagnosisIcon from "@mui/icons-material/MedicationOutlined";
-import axios from "axios";
 import { List, ListItemButton, ListItemText } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import "./doctorSidePanel.css";
+import api from "../services/api";
 const DoctorSidePanel = ({ appt }) => {
   const Navigate = useNavigate();
 
   function rescheduleNav() {
-    if (!appt.status ==="Completed" && !appt.status ==="Cancelled")
+    if (!appt.status === "Completed" && !appt.status === "Cancelled")
       Navigate(`/doctor/appointments/reschedule/${appt._id}`);
     else alert("Cannot reschedule a completed/cancelled appointment");
   }
 
   function cancelNav() {
-    if (!appt.status ==="Completed" && !appt.status ==="Cancelled")
-    Navigate(`/doctor/appointments/cancel/${appt._id}`);
+    if (!appt.status === "Completed" && !appt.status === "Cancelled")
+      Navigate(`/doctor/appointments/cancel/${appt._id}`);
     else alert("Cannot cancel a completed/cancelled appointment");
   }
 
-  const markCompleted = async() => {
+  const markCompleted = async () => {
     if (appt.status === "Completed") {
       alert("You have already completed this appointment");
     } else if (appt.status === "Cancelled") {
       alert("You cannot complete a cancelled appointment");
     }
-    else
-    {
-      const formattedStr = `http://localhost:3000/doctor/consultations/complete`;
-      const res = await axios.put(formattedStr, {
+    else {
+      const formattedStr = `/doctor/consultations/complete`;
+      const res = await api.put(formattedStr, {
         id: appt._id,
       });
-  
+
       console.log(res);
       if (res.data.message === "Success") {
         alert("Appointment marked as completed");
@@ -45,43 +44,43 @@ const DoctorSidePanel = ({ appt }) => {
       }
     }
 
-    
+
   };
 
-    const startChat = () => {
+  const startChat = () => {
     Navigate(`/messages/${appt.patientId._id}`);
-    }
+  }
 
-   return ( 
-  <div className="buttonPanel">
-    <List sx={styles.list}>
-      <ListItemButton onClick={startChat}>
-        <ChatIcon sx={styles.icon} />
-        <ListItemText sx={styles.listItemText} primary="Start Chat" />
-      </ListItemButton>
-      <ListItemButton>
-        <DoneIcon sx={styles.icon} onClick={markCompleted}/>
-        <ListItemText sx={styles.listItemText} primary="Mark as Completed" />
-      </ListItemButton>
-      <ListItemButton onClick={rescheduleNav}>
-        <ReschedIcon sx={styles.icon} />
-        <ListItemText sx={styles.listItemText} primary="Reschedule" />
-      </ListItemButton>
-      <ListItemButton onClick={cancelNav}>
-        <CancelIcon sx={styles.icon} />
-        <ListItemText sx={styles.listItemText} primary="Cancel" />
-      </ListItemButton>
-      <ListItemButton>
-        <DiagnosisIcon sx={styles.icon} />
-        <ListItemText sx={styles.listItemText} primary="Diagnosis" />
-      </ListItemButton>
-      <ListItemButton>
-        <ReportIcon sx={styles.icon} />
-        <ListItemText sx={styles.listItemText} primary="Report" />
-      </ListItemButton>
-    </List>
-  </div>
-   );
+  return (
+    <div className="buttonPanel">
+      <List sx={styles.list}>
+        <ListItemButton onClick={startChat}>
+          <ChatIcon sx={styles.icon} />
+          <ListItemText sx={styles.listItemText} primary="Start Chat" />
+        </ListItemButton>
+        <ListItemButton>
+          <DoneIcon sx={styles.icon} onClick={markCompleted} />
+          <ListItemText sx={styles.listItemText} primary="Mark as Completed" />
+        </ListItemButton>
+        <ListItemButton onClick={rescheduleNav}>
+          <ReschedIcon sx={styles.icon} />
+          <ListItemText sx={styles.listItemText} primary="Reschedule" />
+        </ListItemButton>
+        <ListItemButton onClick={cancelNav}>
+          <CancelIcon sx={styles.icon} />
+          <ListItemText sx={styles.listItemText} primary="Cancel" />
+        </ListItemButton>
+        <ListItemButton>
+          <DiagnosisIcon sx={styles.icon} />
+          <ListItemText sx={styles.listItemText} primary="Diagnosis" />
+        </ListItemButton>
+        <ListItemButton>
+          <ReportIcon sx={styles.icon} />
+          <ListItemText sx={styles.listItemText} primary="Report" />
+        </ListItemButton>
+      </List>
+    </div>
+  );
 };
 
 const styles = {

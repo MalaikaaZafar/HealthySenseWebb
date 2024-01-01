@@ -1,14 +1,14 @@
 import { React, useEffect, useState } from "react";
 import "./ViewAllPatients.css";
 import DoctorCard from "../components/DoctorCard";
-import axios from "axios";
 import { Box } from "@mui/material";
+import api from "../services/api";
 
 function ViewAlldoctors() {
   const [doctorList, setDoctorList] = useState([]);
 
   const fetchUsers = async () => {
-    const docList = await axios.get("http://localhost:3000/admin/doctorList")
+    const docList = await api.get("/admin/doctorList")
       .then(response => response.data);
     setDoctorList(docList);
     console.log(docList);

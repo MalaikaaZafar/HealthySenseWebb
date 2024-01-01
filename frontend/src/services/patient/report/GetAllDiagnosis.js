@@ -1,8 +1,9 @@
-import axios from "axios";
+import api from "../../api";
+
 
 const GetAllDiagnosis = async (patientId) => {
     try {
-        const response = await axios.get(`http://localhost:5000/patient/diagnosis/${patientId}`);
+        const response = await api.get(`http://localhost:5000/patient/diagnosis/${patientId}`);
         const data = await response.data;
         if (data.message){
             return [];

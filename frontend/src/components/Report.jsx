@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from 'axios';
 import { red } from '@mui/material/colors';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -14,6 +13,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box } from "@mui/material";
+import api from "../services/api";
 
 
 const addComplaint = async (patId, complaint) => {
@@ -22,7 +22,7 @@ const addComplaint = async (patId, complaint) => {
             description: complaint,
 
         };
-        const res = await axios.post(`http://localhost:3000/doctor/complaint/${patId}`, body, {
+        const res = await api.post(`/doctor/complaint/${patId}`, body, {
             headers: {
                 'Content-Type': 'application/json',
             },

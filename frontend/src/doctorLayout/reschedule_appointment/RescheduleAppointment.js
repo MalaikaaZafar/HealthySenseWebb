@@ -23,11 +23,11 @@ import CardContent from "@mui/material/CardContent";
 import { useImmer } from "use-immer";
 import { useState, useEffect, createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 
 import "./RescheduleAppointment.css";
-import  AppointmentCard from "../../components/AppointmentCard";
+import AppointmentCard from "../../components/AppointmentCard";
 import DoctorSidePanel from "../../components/doctorSidePanel";
+import api from "../../services/api";
 
 
 const apptContext = createContext();
@@ -67,8 +67,8 @@ function RescheduleAppointment() {
   const { id } = useParams();
   const getAppointment = async () => {
     try {
-      const formattedStr = `http://localhost:3000/doctor/consultations/${id}`;
-      const appoinmentList = await axios.get(formattedStr).then((response) => response.data);
+      const formattedStr = `/doctor/consultations/${id}`;
+      const appoinmentList = await api.get(formattedStr).then((response) => response.data);
       if (appoinmentList.message === "Success") {
         setAppointment(appoinmentList.appt);
         setType(appoinmentList.appt.type);
@@ -80,25 +80,25 @@ function RescheduleAppointment() {
     }
   };
   const rescheduleAppt = async () => {
-   try{ 
-      const resched=await axios.post("http://localhost:3000/doctor/consultations/reschedule", {
+    try {
+      const resched = await api.post("/doctor/consultations/reschedule", {
         id: id,
         date: selectedDate,
         time: selectedTime,
-        type:type,
+        type: type,
         reason: reason,
-      }).then(response=>response.data);
-      if (resched.message==="Success") {
+      }).then(response => response.data);
+      if (resched.message === "Success") {
         alert("Appointment Rescheduled Successfully! Please check your email for further details.");
         setAppointment(resched.appointment
-      )
-      setType(resched.appointment.type);
-    } 
-    else {
-      alert("Something went wrong");
-    }}
-    catch(err)
-    {
+        )
+        setType(resched.appointment.type);
+      }
+      else {
+        alert("Something went wrong");
+      }
+    }
+    catch (err) {
       alert(err);
     }
   };
@@ -168,23 +168,23 @@ function RescheduleAppointment() {
           <div className="appointmentDetailsRA">
             <div className="apptResched">
               <h3>Reschedule Date and Time</h3>
-              
+
               <div className="appointmentHoursResched">
 
-              <div className="typeSetter">
-              <FormControl sx={{ width: "100%", margin: "5px",marginBottom:'0px' }}>
-                <Card onClick={()=>{setType("Online")}} sx={type && type==="Online"? styles.card1:styles.card2}>
-                 <CardContent>Online Session</CardContent>
-                </Card>
-              </FormControl> 
-              <FormControl sx={{ width: "100%", margin: "5px" }}>
-                <Card onClick={()=>{setType("Clinic")}} sx={type && type==="Clinic"? styles.card1:styles.card2}>
-                 <CardContent>Clinic Session</CardContent>
-                </Card>
-              </FormControl>
-            </div>
+                <div className="typeSetter">
+                  <FormControl sx={{ width: "100%", margin: "5px", marginBottom: '0px' }}>
+                    <Card onClick={() => { setType("Online") }} sx={type && type === "Online" ? styles.card1 : styles.card2}>
+                      <CardContent>Online Session</CardContent>
+                    </Card>
+                  </FormControl>
+                  <FormControl sx={{ width: "100%", margin: "5px" }}>
+                    <Card onClick={() => { setType("Clinic") }} sx={type && type === "Clinic" ? styles.card1 : styles.card2}>
+                      <CardContent>Clinic Session</CardContent>
+                    </Card>
+                  </FormControl>
+                </div>
                 {appointment?.doctorId?.appointmentSlots &&
-                appointment.doctorId.appointmentSlots.length !==
+                  appointment.doctorId.appointmentSlots.length !==
                   0 ? (
                   <div className="selectSlot">
                     <FormControl sx={{ width: "100%", margin: "5px" }}>
@@ -196,8 +196,8 @@ function RescheduleAppointment() {
                         onChange={setDate}
                         sx={{ width: "100%", margin: "5px" }}
                       >
-                        {groupedSlots && Object.keys(groupedSlots).map((slot) => 
-                          groupedSlots[slot].some(slot=>slot.availability===true && slot.type===type) &&
+                        {groupedSlots && Object.keys(groupedSlots).map((slot) =>
+                          groupedSlots[slot].some(slot => slot.availability === true && slot.type === type) &&
                           <MenuItem key={slot} value={slot}>
                             {slot}
                           </MenuItem>
@@ -214,8 +214,8 @@ function RescheduleAppointment() {
                         sx={{ width: "100%" }}
                       >
                         {selectedDate &&
-                          groupedSlots[selectedDate].map((slot) => 
-                            slot.availability===true && slot.type===type && 
+                          groupedSlots[selectedDate].map((slot) =>
+                            slot.availability === true && slot.type === type &&
                             <MenuItem key={slot.time} value={slot.time}>
                               {slot.time}
                             </MenuItem>
@@ -231,7 +231,7 @@ function RescheduleAppointment() {
                 variant="contained"
                 onClick={addSlot}
                 className="addSlotBtn"
-                sx={{background: "#2854c3"}}
+                sx={{ background: "#2854c3" }}
               >
                 Add Slot
               </Button>
@@ -277,7 +277,7 @@ function AddSlotDialog({ open, setOpen }) {
         draft.doctorId.appointmentSlots.push({
           date: time.date,
           time: time.time,
-          type:type,
+          type: type,
           availability: time.availability,
         });
     });
@@ -322,7 +322,7 @@ function AddSlotDialog({ open, setOpen }) {
             const timeObj = {
               time: timeStr,
               availability: true,
-              type:type,
+              type: type,
               date: format(new Date(date), "yyyy-MM-dd"),
             };
             setTime(timeObj);
@@ -361,18 +361,18 @@ function AddSlotDialog({ open, setOpen }) {
         }}
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div className="typeSetter">
-              <FormControl sx={{ width: "100%", margin: "5px",marginBottom:'0px' }}>
-                <Card onClick={()=>{setType("Online")}} sx={type && type==="Online"? styles.card1:styles.card2}>
-                 <CardContent>Online Session</CardContent>
-                </Card>
-              </FormControl> 
-              <FormControl sx={{ width: "100%", margin: "5px" }}>
-                <Card onClick={()=>{setType("Clinic")}} sx={type && type==="Clinic"? styles.card1:styles.card2}>
-                 <CardContent>Clinic Session</CardContent>
-                </Card>
-              </FormControl>
-            </div>
+          <div className="typeSetter">
+            <FormControl sx={{ width: "100%", margin: "5px", marginBottom: '0px' }}>
+              <Card onClick={() => { setType("Online") }} sx={type && type === "Online" ? styles.card1 : styles.card2}>
+                <CardContent>Online Session</CardContent>
+              </Card>
+            </FormControl>
+            <FormControl sx={{ width: "100%", margin: "5px" }}>
+              <Card onClick={() => { setType("Clinic") }} sx={type && type === "Clinic" ? styles.card1 : styles.card2}>
+                <CardContent>Clinic Session</CardContent>
+              </Card>
+            </FormControl>
+          </div>
           <h3 style={{ margin: "5px" }}>Select Date</h3>
           <DatePicker
             format="YYYY - MM - DD "
@@ -405,16 +405,16 @@ function AddSlotDialog({ open, setOpen }) {
   );
 }
 
-const styles={
-  card1:{
+const styles = {
+  card1: {
     width: "90%",
-    marginBottom:'0px',
+    marginBottom: '0px',
     background: "#2854c3",
     color: "white",
     borderRadius: "10px",
     padding: "10px",
   },
-  card2:{
+  card2: {
     width: "90%",
     margin: "5px",
     background: "#f7f7f7",

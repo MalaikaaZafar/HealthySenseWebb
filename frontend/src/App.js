@@ -40,15 +40,14 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/register" element={<RegisterDoctor />} />
-          <Route path="/meet" element={<Meet />} />
-
+          <Route path="/:id/register" element={<RegisterDoctor />} />
+          <Route path="/:id/meet" element={<Meet />} />
           <Route path="/admin" element={<AdminNavbar />}>
             <Route path='' index element={<AdminActivity />} />
             <Route path="doctors" element={<AdminDoctor />} />
             <Route path='patients' element={<AdminPatient />} />
           </Route>
-          <Route path="/doctor" element={<DocNavbar />}>
+          <Route path="/:id/doctor" element={<DocNavbar />}>
             <Route index element={<CustomTabPanel />} />
             <Route path="appointments/:id" element={<AppointmentDetail />} />
             <Route path="appointments" element={<CustomTabPanel />} />
@@ -61,7 +60,7 @@ function App() {
             <Route path='report/:id' element={<ViewReportDoctor />} />
           </Route>
 
-          <Route path='/patient' element={<NavBar />}>
+          <Route path='/:id/patient' element={<NavBar />}>
             <Route index element={<Search />} />
             <Route index element={<AppointmentListPatient />} />
             <Route path='appointments' element={<AppointmentListPatient />} />

@@ -1,8 +1,9 @@
-import axios from "axios";
+import api from "../../api";
+
 
 const GetHistory = async (patientId) => {
     try {
-        const response = await axios.get(`http://localhost:5000/doctor/patient/history/${patientId}`);
+        const response = await api.get(`http://localhost:5000/doctor/patient/history/${patientId}`);
         const data = await response.data;
         if(data.History === null){
             return null;

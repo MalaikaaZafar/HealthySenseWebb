@@ -2,7 +2,6 @@ import React from "react";
 import { useDiagnosis } from "./DiagnosisPage";
 import { Avatar, Container, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, Snackbar, Alert } from "@mui/material";
 import HealthySenseLogo from '../../components/healthySenseLogo.png';
-import axios from "axios";
 import { styled, Box } from '@mui/system';
 import { useNavigate } from "react-router-dom";
 import saveDiagnosis from "../../services/doctor/diagnosis/saveDiagnosis";

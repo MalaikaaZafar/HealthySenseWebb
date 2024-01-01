@@ -1,8 +1,9 @@
-import axios from "axios";
+import api from "../../api";
+
 
 const getAccountDetails = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:5000/patient/account/${id}`);
+        const response = await api.get(`http://localhost:5000/patient/account/${id}`);
         const data = response.data;
         data.user.dob = data.user.dob.slice(0, 10);
         if (data.user.phoneNumber[0] === '+') {

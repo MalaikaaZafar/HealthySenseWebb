@@ -8,7 +8,7 @@ import './ViewApptList.css';
 
 async function fetchAppointments() {
   try{
-    const appoinmentList= await fetch(`http://localhost:3000/doctor/consultations`,{
+    const appoinmentList= await fetch(`/doctor/consultations`,{
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

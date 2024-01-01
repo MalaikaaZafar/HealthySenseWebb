@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { styled } from '@mui/system';
 import {
     Button,
@@ -39,6 +38,7 @@ import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './Register.module.css';
+import api from '../../services/api';
 
 const CustomTextField = styled(TextField)({
     '& .MuiInputAdornment-root.MuiInputAdornment-positionStart': {
@@ -306,7 +306,7 @@ const RegisterDoctor = () => {
 
         console.log(doctor);
 
-        axios.post('http://localhost:3000/doctor/register', formData, { withCredentials: true })
+        api.post('/doctor/register', formData, { withCredentials: true })
             .then(res => {
                 navigate('/doctor');
             })

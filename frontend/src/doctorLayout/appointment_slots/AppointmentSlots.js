@@ -1,7 +1,6 @@
 import "@fontsource/roboto";
 import "./AppointmentSlots.css";
 import { React, useState, createContext, useContext, useEffect } from "react";
-import axios from "axios";  
 
 import { format } from "date-fns";
 import Button from "@mui/material/Button";
@@ -11,12 +10,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { FormControl } from "@mui/material";
 import { Card } from "@mui/material";
-import {CardContent} from "@mui/material";
+import { CardContent } from "@mui/material";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
+import api from "../../services/api";
 
 
 const groupSlotsByDate = (slotData) => {
@@ -52,7 +52,7 @@ function findDayFromDate(inputDate) {
 
 const slotContext = createContext({
   slotList: {},
-  setSlotList: () => {},
+  setSlotList: () => { },
 });
 
 const AddSlotDialog = ({ open, setOpen }) => {
@@ -60,14 +60,14 @@ const AddSlotDialog = ({ open, setOpen }) => {
   const [date, setDate] = useState();
   const [timeList, setTimeList] = useState([]);
   const { slotList, setSlotList } = useContext(slotContext);
-  const [type,setType]=useState("Online");
+  const [type, setType] = useState("Online");
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleSave = async () => {
-    const responseObj=await axios.put(`http://localhost:3000/doctor/addSlots`,{slots: timeList})
-                      .then(response=>response.data);
+    const responseObj = await api.put(`/doctor/addSlots`, { slots: timeList })
+      .then(response => response.data);
 
     if (responseObj.message === "Success") {
       alert("Slots added successfully!");
@@ -83,7 +83,7 @@ const AddSlotDialog = ({ open, setOpen }) => {
         };
       });
     }
-    else{
+    else {
       alert("Slots could not be added!");
     }
     handleClose();
@@ -123,7 +123,7 @@ const AddSlotDialog = ({ open, setOpen }) => {
             const timeObj = {
               time: timeStr,
               availability: true,
-              type:type,
+              type: type,
               date: format(new Date(date), "yyyy-MM-dd"),
             };
             setTimeList([...timeList, timeObj]);
@@ -178,18 +178,18 @@ const AddSlotDialog = ({ open, setOpen }) => {
         }}
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div className="typeSetter">
-              <FormControl sx={{ width: "100%", margin: "5px",marginBottom:'0px' }}>
-                <Card onClick={()=>{setType("Online")}} sx={type && type==="Online"? styles.card1:styles.card2}>
-                 <CardContent>Online Session</CardContent>
-                </Card>
-              </FormControl> 
-              <FormControl sx={{ width: "100%", margin: "5px" }}>
-                <Card onClick={()=>{setType("Clinic")}} sx={type && type==="Clinic"? styles.card1:styles.card2}>
-                 <CardContent>Clinic Session</CardContent>
-                </Card>
-              </FormControl>
-            </div>
+          <div className="typeSetter">
+            <FormControl sx={{ width: "100%", margin: "5px", marginBottom: '0px' }}>
+              <Card onClick={() => { setType("Online") }} sx={type && type === "Online" ? styles.card1 : styles.card2}>
+                <CardContent>Online Session</CardContent>
+              </Card>
+            </FormControl>
+            <FormControl sx={{ width: "100%", margin: "5px" }}>
+              <Card onClick={() => { setType("Clinic") }} sx={type && type === "Clinic" ? styles.card1 : styles.card2}>
+                <CardContent>Clinic Session</CardContent>
+              </Card>
+            </FormControl>
+          </div>
           <h3 style={{ margin: "5px" }}>Select Date</h3>
           <DatePicker
             format="YYYY - MM - DD "
@@ -236,29 +236,28 @@ function AppointmentSlots() {
 
   console.log("slotList:", slotList);
   const getSlots = async () => {
-    try{
-      const responseObj = await axios.get(`http://localhost:3000/doctor/slots`);
+    try {
+      const responseObj = await api.get(`/doctor/slots`);
       if (responseObj.data.message === "Success") {
         setSlotList(groupSlotsByDate(responseObj.data.slots));
         // setslotList(groupSlotsByDate(responseObj.data.slots));
-        
-      }else
-      {
+
+      } else {
         alert("Slots could not be fetched!");
       }
     }
-    catch(err){
+    catch (err) {
       console.log(err);
     }
   }
 
   useEffect(() => {
     const fetchFunc = async () => {
-    getSlots();
+      getSlots();
     };
     fetchFunc();
-  },[]);
- 
+  }, []);
+
 
   return (
     <div className="appointmentDetailsScreen">
@@ -269,9 +268,9 @@ function AppointmentSlots() {
               Object.keys(slotList).map((date) => {
                 return (
                   <slotContext.Provider value={{ slotList, setSlotList }}>
-                  <SlotList date={date} slotListByDate={slotList[date]} />
+                    <SlotList date={date} slotListByDate={slotList[date]} />
                   </slotContext.Provider>
-                  )
+                )
               })}
           </div>
 
@@ -304,7 +303,7 @@ function AppointmentSlots() {
 
 const SlotList = ({ date, slotListByDate }) => {
   const [open, setOpen] = useState(false);
-  const {slotList,setSlotList}=useContext(slotContext);
+  const { slotList, setSlotList } = useContext(slotContext);
   function checkDate(date) {
     const today = new Date();
     const todayDate = format(today, "yyyy-MM-dd");
@@ -315,11 +314,11 @@ const SlotList = ({ date, slotListByDate }) => {
     }
   }
 
-  const deleteSlot = async (time,type) => {
+  const deleteSlot = async (time, type) => {
     console.log("e.target.value:", time);
     console.log("e.target.value2:", type);
-    const responseObj=await axios.put(`http://localhost:3000/doctor/deleteSlot`,{date:date, time:time, type:type})
-                      .then(response=>response.data);
+    const responseObj = await api.put(`/doctor/deleteSlot`, { date: date, time: time, type: type })
+      .then(response => response.data);
     if (responseObj.message === "Success") {
       alert("Slot deleted successfully!");
       setSlotList(groupSlotsByDate(responseObj.slots))
@@ -379,7 +378,7 @@ const SlotList = ({ date, slotListByDate }) => {
                   <td style={{ padding: "10px", textAlign: "right" }}>
                     <Button
                       disabled={!checkDate(date)}
-                      onClick={()=>deleteSlot(slot.time, slot.type)}
+                      onClick={() => deleteSlot(slot.time, slot.type)}
                       style={{
                         textTransform: "none",
                         background: !checkDate(date) ? "gray" : "#2854c3",
@@ -399,16 +398,16 @@ const SlotList = ({ date, slotListByDate }) => {
 };
 
 
-const styles={
-  card1:{
+const styles = {
+  card1: {
     width: "90%",
-    marginBottom:'0px',
+    marginBottom: '0px',
     background: "#2854c3",
     color: "white",
     borderRadius: "10px",
     padding: "10px",
   },
-  card2:{
+  card2: {
     width: "90%",
     margin: "5px",
     background: "#f7f7f7",

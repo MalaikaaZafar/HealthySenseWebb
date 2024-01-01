@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from "react";
-import axios from "axios";
+
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -7,9 +7,10 @@ import Box from "@mui/material/Box";
 
 import ApptCardForList from "../../components/ApptCardForList";
 import "./ViewApptList.css";
+import api from "../../services/api";
 
 const fetchAppointments = async () => {
-  const appoinmentList = await axios.get(`http://localhost:3000/patient/consultations`)
+  const appoinmentList = await api.get(`/patient/consultations`)
   .then((response) => response.data);
   return appoinmentList;
 };
