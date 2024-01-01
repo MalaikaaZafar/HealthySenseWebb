@@ -8,12 +8,11 @@ import { useNavigate } from "react-router-dom";
 import "./doctorSidePanel.css"; 
 import { List, ListItemButton, ListItemText } from "@mui/material";
 import styled from "@emotion/styled";
-import { List, ListItemButton, ListItemText, Box } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-
+import { Box } from "@mui/system";
+import api from "../../services/api";
 
 
 const DoctorSidePanel = ({ appt }) => {
@@ -50,8 +49,8 @@ const DoctorSidePanel = ({ appt }) => {
       setErrorMessage("You cannot complete a cancelled appointment");
       setErrorType("error")
     } else {
-      const formattedStr = `http://localhost:3000/doctor/consultations/complete`;
-      const res = await axios.put(formattedStr, {
+      const formattedStr = `/doctor/consultations/complete`;
+      const res = await api.put(formattedStr, {
         id: appt._id,
       });
       if (res.data.message === "Success") {

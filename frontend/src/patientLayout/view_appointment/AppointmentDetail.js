@@ -8,7 +8,7 @@ import { format } from "date-fns"
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import DetailComponent from './DetailComponent';
+import DetailComponent from '../../components/DetailComponent';
 import AppointmentCard from '../../components/AppointmentCard';
 import PersonOutlineOutlined from '@mui/icons-material/PersonOutlineOutlined';
 import { Container } from '@mui/material';
