@@ -163,7 +163,8 @@ const patientController = {
 
     if (!doctorId)
       return res.status(400).json({ message: "Doctor ID not provided" });
-    const patient = await Patient.findOne({ user: req.userId });
+
+    const patient = await Patient.findOne({ user: req.user._id });
     if (!patient)
       return res.status(404).json({ message: "Patient not found" });
     const doctor = await Doctor.findOne({ user: doctorId });
@@ -342,7 +343,7 @@ const patientController = {
 
   addReview: async (req, res) => {
 
-    const {comment, experience, checkupRating, environmentRating, staffRating, recommendation } = req.body;
+    const { comment, experience, checkupRating, environmentRating, staffRating, recommendation } = req.body;
 
     const doctorId = req.params.id;
 
