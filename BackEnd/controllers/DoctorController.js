@@ -13,11 +13,6 @@ const doctorController = {
 
         const files = req.files;
 
-        const existingUser = await User.findById(req.userId);
-
-        if (!existingUser || existingUser.type !== "Doctor")
-            return res.status(404).json({ message: "Wrong User" });
-
         const fileNames = [];
 
         for (let key in files) {
@@ -39,7 +34,7 @@ const doctorController = {
                 certificate.file = fileNames[index];
             });
 
-            const result = await Doctor.create({ user: existingUser, specialization, description, location, experience, session, services, appointmentSlots, certificates });
+            const result = await Doctor.create({ user: req.user, specialization, description, location, experience, session, services, appointmentSlots, certificates });
 
             return res.status(201).json({ result });
         } catch (error) {

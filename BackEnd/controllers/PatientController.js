@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Doctor = require("../models/Doctor");
 const Patient = require("../models/Patient");
+const Review = require("../models/Reviews");
 const Appointment = require("../models/Apointments");
 const Diagnosis = require("../models/Diagnosis");
 const Payment = require("../models/Payment");
@@ -290,18 +291,18 @@ const patientController = {
       }
       var SpecificDiagnosis = [];
       for (var i = 0; i < AllDiagnosis.length; i++) {
-        for(var j=0; j<AllAppointments.length; j++){
-          if(AllDiagnosis[i].appointmentId._id.toString() === AllAppointments[j]._id.toString()){
+        for (var j = 0; j < AllAppointments.length; j++) {
+          if (AllDiagnosis[i].appointmentId._id.toString() === AllAppointments[j]._id.toString()) {
             const appointmentData = await Appointment.findById(AllAppointments[j]._id).populate('doctorId').exec();
-            const doctorData = await Doctor.findById(appointmentData.doctorId._id).populate('user').exec(); 
+            const doctorData = await Doctor.findById(appointmentData.doctorId._id).populate('user').exec();
             SpecificDiagnosis.push({
               id: AllDiagnosis[i]._id,
               doctorName: doctorData.user.name,
-              date:AllAppointments[j].date,
-              time:AllAppointments[j].time,
-              type:AllAppointments[j].type,
-              paymentStatus:AllAppointments[j].paymentStatus,
-              problem:AllAppointments[j].problem,
+              date: AllAppointments[j].date,
+              time: AllAppointments[j].time,
+              type: AllAppointments[j].type,
+              paymentStatus: AllAppointments[j].paymentStatus,
+              problem: AllAppointments[j].problem,
             });
           }
         }
@@ -313,6 +314,68 @@ const patientController = {
     }
   },
 
+  getCompactDoctor: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const doctor = await Doctor.findOne({ user: userId }).populate('user').exec();
+      if (!doctor) {
+        return res.status(404).json({ message: 'Doctor not found' });
+      }
+
+      const patientCount = await Appointment.distinct('patientId', { doctorId: doctor._id, status: 'Completed' });
+
+      let temp = {
+        name: doctor.user.name,
+        specialization: doctor.specialization,
+        rating: doctor.rating,
+        experience: doctor.experience,
+        patients: patientCount.length,
+      };
+
+      return res.status(200).json(doctor);
+    }
+    catch (error) {
+      return res.status(500).json({ message: 'Something went wrong' });
+    }
+  },
+
+  addReview: async (req, res) => {
+
+    const {comment, experience, checkupRating, environmentRating, staffRating, recommendation } = req.body;
+
+    const doctorId = req.params.id;
+
+    try {
+
+      const count = await Review.countDocuments({ doctorId });
+
+      const review = new Review({
+        doctorId,
+        patientId: req.user.userId,
+        comment,
+        experience,
+        checkupRating,
+        environmentRating,
+        staffRating,
+        recommendation,
+        date: new Date()
+      });
+
+      await review.save();
+
+      const doctor = await Doctor.findById(doctorId);
+
+      doctor.rating = (doctor.experience + experience) / (count + 1);
+
+      await doctor.save();
+
+      res.status(201).json({ message: 'Review added successfully' });
+
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Something went wrong' });
+    }
+  }
 };
 
 module.exports = patientController;

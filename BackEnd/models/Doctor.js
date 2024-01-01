@@ -17,7 +17,7 @@ const certificateSchema = new mongoose.Schema({
 });
 
 const doctorSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
     specialization: { type: String },
     description: { type: String, required: true },
     location: { type: String, required: true },
