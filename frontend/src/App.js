@@ -79,7 +79,7 @@ function App() {
               <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
               <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
               <Route path='book-appointment/:id' element={<BookAppointment />} />
-              <Route path='reports/:id' element={<AllReports />} />
+              <Route path='reports' element={<AllReports />} />
               <Route path='payment/:appid' element={<Payment />} />
               <Route path='your-report/:diagid' element={<ViewReportPatient />} />
               <Route path='review' element={<DoctorReview />} />
