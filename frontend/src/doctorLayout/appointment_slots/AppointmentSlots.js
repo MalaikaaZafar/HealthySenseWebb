@@ -25,6 +25,7 @@ import api from "../../services/api";
 
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import { useParams } from "react-router-dom";
 
 const groupSlotsByDate = (slotData) => {
   const groupedSlots = {};
@@ -267,7 +268,6 @@ function AppointmentSlots() {
     setAddSlotOpen(false);
     setOpenErrAdd(false);
   }
-
   
   const getSlots = async () => {
     try {

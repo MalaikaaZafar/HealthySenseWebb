@@ -7,11 +7,12 @@ const Diagnosis = require("../models/Diagnosis");
 const Payment = require("../models/Payment");
 const fs = require("fs");
 const path = require("path");
+const { default: mongoose } = require("mongoose");
 
 const patientController = {
   // view all consultations of a doctor, both pending and completed
   consultations: async (req, res) => {
-    const UserId = "6585484c797f80875a8a769c";
+    const UserId = req.user._id;
     try {
       const apptList = await Appointment.find({ patientId: UserId })
         .populate({ path: "doctorId", populate: { path: "user" } })
@@ -31,6 +32,7 @@ const patientController = {
         .populate({ path: "doctorId", populate: { path: "user" } })
         .populate({ path: "patientId", populate: { path: "user" } })
         .exec();
+      console.log(appt)
       return res.status(200).json(appt);
     } catch (error) {
       console.log(error.message);
@@ -96,6 +98,7 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+  
   getDoctors: async (req, res) => {
     try {
       const doctors = await Doctor.find().populate("user").exec();
@@ -106,10 +109,11 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+
   getDoctorById: async (req, res) => {
     const { id } = req.params;
     try {
-      const doctor = await Doctor.findById(id).populate("user").exec();
+      const doctor = await Doctor.findById(new mongoose.Types.ObjectId(id)).populate("user").exec();
       return res.status(200).json({ message: "Success", doctor });
     }
     catch (err) {
@@ -117,12 +121,16 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+
   bookAppointment: async (req, res) => {
-    const { patientId, doctorId, date, time, type, problem } = req.body;
+    const { doctorId, date, time, type, problem } = req.body;
+    const patientId= req.user._id;
     try {
       const newDate = new Date(date);
+      const patient= await Patient.findOne({user:patientId});
+      console.log(patient);
       const appointment = new Appointment({
-        patientId: patientId,
+        patientId: patient._id,
         doctorId: doctorId,
         date: newDate,
         time: time,
@@ -131,9 +139,8 @@ const patientController = {
         status: 'Booked',
         paymentStatus: 'Unpaid',
       });
-
       await appointment.save();
-      const doctor = await Doctor.findById(doctorId);
+      const doctor = await Doctor.findById({_id: new mongoose.Types.ObjectId(doctorId)});
       doctor.appointmentSlots.forEach((slot) => {
         console.log(date, slot.time, time);
         if (slot.date.getDate() === newDate.getDate()
@@ -150,6 +157,8 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+
+
   getFavorites: async (req, res) => {
     const patient = await Patient.findOne({ user: req.userId });
     if (!patient)

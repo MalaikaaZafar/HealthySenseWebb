@@ -38,13 +38,16 @@ export const BookAppointment = () => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [problem, setProblem] = useState(null);
   const [groupedSlots, setGroupedSlots] = useState(null);
-  const { id, docId } = useParams();
+  const { patientId, id } = useParams();
   const [open, setOpen] = useState(false);
   const [openErr, setOpenErr] = useState(false);
   const [appt, setAppt] = useState(null);
+
+
+
   const groupSlotsByDate = (slotData) => {
-    console.log(slotData);
     const groupedSlots = {};
+    if (slotData && slotData.length !== 0) {
     if (slotData && slotData.length !== 0) {
       slotData.forEach((slot) => {
         let date = slot.date;
@@ -55,10 +58,11 @@ export const BookAppointment = () => {
         groupedSlots[date].push(slot);
       });
     }
+  }
     return groupedSlots;
   };
 
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const setDate = (event) => {
     setSelectedDate(event.target.value);
     setSelectedTime(null);
@@ -72,7 +76,7 @@ export const BookAppointment = () => {
 
   const fetchAppointment = async () => {
     try {
-      const formattedStr = `/patient/doctors/${docId}`;
+      const formattedStr = `/patient/doctors/${id}`;
       const doctorObj = await api
         .get(formattedStr)
         .then((response) => response.data);
@@ -91,7 +95,6 @@ export const BookAppointment = () => {
       try {
         const resched = await api
           .post("/patient/consultations/bookAppt", {
-            patientId: id,
             doctorId: doctor._id,
             date: selectedDate,
             time: selectedTime,
@@ -122,7 +125,7 @@ export const BookAppointment = () => {
       return;
     }
     setOpen(false);
-    Navigate(`/patient/appointments/${appt}`);
+    navigate(`/${patientId}/patient/appointments/${appt}`);
   };
 
   const handleCloseErr = (event, reason) => {

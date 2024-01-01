@@ -41,7 +41,7 @@ async function fetchAppointments() {
   }, []);
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="100%">
       <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mb: 2 }}>
         <Tabs
           value={value}

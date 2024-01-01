@@ -36,16 +36,18 @@ export const CancelAppointment = () => {
   const [openError, setOpenError] = useState(false);
   const [openErr, setOpenErr] = useState(false);
   const { id } = useParams();
+
   const fetchAppointment = async () => {
-    const formattedStr = `/patient/consultations/${id}`;
-    const appoinmentList = await fetch(formattedStr, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((response) => response.json());
-    setAppointment(appoinmentList);
+    try {
+      const formattedStr = `/patient/consultations/${id}`;
+      const appoinmentList = await api.get(formattedStr).then((response) => response.data);
+      setAppointment(appoinmentList);
+    }
+    catch (err) {
+      alert(err);
+    }
   };
+
 
     const cancelAppointment=async ()=>{
         if (appointment.status!=="Cancelled"){

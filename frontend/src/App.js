@@ -54,7 +54,7 @@ function App() {
             <Route path="doctors" element={<AdminDoctor />} />
             <Route path='patients' element={<AdminPatient />} />
           </Route>
-          <Route path="/:id/doctor" element={<ProtectedRoute />}>
+          <Route path="/:docId/doctor" element={<ProtectedRoute />}>
             <Route element={<DocNavbar />}>
 
               <Route index element={<CustomTabPanel />} />
@@ -71,15 +71,15 @@ function App() {
             </Route>
           </Route>
 
-          <Route path='/:id/patient' element={<ProtectedRoute />}>
+          <Route path='/:patientId/patient' element={<ProtectedRoute />}>
             <Route element={<NavBar />}>
               <Route index element={<Search />} />
               <Route path='appointments' element={<AppointmentListPatient />} />
               <Route path='appointments/:id' element={<ApptDetail />} />
               <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
               <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
-              <Route path='book-appointment/:docId' element={<BookAppointment />} />
-              <Route path='reports' element={<AllReports />} />
+              <Route path='book-appointment/:id' element={<BookAppointment />} />
+              <Route path='reports/:id' element={<AllReports />} />
               <Route path='payment/:appid' element={<Payment />} />
               <Route path='your-report/:diagid' element={<ViewReportPatient />} />
               <Route path='review' element={<DoctorReview />} />
