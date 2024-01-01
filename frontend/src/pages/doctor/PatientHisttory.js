@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LoadingAnimation from "../../components/Loader/LoadingAnimation";
 import { Box } from "@mui/system";
-import {  Container, Table, TableBody, TableCell, TableHead, TableRow, Typography, Snackbar, Alert } from "@mui/material";
+import { Container, Table, TableBody, TableCell, TableHead, TableRow, Typography, Snackbar, Alert } from "@mui/material";
 import GetHistory from "../../services/doctor/diagnosis/getHistory";
-import {styled} from "@mui/system";
+import { styled } from "@mui/system";
+import DoctorSidePanel from "../../components/doctorSidePanel";
+import "../../pages/report/Report.css";
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
     display: 'flex',
@@ -32,18 +34,19 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 const PatientHistory = () => {
-    //const { id } = useParams();
-    const id = "6585484c797f80875a8a769f";
+    const { appid, patid } = useParams();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
+    const [appt, setAppt] = useState({});
 
     const getHistoryData = async () => {
-        const data = await GetHistory(id);
+        const data = await GetHistory(appid, patid);
         if (data === null) {
             setOpen(true);
         } else {
             setData(data.data);
+            setAppt(data.appoinment);
         }
         setLoading(false);
     }
@@ -55,64 +58,71 @@ const PatientHistory = () => {
     return (
         <>
             <LoadingAnimation isVisible={loading} />
-            {
-                !loading &&
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'left',
-                        height: '100%',
-                        py: 3
-                    }}
-                >
-                    <Container
+            <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'row',justifyContent:'left', gap:'10%' }} className='change'>
+                {
+                    !loading &&
+                    <DoctorSidePanel appt={appt} />
+                }
+                {
+                    !loading &&
+                    <Box
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
-                            alignItems: 'flex-start',
-                            justifyContent: 'center',
-                            gap: '20px',
-                            width: '100%',  
-                            backgroundColor: 'white',
-                            borderRadius: '10px',
-                            boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
-                            py: 3,
+                            alignItems: 'center',
+                            justifyContent: 'left',
+                            height: '100%',
+                            py: 3
                         }}
                     >
-                        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Patient History</Typography>
-                        <Table sx={{ width: '100%',
-                            border:'1px solid rgba(100, 100, 100, 1)',
-                        }}>
-                            <TableHead>
-                                <CustomTableRow>
-                                    <CustomTableCell sx={{ width: '20%', fontWeight:'bold', fontSize: '16px' }}>Type</CustomTableCell>
-                                    <CustomTableCell sx={{ width: '65%', fontWeight:'bold', fontSize: '16px' }}>Description</CustomTableCell>
-                                    <CustomTableCell sx={{ width: '15%', fontWeight:'bold', fontSize: '16px' }}>Date Added</CustomTableCell>
-                                </CustomTableRow>
-                            </TableHead>
-                            <TableBody>
-                                {
-                                    data.length > 0 ?
-                                        data.map((row, index) => (
-                                            <CustomTableRow key={index}>
-                                                <CustomTableCell sx={{ width: '20%' }}>{row.type}</CustomTableCell>
-                                                <CustomTableCell sx={{ width: '65%' }}>{row.description}</CustomTableCell>
-                                                <CustomTableCell sx={{ width: '15%' }}>{row.date.slice(0,10)}</CustomTableCell>
+                        <Container
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'flex-start',
+                                justifyContent: 'center',
+                                gap: '20px',
+                                width: '100%',
+                                backgroundColor: 'white',
+                                borderRadius: '10px',
+                                boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
+                                py: 3,
+                            }}
+                        >
+                            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Patient History</Typography>
+                            <Table sx={{
+                                width: '100%',
+                                border: '1px solid rgba(100, 100, 100, 1)',
+                            }}>
+                                <TableHead>
+                                    <CustomTableRow>
+                                        <CustomTableCell sx={{ width: '20%', fontWeight: 'bold', fontSize: '16px' }}>Type</CustomTableCell>
+                                        <CustomTableCell sx={{ width: '65%', fontWeight: 'bold', fontSize: '16px' }}>Description</CustomTableCell>
+                                        <CustomTableCell sx={{ width: '15%', fontWeight: 'bold', fontSize: '16px' }}>Date Added</CustomTableCell>
+                                    </CustomTableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        data.length > 0 ?
+                                            data.map((row, index) => (
+                                                <CustomTableRow key={index}>
+                                                    <CustomTableCell sx={{ width: '20%' }}>{row.type}</CustomTableCell>
+                                                    <CustomTableCell sx={{ width: '65%' }}>{row.description}</CustomTableCell>
+                                                    <CustomTableCell sx={{ width: '15%' }}>{row.date.slice(0, 10)}</CustomTableCell>
+                                                </CustomTableRow>
+                                            ))
+                                            :
+                                            <CustomTableRow>
+                                                <CustomTableCell sx={{ width: '100%' }}>No History Found!</CustomTableCell>
                                             </CustomTableRow>
-                                        ))
-                                        :
-                                        <CustomTableRow>
-                                            <CustomTableCell sx={{ width: '100%' }}>No History Found!</CustomTableCell>
-                                        </CustomTableRow>
-                                }
-                            </TableBody>
-                        </Table>
-                    </Container>
+                                    }
+                                </TableBody>
+                            </Table>
+                        </Container>
 
-                </Box>
-            }
+                    </Box>
+                }
+            </Box>
             <Snackbar
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 open={open}

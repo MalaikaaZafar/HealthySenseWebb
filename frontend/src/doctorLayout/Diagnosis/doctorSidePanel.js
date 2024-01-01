@@ -4,38 +4,38 @@ import DoneIcon from "@mui/icons-material/DoneOutlined";
 import ReschedIcon from "@mui/icons-material/EditCalendarOutlined";
 import ReportIcon from "@mui/icons-material/AssessmentOutlined";
 import DiagnosisIcon from "@mui/icons-material/MedicationOutlined";
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import axios from "axios";
-import { List, ListItemButton, ListItemText, Box } from "@mui/material";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./doctorSidePanel.css"; 
+import { List, ListItemButton, ListItemText } from "@mui/material";
+import styled from "@emotion/styled";
+import { useState } from "react";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import api from "../services/api";
+import { Box } from "@mui/system";
+import api from "../../services/api";
+
 
 const DoctorSidePanel = ({ appt }) => {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Error");
   const [errorType, setErrorType] = useState("error");
   const Navigate = useNavigate();
-
   function rescheduleNav() {
     if (!appt.status === "Completed" && !appt.status === "Cancelled")
       Navigate(`/doctor/appointments/reschedule/${appt._id}`);
-    else {
-      setOpenError(true);
-      setErrorMessage("You cannot reschedule a completed or cancelled appointment");
-      setErrorType("error")
-    }
-  }
+      else{
+        setOpenError(true);
+        setErrorMessage("You cannot reschedule a completed or cancelled appointment");
+        setErrorType("error")
+      }  }
 
   function cancelNav() {
     if (!appt.status === "Completed" && !appt.status === "Cancelled")
       Navigate(`/doctor/appointments/cancel/${appt._id}`);
-    else {
-      setOpenError(true);
-      setErrorMessage("You cannot cancel a completed or cancelled appointment");
-      setErrorType("error")
+    else{
+    setOpenError(true);
+    setErrorMessage("You cannot cancel a completed or cancelled appointment");
+    setErrorType("error")
     }
   }
 
@@ -105,10 +105,6 @@ const DoctorSidePanel = ({ appt }) => {
           <ListItemText primary="Cancel" sx={styles.listItemText} />
         </ListItemButton>
         <ListItemButton>
-          <MedicalServicesIcon sx={styles.icon} />
-          <ListItemText primary="History" sx={styles.listItemText} />
-        </ListItemButton>
-        <ListItemButton>
           <DiagnosisIcon sx={styles.icon} />
           <ListItemText primary="Diagnosis" sx={styles.listItemText} />
         </ListItemButton>
@@ -118,10 +114,10 @@ const DoctorSidePanel = ({ appt }) => {
         </ListItemButton>
       </List>
       <Snackbar open={openError} autoHideDuration={2000} onClose={handleClose} >
-        <MuiAlert elevation={6} variant="filled" severity={errorType}>
-          {errorMessage}
-        </MuiAlert>
-      </Snackbar>
+        <MuiAlert elevation={6}  variant="filled" severity={errorType}>
+         {errorMessage}
+       </MuiAlert>
+     </Snackbar>
     </Box>
   );
 };

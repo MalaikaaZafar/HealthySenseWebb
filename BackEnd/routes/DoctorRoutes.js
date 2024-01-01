@@ -13,9 +13,9 @@ router.post("/consultations/reschedule", doctorController.rescheduleAppt);
 router.put("/consultations/cancel", doctorController.cancelAppt);
 router.put("/consultations/complete", doctorController.completeAppt);
 
-router.put("/addSlots", doctorController.addSlots);
-router.get("/slots", doctorController.getSlots);
-router.put("/deleteSlot", doctorController.deleteSlots);
+router.put("/addSlots",auth, doctorAuth, doctorController.addSlots);
+router.get("/slots", auth, doctorAuth, doctorController.getSlots);
+router.put("/deleteSlot", auth, doctorAuth, doctorController.deleteSlots);
 
 router.get("/specialties", doctorController.getSpecialties);
 router.get("/search", doctorController.searchDoctors);
@@ -24,7 +24,7 @@ router.get("/appointments/:id", doctorController.getAppintmentDetails);
 router.post("/appointments/:id/diagnosis", doctorController.createDiagnosis);
 router.get("/account/:id", doctorController.getAccountDetails);
 router.put("/account/:id", doctorController.updateAccount);
-router.get("/patient/history/:id", doctorController.getPatientHistory);
+router.get("/:appid/history/:id", doctorController.getPatientHistory);
 router.put("/diagnosis/update/:id", doctorController.updateDiagnosis);
 
 router.post("/complaint/:id",auth, doctorController.addComplaint); //add doctor auth

@@ -13,14 +13,10 @@ const appointmentContext=createContext();
 
 function ApptCardForList({ type, appt }) {
   console.log(appt?._id)
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const goToDetails = (event) => {
     event.preventDefault();
-    if (type === "doctor") {
-       Navigate(`/patient/appointments/${appt._id}`);
-    } else {
-      Navigate(`/doctor/appointments/${appt._id}`);
-    }
+       navigate(`${appt._id}`);
   }
   return (
     <Card
@@ -65,7 +61,7 @@ function ApptCardForList({ type, appt }) {
           </Box>
           </Box>
           <appointmentContext.Provider value={appt}>
-            {appt.status === "Completed" || appt.status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} Navigate={Navigate}/>}
+            {appt.status === "Completed" || appt.status==="Cancelled" ? <IsComplete /> : <IsNotComplete type={type} navigate={navigate}/>}
           </appointmentContext.Provider>
         </Box>
       </Box>
@@ -73,8 +69,9 @@ function ApptCardForList({ type, appt }) {
   );
 }
 
-function IsComplete({ type, Navigate }){
+function IsComplete({ type, navigate }){
   const appt=useContext(appointmentContext);
+
   return (
     <Button sx={{ color: "#3B86FF", textTransform: "none" , display: 'flex' , alignItems:'flex-end'}}>
       Leave Review
@@ -82,16 +79,16 @@ function IsComplete({ type, Navigate }){
   );
 }
 
-function IsNotComplete({type, Navigate}) {
+function IsNotComplete({type, navigate}) {
   const appt=useContext(appointmentContext);
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row' }}>
       <Button
         onClick={(e) => {
           if (type==="doctor")
-            Navigate(`/patient/appointments/cancel/${appt._id}`);
+            navigate(`/${appt.patientId?.user?._id}/patient/appointments/cancel/${appt._id}`);
           else
-            Navigate(`/doctor/appointments/cancel/${appt._id}`);
+            navigate(`/${appt.doctorId?.user?._id}/doctor/appointments/cancel/${appt._id}`);
           e.stopPropagation();
         }}
         variant="contained"
@@ -108,9 +105,9 @@ function IsNotComplete({type, Navigate}) {
       <Button
         onClick={(e) => {
           if (type==="doctor")
-            Navigate(`/patient/appointments/reschedule/${appt._id}`);
+            navigate(`${appt?.patientId?.user?._id}/patient/appointments/reschedule/${appt._id}`);
           else
-          Navigate(`/doctor/appointments/reschedule/${appt._id}`);
+          navigate(`${appt?.doctorId?.user?._id}/doctor/appointments/reschedule/${appt._id}`);
           e.stopPropagation();
         }}
         variant="contained"

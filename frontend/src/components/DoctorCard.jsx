@@ -14,17 +14,17 @@ import addFavorite from '../services/addFavorite';
 import removeFavorite from '../services/removeFavorite';
 import { useNavigate, useParams } from 'react-router-dom';
 
-function DoctorCard({ user, buttons, onFavChanged }) {
+function DoctorCard({ user, buttons, onFavChanged, role }) {
     const [favourite, setFavourite] = React.useState(false);
     const { user: loggedUser, updateUser } = useUserStore();
     const [actionCompleted, setActionCompleted] = React.useState(true);
     const [clinicFee, setClinicFee] = React.useState(0);
     const [onlineFee, setOnlineFee] = React.useState(0);
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { patientId } = useParams();
     const bookAppt = (e) => {
         e.stopPropagation();
-        navigate(`/${id}/patient/book-appointment/${user._id}`);
+        navigate(`/${patientId}/patient/book-appointment/${user._id}`);
     }
     useEffect(() => {
         user.session.map((session) => {
@@ -38,6 +38,9 @@ function DoctorCard({ user, buttons, onFavChanged }) {
     }, [user]);
     const goToUserPage = () => {
         //Navigate to user page
+        if (role == 'admin') {
+            navigate(`../doctor-detail/${user.user._id}`);
+        }
         alert("Navigate to user page");
     }
 

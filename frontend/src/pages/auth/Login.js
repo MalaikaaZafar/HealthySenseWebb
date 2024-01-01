@@ -60,8 +60,11 @@ export default function Login() {
                 document.cookie = `token=${res.data.token}`;
                 if (res.data.result.type === 'Doctor') {
                     navigate(`/${res.data.result._id}/doctor`);
-                } else {
+                } else if (res.data.result.type === 'Patient') {
                     navigate(`/${res.data.result._id}/patient`);
+                }
+                else if (res.data.result.type === 'Admin') {
+                    navigate(`/${res.data.result._id}/admin`);
                 }
             })
             .catch(err => {

@@ -7,11 +7,12 @@ const Diagnosis = require("../models/Diagnosis");
 const Payment = require("../models/Payment");
 const fs = require("fs");
 const path = require("path");
+const { default: mongoose } = require("mongoose");
 
 const patientController = {
   // view all consultations of a doctor, both pending and completed
   consultations: async (req, res) => {
-    const UserId = "6585484c797f80875a8a769c";
+    const UserId = req.user._id;
     try {
       const apptList = await Appointment.find({ patientId: UserId })
         .populate({ path: "doctorId", populate: { path: "user" } })
@@ -31,6 +32,7 @@ const patientController = {
         .populate({ path: "doctorId", populate: { path: "user" } })
         .populate({ path: "patientId", populate: { path: "user" } })
         .exec();
+      console.log(appt)
       return res.status(200).json(appt);
     } catch (error) {
       console.log(error.message);
@@ -96,6 +98,7 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+  
   getDoctors: async (req, res) => {
     try {
       const doctors = await Doctor.find().populate("user").exec();
@@ -106,10 +109,11 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+
   getDoctorById: async (req, res) => {
     const { id } = req.params;
     try {
-      const doctor = await Doctor.findById(id).populate("user").exec();
+      const doctor = await Doctor.findById(new mongoose.Types.ObjectId(id)).populate("user").exec();
       return res.status(200).json({ message: "Success", doctor });
     }
     catch (err) {
@@ -117,12 +121,16 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+
   bookAppointment: async (req, res) => {
-    const { patientId, doctorId, date, time, type, problem } = req.body;
+    const { doctorId, date, time, type, problem } = req.body;
+    const patientId= req.user._id;
     try {
       const newDate = new Date(date);
+      const patient= await Patient.findOne({user:patientId});
+      console.log(patient);
       const appointment = new Appointment({
-        patientId: patientId,
+        patientId: patient._id,
         doctorId: doctorId,
         date: newDate,
         time: time,
@@ -131,9 +139,8 @@ const patientController = {
         status: 'Booked',
         paymentStatus: 'Unpaid',
       });
-
       await appointment.save();
-      const doctor = await Doctor.findById(doctorId);
+      const doctor = await Doctor.findById({_id: new mongoose.Types.ObjectId(doctorId)});
       doctor.appointmentSlots.forEach((slot) => {
         console.log(date, slot.time, time);
         if (slot.date.getDate() === newDate.getDate()
@@ -150,6 +157,8 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+
+
   getFavorites: async (req, res) => {
     const patient = await Patient.findOne({ user: req.userId });
     if (!patient)
@@ -280,7 +289,8 @@ const patientController = {
   getPatientDiagnosis: async (req, res) => {
     const { id } = req.params;
     try {
-      const AllAppointments = await Appointment.find({ patientId: id }).exec();
+      const patient = await Patient.findOne({ user: id });
+      const AllAppointments = await Appointment.find({ patientId: patient._id }).exec();
       var AllDiagnosis = [];
       for (var i = 0; i < AllAppointments.length; i++) {
         const diagnosis = await Diagnosis.findOne({ appointmentId: AllAppointments[i]._id }).populate('appointmentId').exec();
@@ -317,9 +327,9 @@ const patientController = {
   },
 
   getCompactDoctor: async (req, res) => {
-    const { id } = req.params;
     try {
-      const doctor = await Doctor.findOne({ user: userId }).populate('user').exec();
+      const doctorId = req.params.id;
+      const doctor = await Doctor.findOne({ user: doctorId }).populate('user').exec();
       if (!doctor) {
         return res.status(404).json({ message: 'Doctor not found' });
       }
@@ -334,9 +344,10 @@ const patientController = {
         patients: patientCount.length,
       };
 
-      return res.status(200).json(doctor);
+      return res.status(200).json(temp);
     }
     catch (error) {
+      console.log(error);
       return res.status(500).json({ message: 'Something went wrong' });
     }
   },
@@ -351,9 +362,13 @@ const patientController = {
 
       const count = await Review.countDocuments({ doctorId });
 
+      const doctor = await Doctor.findOne({ user: doctorId });
+
+      const patient = await Patient.findOne({ user: req.user._id });
+
       const review = new Review({
-        doctorId,
-        patientId: req.user.userId,
+        doctorId: doctor._id,
+        patientId: patient._id,
         comment,
         experience,
         checkupRating,
@@ -363,11 +378,12 @@ const patientController = {
         date: new Date()
       });
 
+      console.log(req.user);
+      console.log(review);
+
       await review.save();
 
-      const doctor = await Doctor.findById(doctorId);
-
-      doctor.rating = (doctor.experience + experience) / (count + 1);
+      doctor.rating = (doctor.rating + experience) / (count + 1);
 
       await doctor.save();
 

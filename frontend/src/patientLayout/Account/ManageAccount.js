@@ -16,7 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const PatientManageAccount = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { patientId } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [Changes, setChanges] = useState(false);
     const [PatientData, setPatientData] = useImmer({});
@@ -51,7 +51,7 @@ const PatientManageAccount = () => {
         form_data.append('bloodGroup', PatientData.bloodGroup);
         form_data.append('country', PatientData.user.country);
         form_data.append('profile', ImageUrl);
-        if (await saveAccountChanges(id, form_data)) {
+        if (await saveAccountChanges(patientId, form_data)) {
             setHistory(PatientData);
             setChanges(false);
             setMsg("Changes Saved Successfully");
@@ -66,7 +66,7 @@ const PatientManageAccount = () => {
     }
 
     const fetchData = async () => {
-        const data = await getAccountDetails(id);
+        const data = await getAccountDetails(patientId);
         if (data !== null) {
             console.log("Data");
             console.log(data);
@@ -174,6 +174,7 @@ const PatientManageAccount = () => {
                                         draft.bloodGroup = History.bloodGroup;
                                         draft.history = History.history;
                                     })
+                                    setImageUrl(null);
                                     setChanges(false);
                                 }}
                             >

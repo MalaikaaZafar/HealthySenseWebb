@@ -13,30 +13,8 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box } from "@mui/material";
-import api from "../services/api";
+import addComplaint from "../services/addComplaint";
 
-
-const addComplaint = async (patId, complaint) => {
-    try {
-        const body = {
-            description: complaint,
-
-        };
-        const res = await api.post(`/doctor/complaint/${patId}`, body, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        console.log(res);
-        if (res.status === 200) {
-            return true;
-        }
-        return false;
-    } catch (err) {
-        console.log(err);
-        return false;
-    }
-}
 
 function Report({ id }) {
     const [open, setOpen] = useState(false);

@@ -6,8 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CreateDiagnosis from './CreateDiagnosis';
 import FinalReport from './FinalReport';
 import getAppointmentData from '../../services/doctor/diagnosis/getAppointmentData';
-import DoctorSidePanel from '../../components/doctorSidePanel';
-import { set } from 'date-fns';
 
 const DiagnosisContext = createContext();
 
@@ -16,9 +14,8 @@ export function useDiagnosis() {
 }
 
 const DiagnosisPage = () => {
-    //const { appointmentID } = useParams();
-    const navigate =useNavigate();
-    const appointmentID = "658bd21cd54145942c66e9be";
+    const { docId, appid } = useParams();
+    const navigate = useNavigate();
     const [CurrentPage, setCurrentPage] = useState(0);
     const [AppointmentData, setAppointmentData] = useImmer({});
     const [Diagnosis, setDiagnosis] = useImmer({
@@ -38,23 +35,25 @@ const DiagnosisPage = () => {
         setCurrentPage(page);
     }
     const FetchDetails = async () => {
-        const data =await getAppointmentData(appointmentID);
-        if(data===null)
-        {
+        const data = await getAppointmentData(appid);
+        if (data === null) {
             setOpen(true);
             setMsg("Something Went Wrong");
+            setTimeout(() => {
+                //navigate(`/${id}/doctor/reports/${appid}`);
+            }, 2000);
             return;
         }
-        else if(data){
-            if(data.message){
+        else if (data) {
+            if (data.message) {
                 setOpen(true);
                 setMsg("Diagnosis Already Exists");
                 setTimeout(() => {
-                    navigate(`/login`);
+                    navigate(`/${docId}/doctor/reports/${appid}`);
                 }, 2000);
                 return;
             }
-            else{
+            else {
                 setAppointmentData(data);
                 setIsLoading(false);
                 setCurrentPage(1);
@@ -71,10 +70,10 @@ const DiagnosisPage = () => {
             <LoadingAnimation isVisible={isLoading} />
             {
                 !isLoading &&
-                    <DiagnosisContext.Provider value={{ AppointmentData, Diagnosis, setDiagnosis, PageChange }}>
-                        {CurrentPage === 1 ? <CreateDiagnosis /> : null}
-                        {CurrentPage === 2 ? <FinalReport /> : null}
-                    </DiagnosisContext.Provider>
+                <DiagnosisContext.Provider value={{ AppointmentData, Diagnosis, setDiagnosis, PageChange }}>
+                    {CurrentPage === 1 ? <CreateDiagnosis /> : null}
+                    {CurrentPage === 2 ? <FinalReport /> : null}
+                </DiagnosisContext.Provider>
             }
             <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
                 <Alert onClose={() => setOpen(false)} severity="error" sx={{ width: '100%' }}>

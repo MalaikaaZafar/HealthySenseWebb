@@ -106,6 +106,7 @@ const doctorController = {
     },
 
     getSpecialties: async (req, res) => {
+        console.log("hello");
         const specialties = await Doctor.distinct("specialization");
         return res.status(200).json({ specialties });
     },
@@ -179,7 +180,7 @@ const doctorController = {
         }
     },
     getSlots: async (req, res) => {
-        const userId = "658aeab2a07cfdec21fc4968";
+        const userId = req.user._id;
         try {
             const appointment_slots = await Doctor.findById({ _id: userId }, { appointmentSlots: 1 });
             if (!appointment_slots)
@@ -193,9 +194,8 @@ const doctorController = {
     },
 
     deleteSlots: async (req, res) => {
-        const { date, time, type } = req.body;
-        console.log(date, time, type)
-        const userId = "658aeab2a07cfdec21fc4968";
+        const { date, time } = req.body;
+        const userId = req.user._id;
         try {
             const doctor = await Doctor.findOne({ _id: userId });
             if (!doctor)
@@ -484,12 +484,15 @@ const doctorController = {
     },
 
     getPatientHistory: async (req, res) => {
-        const { id } = req.params;
+        const { appid ,id } = req.params;
         try {
             const patient = await Patient.findById(id);
             if (!patient)
                 return res.status(404).json({ message: "Patient not found" });
-            return res.status(200).json({ message: "Success", History: patient.history });
+            const appointment = await Appointment.findById(appid).
+                    populate({ path: 'doctorId', populate: { path: 'user' } }).
+                    populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+            return res.status(200).json({ message: "Success", History: patient.history, app: appointment });
         }
         catch (error) {
             console.log(error.message);
