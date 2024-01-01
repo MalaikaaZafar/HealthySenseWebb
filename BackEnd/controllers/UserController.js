@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const User = require('../models/User');
-const Doctor = require('../models/Doctor');
 const Chat = require('../models/Message');
 
 

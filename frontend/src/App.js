@@ -6,7 +6,7 @@ import AppointmentSlots from './DoctorLayout/appointment_slots/AppointmentSlots.
 import RescheduleAppointment from './DoctorLayout/reschedule_appointment/RescheduleAppointment.js';
 import AppointmentDetail from './DoctorLayout/view_appointment/AppointmentDetail.js';
 
-import ViewAllPatients from './adminLayout/ViewAllPatients.js';
+import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 
 import { RescheduleAppointment as ReschedulePatient } from './patientlayout/reschedule_appointment/RescheduleAppointment.js';
 import { AppointmentList as AppointmentListPatient } from './patientlayout/view_appointment_list/ViewAppointmentList.js';
@@ -16,6 +16,7 @@ import { BookAppointment } from './patientlayout/book_appointment/BookAppointmen
 
 import { Messages } from './pages/messages/Messages.js';
 import FAQ from './pages/faqs/FAQ.js';
+import Meet from './pages/meet/Meet.js';
 import Search from './pages/user/Search.js';
 import Favorites from './pages/patient/Favorites.js';
 import AdminDoctor from './pages/admin/AdminDoctor.js';
@@ -41,6 +42,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<RegisterDoctor />} />
+          <Route path="/meet" element={<Meet />} />
 
           <Route path="/admin" element={<NavBar />}>
             <Route index element={<ViewAllPatients />} />

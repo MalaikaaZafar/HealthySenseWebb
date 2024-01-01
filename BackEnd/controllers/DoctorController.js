@@ -2,7 +2,6 @@ const Doctor = require('../models/Doctor');
 const User = require('../models/User');
 const Appointment = require('../models/Apointments');
 const Payment = require('../models/Payment');
-const { populate } = require('../models/Patient');
 const Chat = require('../models/Message');
 const Patient = require('../models/Patient');
 
@@ -10,45 +9,41 @@ const Patient = require('../models/Patient');
 const doctorController = {
 
     registerDoctor: async (req, res) => {
-        const { specialization, description, location, experience, workingHours, fee, services, appointmentSlots } = req.body;
+        const { specialization, description, location, experience, session, services, appointmentSlots, certificates } = req.body;
 
-        const files = req.files.certificates;
+        const files = req.files;
+
+        const existingUser = await User.findById(req.userId);
+
+        if (!existingUser || existingUser.type !== "Doctor")
+            return res.status(404).json({ message: "Wrong User" });
+
         const fileNames = [];
-        for (let i = 0; i < files.length; i++) {
-            const fileName = Date.now() + files[i].name;
-            fileNames.push(fileName);
 
-            files[i].mv(`../uploads/${fileName}`, async (err) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).send({ msg: "Error occured in uploading certificates" });
-                }
-            });
+        for (let key in files) {
+            if (key.startsWith('certificates')) {
+                const file = files[key];
+                const fileName = Date.now() + file.name;
+
+                const URL = './uploads/' + fileName;
+
+                await file.mv(URL);
+
+                fileNames.push(fileName);
+            }
         }
 
         try {
-            const existingUser = await User.findById(req.UserId);
+            
+            certificates.forEach((certificate, index) => {
+                certificate.file = fileNames[index];
+            });
 
-            if (!existingUser || existingUser.type !== "Doctor" || existingUser._id !== req.UserId)
-                return res.status(404).json({ message: "Wrong User" });
-
-            const certificates = [];
-
-            for (let i = 0; i < files.length; i++) {
-                const certificate = {
-                    name: files[i].name,
-                    description: req.body.certificates[i].description,
-                    issueDate: req.body.certificates[i].issueDate,
-                    expiryDate: req.body.certificates[i].expiryDate,
-                    file: fileNames[i]
-                };
-                certificates.push(certificate);
-            }
-
-            const result = await Doctor.create({ id: req.UserId, specialization, description, location, experience, workingHours, fee, certificates, services, appointmentSlots });
+            const result = await Doctor.create({ user: existingUser, specialization, description, location, experience, session, services, appointmentSlots, certificates });
 
             return res.status(201).json({ result });
         } catch (error) {
+            console.log(error);
             return res.status(500).json({ message: "Something went wrong" });
         }
     },
@@ -64,9 +59,9 @@ const doctorController = {
         const UserId = "658aeab2a07cfdec21fc4931";
         try {
             const apptList = await Appointment.find({ doctorId: UserId })
-            .populate({ path: 'doctorId', populate: { path: 'user' } }).
-            populate({path:'patientId', populate:{path: 'user'}}).exec();
-            return res.status(200).json({message: "Success", appt: apptList});
+                .populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+            return res.status(200).json({ message: "Success", appt: apptList });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -78,9 +73,9 @@ const doctorController = {
         const { id } = req.params;
         try {
             const apptList = await Appointment.findById({ _id: id })
-            .populate({ path: 'doctorId', populate: { path: 'user' } }).
-            populate({path:'patientId', populate:{path: 'user'}}).exec();
-            return res.status(200).json({message: "Success", appt: apptList});
+                .populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+            return res.status(200).json({ message: "Success", appt: apptList });
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
@@ -120,18 +115,18 @@ const doctorController = {
     },
 
     rescheduleAppt: async (req, res) => {
-        const { id, date, time,type, reason } = req.body;
+        const { id, date, time, type, reason } = req.body;
         try {
-            const appointment = await Appointment.findByIdAndUpdate({_id: id}, {date: date, time: time,type:type, updateReason: reason},{new:true})
-            .populate({ path: 'doctorId', populate: { path: 'user' } }).
-            populate({path:'patientId', populate:{path: 'user'}}).exec();
+            const appointment = await Appointment.findByIdAndUpdate({ _id: id }, { date: date, time: time, type: type, updateReason: reason }, { new: true })
+                .populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
             if (!appointment)
                 return res.status(404).json({ message: "Appointment not found" });
-            const slots=appointment.doctorId.appointmentSlots.filter(slot=>(slot.date!==appointment.date && slot.time!==appointment.time));
-            slots.push({date:appointment.date, time:appointment.time, availability:true});
-            const slots2=appointment.doctorId.appointmentSlots.filter(slot=>(slot.date!==date && slot.time!==time));
-            slots2.push({date, time, availability:false});
-            appointment.doctorId.appointmentSlots=slots;
+            const slots = appointment.doctorId.appointmentSlots.filter(slot => (slot.date !== appointment.date && slot.time !== appointment.time));
+            slots.push({ date: appointment.date, time: appointment.time, availability: true });
+            const slots2 = appointment.doctorId.appointmentSlots.filter(slot => (slot.date !== date && slot.time !== time));
+            slots2.push({ date, time, availability: false });
+            appointment.doctorId.appointmentSlots = slots;
             await appointment.save();
             return res.status(200).json({ message: 'Success', appointment: appointment });
         } catch (error) {
@@ -143,14 +138,14 @@ const doctorController = {
     cancelAppt: async (req, res) => {
         const { id, reason } = req.body;
         try {
-            const app=await Appointment.findByIdAndUpdate({_id: id}, { status: "Cancelled", updateReason: reason }, {new:true})
-            .populate({ path: 'doctorId', populate: { path: 'user' } }).
-            populate({path:'patientId', populate:{path: 'user'}}).exec();
+            const app = await Appointment.findByIdAndUpdate({ _id: id }, { status: "Cancelled", updateReason: reason }, { new: true })
+                .populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
             console.log(app);
-            const doc=app.doctorId;
-            const slots=doc.appointmentSlots.filter(slot=>(slot.date!==app.date && slot.time!==app.time));
-            slots.push({date:app.date, time:app.time, availability:true});
-            doc.appointmentSlots=slots;
+            const doc = app.doctorId;
+            const slots = doc.appointmentSlots.filter(slot => (slot.date !== app.date && slot.time !== app.time));
+            slots.push({ date: app.date, time: app.time, availability: true });
+            doc.appointmentSlots = slots;
             await app.save();
             return res.status(200).json({ message: 'Success', appointment: app });
         } catch (error) {
@@ -175,7 +170,7 @@ const doctorController = {
             return res.status(500).json({ message: "Something went wrong" });
         }
     },
-    getSlots:async(req, res)=>{
+    getSlots: async (req, res) => {
         const userId = "658aeab2a07cfdec21fc4968";
         try {
             const appointment_slots = await Doctor.findById({ _id: userId }, { appointmentSlots: 1 });
@@ -191,17 +186,17 @@ const doctorController = {
 
     deleteSlots: async (req, res) => {
         const { date, time, type } = req.body;
-        console.log(date,time,type)
+        console.log(date, time, type)
         const userId = "658aeab2a07cfdec21fc4968";
         try {
             const doctor = await Doctor.findOne({ _id: userId });
             if (!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
             const newSlots = doctor.appointmentSlots.filter(slot1 => slot1.date !== date)
-            const slots3=newSlots.filter(slot1 => slot1.time !== time)
+            const slots3 = newSlots.filter(slot1 => slot1.time !== time)
             // doctor.appointmentSlots = newSlots;
             await doctor.save();
-            return res.status(200).json({ message: "Success" , slots:slots3});
+            return res.status(200).json({ message: "Success", slots: slots3 });
         }
         catch (error) {
             console.log(error.message);
@@ -300,7 +295,7 @@ const doctorController = {
                 description: description,
                 doctorId: doctorId,
             };
-            console.log(complaint); 
+            console.log(complaint);
             const patient = await Patient.findById(patientId);
             if (!patient)
                 return res.status(404).json({ message: "Patient not found" });
