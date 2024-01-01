@@ -3,7 +3,7 @@ import { useDiagnosis } from "./DiagnosisPage";
 import { Avatar, Container, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, Snackbar, Alert } from "@mui/material";
 import HealthySenseLogo from '../../components/healthySenseLogo.png';
 import { styled, Box } from '@mui/system';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import saveDiagnosis from "../../services/doctor/diagnosis/saveDiagnosis";
 import "../../pages/report/Report.css";
 import "@fontsource/roboto";
@@ -36,11 +36,12 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 const FinalReport = () => {
+    const { id } = useParams();
     const { AppointmentData, Diagnosis, PageChange, setDiagnosis } = useDiagnosis();
     const [open, setOpen] = React.useState(false);
     const [msg, setMsg] = React.useState("");
     const [variant, setVariant] = React.useState("success");
-    const naviagte = useNavigate();
+    const navigate = useNavigate();
 
     const HandleDiagnosis = async () => {
         const index = AppointmentData.doctorId.session.findIndex((session) => session.type === AppointmentData.type);
@@ -55,7 +56,7 @@ const FinalReport = () => {
             setMsg("Diagnosis Saved Successfully");
             setVariant("success");
             setTimeout(() => {
-                //naviagte(`/doctor/report/${AppointmentData._id}`);
+                navigate(`/${id}/doctor/reports/${AppointmentData._id}`);
             }, 2000);
         }
         else {
