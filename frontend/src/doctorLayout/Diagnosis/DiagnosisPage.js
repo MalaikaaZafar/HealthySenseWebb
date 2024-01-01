@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import { useImmer } from 'use-immer';
-import LoadingAnimation from '../../components/loader/LoadingAnimation';
+import LoadingAnimation from '../../components/Loader/LoadingAnimation';
 import { Alert, Snackbar } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import CreateDiagnosis from './CreateDiagnosis';

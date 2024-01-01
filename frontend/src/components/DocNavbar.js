@@ -13,7 +13,7 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import InfoIcon from '@mui/icons-material/Info';
 import MailIcon from '@mui/icons-material/Mail';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { ListItemButton, ListItemIcon, ListItemText, List, Drawer, IconButton } from '@mui/material';
+import { ListItemButton, ListItemIcon, ListItemText, List, Drawer, IconButton, MenuItem } from '@mui/material';
 
 import Menu from '@mui/material/Menu';
 import AccountCircleOutlined from '@mui/icons-material/AccountCircleOutlined';

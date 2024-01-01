@@ -1,18 +1,15 @@
 import NavBar from './components/NavBar.js';
-import CustomTabPanel from './DoctorLayout/view_appointment_list/ViewAppointmentList.js'
-import CancelAppointment from './DoctorLayout/cancel_appointment/CancelAppointment.js';
-import AppointmentSlots from './DoctorLayout/appointment_slots/AppointmentSlots.js';
-import RescheduleAppointment from './DoctorLayout/reschedule_appointment/RescheduleAppointment.js';
-import AppointmentDetail from './DoctorLayout/view_appointment/AppointmentDetail.js';
-import { RescheduleAppointment as ReschedulePatient } from './patientlayout/reschedule_appointment/RescheduleAppointment.js';
-import { AppointmentList as AppointmentListPatient } from './patientlayout/view_appointment_list/ViewAppointmentList.js';
-import { CancelAppointment as CancelPatientAppt } from './patientlayout/cancel_appointment/CancelAppointment.js';
-import { AppointmentDetail as ApptDetail } from './patientlayout/view_appointment/AppointmentDetail.js';
-import { BookAppointment } from './patientlayout/book_appointment/BookAppointment.js';
-
-import { Messages } from './pages/messages/Messages.js';
+import CustomTabPanel from './doctorLayout/view_appointment_list/ViewAppointmentList.js'
+import CancelAppointment from './doctorLayout/cancel_appointment/CancelAppointment.js';
+import AppointmentSlots from './doctorLayout/appointment_slots/AppointmentSlots.js';
+import RescheduleAppointment from './doctorLayout/reschedule_appointment/RescheduleAppointment.js';
+import AppointmentDetail from './doctorLayout/view_appointment/AppointmentDetail.js';
+import { RescheduleAppointment as ReschedulePatient } from './patientLayout/reschedule_appointment/RescheduleAppointment.js';
+import { AppointmentList as AppointmentListPatient } from './patientLayout/view_appointment_list/ViewAppointmentList.js';
+import { CancelAppointment as CancelPatientAppt } from './patientLayout/cancel_appointment/CancelAppointment.js';
+import { AppointmentDetail as ApptDetail } from './patientLayout/view_appointment/AppointmentDetail.js';
+import { BookAppointment } from './patientLayout/book_appointment/BookAppointment.js';
 import Meet from './pages/meet/Meet.js';
-import { Routes, Route } from 'react-router-dom';
 import Search from './pages/user/Search.js';
 import Favorites from './pages/patient/Favorites.js';
 import AdminDoctor from './pages/admin/AdminDoctor.js';
@@ -24,33 +21,23 @@ import RegisterDoctor from './pages/auth/Register.js';
 import DoctorDetail from './pages/user/DoctorDetail.js';
 import PatientDetail from './pages/doctor/PatientDetail.js';
 import DoctorReview from './pages/patient/DoctorReview.js';
-
-
 import { Routes, Route } from 'react-router-dom';
-import PatientManageAccount from './patientlayout/account/ManageAccount.js';
-import DoctorManageAccount from './doctorlayout/account/ManageAccount.js';
-import DiagnosisPage from './doctorlayout/diagnosis/DiagnosisPage.js';
-import Payment from './patientlayout/payment/Payment.js';
-
+import PatientManageAccount from './patientLayout/Account/ManageAccount.js';
+import DoctorManageAccount from './doctorLayout/Account/ManageAccount.js';
+import DiagnosisPage from './doctorLayout/Diagnosis/DiagnosisPage.js';
 import './App.css';
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
-import AllReports from './patientlayout/reports/AllReports.js';
-import ViewReportPatient from './pages/report/ViewReportPatient.js';
 import ViewReportDoctor from './pages/report/ViewReportDoctor.js';
-import PatientHistory from './pages/doctor/PatientHisttory.js';
-import ViewAllPatients from './adminlayout/ViewAllPatients.js';
 import DocNavbar from './components/DocNavbar.js';
 import AdminNavbar from './components/AdminNavbar.js';
 import NotFoundPage from './pages/NotFound.jsx';
-
 function App() {
 
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
         <Routes>
-          <Route path="*" element={<DiagnosisPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<RegisterDoctor />} />

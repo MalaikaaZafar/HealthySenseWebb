@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from './PaymentForm';
-import LoadingAnimation from '../../components/loader/LoadingAnimation';
+import LoadingAnimation from '../../components/Loader/LoadingAnimation';
 import GetClientSecret from '../../services/patient/payment/getClientSecret';
 import { Alert, Avatar, Snackbar, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -68,7 +68,7 @@ const Payment = () => {
             <LoadingAnimation isVisible={isLoading} />
             {
                 !isLoading && clientSecret &&
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor:'lightgray' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'lightgray' }}>
                     <Container
                         maxWidth='md'
                         sx={{

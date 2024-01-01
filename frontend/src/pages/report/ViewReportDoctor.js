@@ -3,7 +3,7 @@ import { styled } from "@mui/system";
 import { useNavigate, useParams } from "react-router-dom";
 import "@fontsource/roboto";
 import "./Report.css";
-import LoadingAnimation from "../../components/loader/LoadingAnimation";
+import LoadingAnimation from "../../components/Loader/LoadingAnimation";
 import { Box, Snackbar, Alert, Button, Table, TableBody, TableCell, TableHead, TableRow, Container, Typography, Avatar } from "@mui/material";
 import HealthySenseLogo from "../../components/healthySenseLogo.png";
 import GetSpecificReport from "../../services/doctor/diagnosis/getSpecificReport";
@@ -618,9 +618,9 @@ const ViewReportDoctor = () => {
                 >
                     <Container
                         sx={{
-                            display:'grid',
-                            placeItems:'center',
-                            height:'100%',
+                            display: 'grid',
+                            placeItems: 'center',
+                            height: '100%',
                             border: '1px solid rgba(224, 224, 224, 1)',
                             borderRadius: '10px',
                             padding: '20px',

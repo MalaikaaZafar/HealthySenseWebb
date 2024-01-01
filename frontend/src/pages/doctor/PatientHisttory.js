@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import LoadingAnimation from "../../components/loader/LoadingAnimation";
+import LoadingAnimation from "../../components/Loader/LoadingAnimation";
 import { Box } from "@mui/system";
 import {  Container, Table, TableBody, TableCell, TableHead, TableRow, Typography, Snackbar, Alert } from "@mui/material";
 import GetHistory from "../../services/doctor/diagnosis/getHistory";

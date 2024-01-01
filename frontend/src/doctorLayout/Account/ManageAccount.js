@@ -10,7 +10,7 @@ import EditCertificate from "./modals/certificate/EditCertificate";
 import AddService from "./modals/services/AddService";
 import EditService from "./modals/services/EditService";
 import DoctorServices from "./tables/ServiceTable";
-import LoadingAnimation from "../../components/loader/LoadingAnimation";
+import LoadingAnimation from "../../components/Loader/LoadingAnimation";
 import getAccountDetails from "../../services/doctor/account/getAccountDetails";
 import { useNavigate, useParams } from "react-router-dom";
 import saveAccountChanges from "../../services/doctor/account/saveAccountChanges";
