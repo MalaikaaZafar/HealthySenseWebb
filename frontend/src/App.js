@@ -15,7 +15,6 @@ import { AppointmentDetail as ApptDetail } from './patientlayout/view_appointmen
 import { BookAppointment } from './patientlayout/book_appointment/BookAppointment.js';
 
 import { Messages } from './pages/messages/Messages.js';
-import FAQ from './pages/faqs/FAQ.js';
 import Meet from './pages/meet/Meet.js';
 import Search from './pages/user/Search.js';
 import Favorites from './pages/patient/Favorites.js';
@@ -32,7 +31,6 @@ import DoctorReview from './pages/patient/DoctorReview.js';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
 import theme from './Theme.js';
-import AppointmentList from './DoctorLayout/view_appointment_list/ViewAppointmentList.js';
 
 function App() {
   return (
