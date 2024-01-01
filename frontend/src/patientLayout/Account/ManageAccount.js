@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useImmer } from "use-immer";
 import AddHistory from "./modals/AddHistory";
 import EditHistory from "./modals/EditHistory";
-import LoadingAnimation from "../../components/loader/LoadingAnimation";
+import LoadingAnimation from "../../components/Loader/LoadingAnimation";
 import PatientHistory from "./table/HistoryTable";
 import PatientBloodGroup from "./dropdown/BloodGroup";
 import AccountDetails from "../../components/user/Account/AccountDetails";

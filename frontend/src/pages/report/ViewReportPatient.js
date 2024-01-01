@@ -4,10 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import "@fontsource/roboto";
 import GetReport from "../../services/user/getReport";
 import "./Report.css";
-import LoadingAnimation from "../../components/loader/LoadingAnimation";
 import { Box, Snackbar, Alert, Button, Table, TableBody, TableCell, TableHead, TableRow, Container, Typography, Avatar } from "@mui/material";
 import HealthySenseLogo from "../../components/healthySenseLogo.png";
 import DownloadReport from "../../components/Report/DownloadReport";
+import LoadingAnimation from "../../components/Loader/LoadingAnimation";
+
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
     display: 'flex',

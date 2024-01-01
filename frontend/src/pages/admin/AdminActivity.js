@@ -31,8 +31,8 @@ const AdminActivity = () => {
     return (
         <Box sx={{ width: '100%', height: 500, p: 2 }}>
             <Paper>
-                    <h1 style={{ textAlign: 'center',marginTop:15,padding:20 }}>Total Users</h1>
-                <ResponsiveContainer width="100%" height={500}>
+                <h1 style={{ textAlign: 'center', marginTop: 15, padding: 20 }}>Total Users</h1>
+                <ResponsiveContainer width="100%" height={450}>
                     <PieChart>
                         <Pie
                             dataKey="count"
@@ -41,10 +41,10 @@ const AdminActivity = () => {
                             data={stats}
                             cx="50%"
                             cy="50%"
-                            outerRadius={200}
+                            outerRadius={150}
                             fill="#8884d8"
                             label
-                            innerRadius={130}
+                            innerRadius={110}
                         >
                             {stats.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

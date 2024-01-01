@@ -9,7 +9,7 @@ import './Search.css';
 import styles from '../../styles/searchStyles';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import SearchErrorMessage from '../../components/SearchErrorMessage';
-import ViewAlldoctors from '../../adminlayout/ViewAllDoctors';
+import ViewAlldoctors from '../../adminLayout/ViewAllDoctors';
 import searchDoctors from '../../services/admin/searchDoctor';
 
 
@@ -139,9 +139,9 @@ const AdminDoctor = () => {
 
             >
                 <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
-                    {doctors?.length > 0 && doctors.map((doctor) => {
+                    {doctors?.length > 0 && doctors.map((doctor, index) => {
                         return (
-                            <DoctorCard user={doctor} />
+                            <DoctorCard user={doctor} key={index} />
                         );
                     })}
                 </Box>

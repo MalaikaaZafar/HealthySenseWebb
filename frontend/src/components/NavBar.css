@@ -2,11 +2,14 @@
   display: flex;
   flex-direction: row;
   background: linear-gradient(180deg, #0045F3 0%, #454545 126.02%);
+  justify-content: space-between;
+  align-items: center;
 }
 
 .top div {
   width: 50%;
 }
+
 
 .pfp {
   width: 100%;

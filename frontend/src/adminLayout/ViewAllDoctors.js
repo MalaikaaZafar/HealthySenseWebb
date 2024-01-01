@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import "./ViewAllPatients.css";
 import DoctorCard from "../components/DoctorCard";
 import axios from "axios";
-import { Box } from "@mui/system";
+import { Box } from "@mui/material";
 
 function ViewAlldoctors() {
   const [doctorList, setDoctorList] = useState([]);
@@ -28,9 +28,9 @@ function ViewAlldoctors() {
   return (
 
     <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
-      {doctorList?.length > 0 && doctorList.map((doctor) => {
+      {doctorList?.length > 0 && doctorList.map((doctor, index) => {
         return (
-          <DoctorCard user={doctor} />
+          <DoctorCard user={doctor} key={index} />
         );
       })}
     </Box>

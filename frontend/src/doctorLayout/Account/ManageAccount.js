@@ -10,15 +10,15 @@ import EditCertificate from "./modals/certificate/EditCertificate";
 import AddService from "./modals/services/AddService";
 import EditService from "./modals/services/EditService";
 import DoctorServices from "./tables/ServiceTable";
-import LoadingAnimation from "../../components/loader/LoadingAnimation";
+import LoadingAnimation from "../../components/Loader/LoadingAnimation";
 import getAccountDetails from "../../services/doctor/account/getAccountDetails";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import saveAccountChanges from "../../services/doctor/account/saveAccountChanges";
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 const DoctorManageAccount = () => {
-    const ID = "658aeab2a07cfdec21fc4931";
+    const ID = useParams();
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState(true);
