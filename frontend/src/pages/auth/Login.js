@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, TextField, Link, Box, Container, Typography, Avatar, CssBaseline, InputAdornment } from '@mui/material';
+import { Button, TextField, Link, Box, Container, Typography, Avatar, CssBaseline, InputAdornment, IconButton } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
@@ -7,6 +7,8 @@ import { styled } from '@mui/system';
 import styles from './Login.module.css';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -39,6 +41,8 @@ export default function Login() {
 
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [showPassword, setShowPassword] = React.useState(false);
+    const handleShowPassword = () => setShowPassword(!showPassword);
 
     const navigate = useNavigate();
 
@@ -110,7 +114,7 @@ export default function Login() {
                             fullWidth
                             name="password"
                             label="Password"
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -119,7 +123,17 @@ export default function Login() {
                                     <InputAdornment position="start">
                                         <VpnKeyOutlinedIcon />
                                     </InputAdornment>
-                                )
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleShowPassword}
+                                        >
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
                             }}
                         />
                         <StyledButton type="submit" fullWidth variant="contained" color="primary" onClick={handleSubmit}>

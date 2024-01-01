@@ -218,17 +218,18 @@ const doctorController = {
         const { query, sort, sortOrder, specialty, minRating, skip } = req.query;
 
         try {
-            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor').where('approvedStatus').equals(true);
+            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor');
             const users = await q.exec();
             const userIds = users.map(user => user._id);
             let filter = { user: { $in: userIds } };
             if (specialty) {
                 filter.specialization = specialty;
             }
-            // if (minRating) {
-            //     filter.rating = { $gte: minRating };
-            // }
-            let doctors = await Doctor.find(filter).populate('user');
+            if (minRating) {
+                console.log(minRating)
+                filter.rating = { $gte: Number(minRating) , $exists: true};
+            }
+            let doctors = await Doctor.find(filter).where('approvedStatus').equals(true).populate('user');
             if (doctors.length !== 0) {
                 if (sort == 'A-Z') {
                     doctors = doctors.sort((a, b) => {
@@ -278,11 +279,13 @@ const doctorController = {
 
 
                 }
-                // else if(sort==='Rating'){
-                //     doctors = doctors.sort((a, b) => {
-                //         return direction === 'asc' ? a.rating - b.rating : b.rating - a.rating;
-                //     });
-                // }
+                else if (sort === 'Rating') {
+                    doctors = doctors.sort((a, b) => {
+                        const aRating = a?.rating === undefined ? 0 : a?.rating;
+                        const bRating = b?.rating === undefined ? 0 : b?.rating;
+                        return sortOrder === 'asc' ? aRating - bRating : bRating - aRating;
+                    });
+                }
             }
             doctors = doctors.slice(skip, skip + 6);
             return res.status(200).json(doctors);

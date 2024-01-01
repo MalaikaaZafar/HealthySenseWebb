@@ -38,63 +38,70 @@ import PatientHistory from './pages/doctor/PatientHisttory.js';
 import ViewReportPatient from './pages/report/ViewReportPatient.js';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
 import FAQ from './pages/faqs/FAQ.js';
+import Footer from './components/Footer.jsx';
+import AboutUs from './pages/about/AboutUs.jsx';
+import { Box } from '@mui/system';
 
 function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/:id/register" element={<RegisterDoctor />} />
-          <Route path="/:id/meet" element={<Meet />} />
-          <Route path="/admin" element={<AdminNavbar />}>
-            <Route path='' index element={<AdminActivity />} />
-            <Route path="doctors" element={<AdminDoctor />} />
-            <Route path='patients' element={<AdminPatient />} />
-          </Route>
-          <Route path="/:id/doctor" element={<ProtectedRoute />}>
-            <Route element={<DocNavbar />}>
-
-              <Route index element={<CustomTabPanel />} />
-              <Route path="appointments/:id" element={<AppointmentDetail />} />
-              <Route path="appointments" element={<CustomTabPanel />} />
-              <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
-              <Route path="appointmentSlots" element={<AppointmentSlots />} />
-              <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
-              <Route path='patient-detail' element={<PatientDetail />} />
-              <Route path='patient-history/:id' element={<PatientHistory />} />
-              <Route path='account/:id' element={<DoctorManageAccount />} />
-              <Route path='diagnosis/:id' element={<DiagnosisPage />} />
-              <Route path='report/:id' element={<ViewReportDoctor />} />
+      <Box display="flex" flexDirection="column" minHeight="100vh">
+        <Box flexGrow={1}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/:id/register" element={<RegisterDoctor />} />
+            <Route path="/:id/meet" element={<Meet />} />
+            <Route path="/admin" element={<AdminNavbar />}>
+              <Route path='' index element={<AdminActivity />} />
+              <Route path="doctors" element={<AdminDoctor />} />
+              <Route path='patients' element={<AdminPatient />} />
             </Route>
-          </Route>
+            <Route path="/:id/doctor" element={<ProtectedRoute />}>
+              <Route element={<DocNavbar />}>
 
-          <Route path='/:id/patient' element={<ProtectedRoute />}>
-            <Route element={<NavBar />}>
-
-              <Route index element={<Search />} />
-              <Route path='appointments' element={<AppointmentListPatient />} />
-              <Route path='appointments/:id' element={<ApptDetail />} />
-              <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
-              <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
-              <Route path='book-appointment/:docId' element={<BookAppointment />} />
-              <Route path='reports/:id' element={<AllReports />} />
-              <Route path='payment/:id' element={<Payment />} />
-              <Route path='your-report/:id' element={<ViewReportPatient />} />
-              <Route path='review' element={<DoctorReview />} />
-              <Route path="account/:id" element={<PatientManageAccount />} />
-              <Route path='favorites' element={<Favorites />} />
-              <Route path='doctor-detail' element={<DoctorDetail />} />
-              <Route path='faq' element={<FAQ />} />
+                <Route index element={<CustomTabPanel />} />
+                <Route path="appointments/:id" element={<AppointmentDetail />} />
+                <Route path="appointments" element={<CustomTabPanel />} />
+                <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
+                <Route path="appointmentSlots" element={<AppointmentSlots />} />
+                <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
+                <Route path='patient-detail' element={<PatientDetail />} />
+                <Route path='patient-history/:id' element={<PatientHistory />} />
+                <Route path='account/:id' element={<DoctorManageAccount />} />
+                <Route path='diagnosis/:id' element={<DiagnosisPage />} />
+                <Route path='report/:id' element={<ViewReportDoctor />} />
+              </Route>
             </Route>
-          </Route>
-          <Route path="/" element={<NavBar />}>
-          </Route>
-          <Route path='*' element={<NotFoundPage />} />
-        </Routes>
-      </div >
+
+            <Route path='/:id/patient' element={<ProtectedRoute />}>
+              <Route element={<NavBar />}>
+
+                <Route index element={<Search />} />
+                <Route path='appointments' element={<AppointmentListPatient />} />
+                <Route path='appointments/:id' element={<ApptDetail />} />
+                <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
+                <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
+                <Route path='book-appointment/:docId' element={<BookAppointment />} />
+                <Route path='reports/:id' element={<AllReports />} />
+                <Route path='payment/:id' element={<Payment />} />
+                <Route path='your-report/:id' element={<ViewReportPatient />} />
+                <Route path='review' element={<DoctorReview />} />
+                <Route path="account/:id" element={<PatientManageAccount />} />
+                <Route path='favorites' element={<Favorites />} />
+                <Route path='doctor-detail' element={<DoctorDetail />} />
+                <Route path='faq' element={<FAQ />} />
+                <Route path='about' element={<AboutUs />} />
+              </Route>
+            </Route>
+            <Route path="/" element={<NavBar />}>
+            </Route>
+            <Route path='*' element={<NotFoundPage />} />
+          </Routes>
+        </Box>
+        <Footer />
+      </Box >
     </ThemeProvider>
   );
 }
