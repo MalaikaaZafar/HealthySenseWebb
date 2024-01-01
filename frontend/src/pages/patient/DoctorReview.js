@@ -58,12 +58,22 @@ function DoctorReviewForm() {
   };
 
   const doctor = {
-    name: "Dr. Amna Irum",
-    specialization: "Dermatologist",
-    rating: 3,
-    experience: 5,
-    patients: 100,
-  };
+
+  }
+
+  useEffect(() => {
+
+    axios.post('http://localhost:3000/doctor-compact/658c46d48180f6a9f753706c', { withCredentials: true })
+            .then(res => {
+                console.log(res);
+                doctor = res.data;
+            })
+            .catch(err => {
+                console.log(err);
+                alert(err.response.data.message);
+            });
+
+  }, []);
 
   return (
     <div>
