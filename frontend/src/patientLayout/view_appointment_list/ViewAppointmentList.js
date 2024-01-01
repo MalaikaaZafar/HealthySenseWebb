@@ -30,7 +30,7 @@ export const AppointmentList = () => {
   }, []);
 
   return (
-    <Container maxWidth="md" width="100%">
+    <Container width="100%">
       <Box display="flex" justifyContent="center" width="100%">
         <Tabs
           value={value}
@@ -48,9 +48,7 @@ export const AppointmentList = () => {
               {appointmentList &&
           appointmentList.map((app, index) =>
             app.status === value ? (
-              // <Box key={index} width="50%" >
                 <ApptCardForList type="doctor" appt={app} />
-              // </Box>
             ) : null
           )}
       </Box>

@@ -21,10 +21,10 @@ function DoctorCard({ user, buttons, onFavChanged }) {
     const [clinicFee, setClinicFee] = React.useState(0);
     const [onlineFee, setOnlineFee] = React.useState(0);
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { patientId } = useParams();
     const bookAppt = (e) => {
         e.stopPropagation();
-        navigate(`/${id}/patient/book-appointment/${user._id}`);
+        navigate(`/${patientId}/patient/book-appointment/${user._id}`);
     }
     useEffect(() => {
         user.session.map((session) => {

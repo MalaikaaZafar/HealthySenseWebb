@@ -12,7 +12,7 @@ import useUserStore from '../stores/userStore';
 import { Box } from '@mui/system';
 import addFavorite from '../services/addFavorite';
 import removeFavorite from '../services/removeFavorite';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function DoctorCard2({ user, buttons, onFavChanged }) {
     const [favourite, setFavourite] = React.useState(false);
@@ -20,10 +20,11 @@ function DoctorCard2({ user, buttons, onFavChanged }) {
     const [actionCompleted, setActionCompleted] = React.useState(true);
     const [clinicFee, setClinicFee] = React.useState(0);
     const [onlineFee, setOnlineFee] = React.useState(0);
+    const { patientId} = useParams();
     const navigate = useNavigate();
     const bookAppt = (e) => {
         e.stopPropagation();
-        navigate(`/patient/book-appointment/${user._id}`);
+        navigate(`/${patientId}/patient/book-appointment/${user._id}`);
     }
     useEffect(() => {
         user.session.map((session) => {

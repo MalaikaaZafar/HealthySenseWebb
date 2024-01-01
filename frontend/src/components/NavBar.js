@@ -27,7 +27,7 @@ import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 
 function NavBar() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { patientId } = useParams();
   const [selectedButton, setSelectedButton] = useState('/');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -50,7 +50,7 @@ function NavBar() {
 
 
   const handleButtonClick = (path) => {
-    navigate(`/${id}/patient${path}`);
+    navigate(`/${patientId}/patient${path}`);
     setSelectedButton(path);
   };
 

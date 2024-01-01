@@ -18,7 +18,7 @@ import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 const DoctorManageAccount = () => {
-    const { id } = useParams();
+    const { docId } = useParams();
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState(true);
@@ -91,7 +91,7 @@ const DoctorManageAccount = () => {
         for (let i = 0; i < Files.length; i++) {
             form_data.append(`${Files[i].name}`, Files[i].file);
         }
-        if (await saveAccountChanges(id, form_data)) {
+        if (await saveAccountChanges(docId, form_data)) {
             setHistory(DoctorData);
             setChanges(false);
             setFiles([]);
@@ -107,7 +107,7 @@ const DoctorManageAccount = () => {
     }
 
     const fetchData = async () => {
-        const data = await getAccountDetails(id);
+        const data = await getAccountDetails(docId);
         if (data) {
             setDoctorData(data);
             setHistory(data);

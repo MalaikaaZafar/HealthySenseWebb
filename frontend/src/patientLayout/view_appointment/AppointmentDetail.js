@@ -17,9 +17,7 @@ import api from '../../services/api';
 export const AppointmentDetail = () => {
   const [appointment, setAppointment] = useState(null);
   const { id } = useParams();
-
-  console.log(appointment);
-  const date = appointment?.date;
+  
   const fetchAppointment = async () => {
     try {
       const formattedStr = `/patient/consultations/${id}`;

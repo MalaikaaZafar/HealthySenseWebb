@@ -19,18 +19,23 @@ import { style } from '@mui/system';
 const DetailComponent = ({appt, user}) => {
   const getAge = () => {
     const date=new Date(appt?.patientId?.dob);
-    console.log(date);
     const ageDifMs = Date.now() - date.getTime();
     const ageDate = new Date(ageDifMs); 
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
   const  navigate  = useNavigate();
   const reschedAppt = () => {
-    navigate(`/patient/appointments/reschedule/${appt._id}`);
+    if (user && user==="patient")
+      navigate(`/${appt?.patientId?.user?._id}/patient/appointments/reschedule/${appt._id}`);
+    else 
+      navigate(`/${appt?.doctorId?.user?._id}/doctor/appointments/reschedule/${appt._id}`);
   };
 
   const cancelAppt = () => {
-    navigate(`/patient/appointments/cancel/${appt._id}`);
+    if (user && user==="patient")
+      navigate(`/${appt?.patientId?.user?._id}/patient/appointments/cancel/${appt._id}`);
+    else
+      navigate(`/${appt?.doctorId?.user?._id}/doctor/appointments/cancel/${appt._id}`);
   };
   console.log(appt?.status);
   console.log(appt?.status==="Cancelled"?'red': appt?.status==="Booked"?"#2854C3": appt?.status==="Completed" ? "green":null)
