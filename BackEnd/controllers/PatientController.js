@@ -14,7 +14,8 @@ const patientController = {
   consultations: async (req, res) => {
     const UserId = req.user._id;
     try {
-      const apptList = await Appointment.find({ patientId: UserId })
+      const patient = await Patient.findOne({ user: UserId });
+      const apptList = await Appointment.find({ patientId: patient._id })
         .populate({ path: "doctorId", populate: { path: "user" } })
         .populate({ path: "patientId", populate: { path: "user" } })
         .exec();
@@ -27,7 +28,7 @@ const patientController = {
 
   getConsultationById: async (req, res) => {
     const { id } = req.params;
-    try {
+    try { 
       const appt = await Appointment.findById(id)
         .populate({ path: "doctorId", populate: { path: "user" } })
         .populate({ path: "patientId", populate: { path: "user" } })

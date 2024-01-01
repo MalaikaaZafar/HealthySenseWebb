@@ -52,17 +52,19 @@ const doctorController = {
 
     // view all consultations of a doctor, both pending and completed
     consultations: async (req, res) => {
-        const UserId = "658aeab2a07cfdec21fc4931";
+        const UserId = req.user._id;
         try {
-            const apptList = await Appointment.find({ doctorId: UserId })
-                .populate({ path: 'doctorId', populate: { path: 'user' } }).
-                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
-            return res.status(200).json({ message: "Success", appt: apptList });
-        } catch (error) {
-            console.log(error.message);
-            return res.status(500).json({ message: "Something went wrong" });
-        }
-    },
+          const doc = await Doctor.findOne({ user: UserId });
+          const apptList = await Appointment.find({ doctorId: doc._id })
+            .populate({ path: "doctorId", populate: { path: "user" } })
+            .populate({ path: "patientId", populate: { path: "user" } })
+            .exec();
+          return res.status(200).json(apptList);
+        } catch (error) { 
+          console.log(error.message);
+          return res.status(500).json({ message: "Something went wrong" });
+        } 
+      },
 
     // view details of a specific appointment 
     getConsultationById: async (req, res) => {

@@ -11,7 +11,6 @@ const fetchAppointments = async () => {
   .then((response) => response.data);
   return appoinmentList;
 };
-
 export const AppointmentList = () => {
   const [value, setValue] = useState("Booked");
   const [appointmentList, setAppointmentList] = useState([]);
@@ -30,7 +29,7 @@ export const AppointmentList = () => {
   }, []);
 
   return (
-    <Container width="100%">
+    <Box width="100%">
       <Box display="flex" justifyContent="center" width="100%">
         <Tabs
           value={value}
@@ -52,6 +51,6 @@ export const AppointmentList = () => {
             ) : null
           )}
       </Box>
-    </Container>
+    </Box>
   );
 };
