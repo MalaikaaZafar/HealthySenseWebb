@@ -14,4 +14,5 @@ router.put("/consultations/cancel", patientController.cancelAppt);
 router.get("/doctors", patientController.getDoctors);
 router.get("/doctors/:id", patientController.getDoctorById);
 router.post("/consultations/bookAppt", patientController.bookAppointment);
+router.post("/review", patientController.reviewDoctor);
 module.exports = router;
