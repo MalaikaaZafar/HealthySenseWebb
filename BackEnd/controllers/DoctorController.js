@@ -30,7 +30,7 @@ const doctorController = {
         }
 
         try {
-            
+
             certificates.forEach((certificate, index) => {
                 certificate.file = fileNames[index];
             });
@@ -151,16 +151,15 @@ const doctorController = {
     },
 
     completeAppt: async (req, res) => {
-      try{
-        const {id} = req.body;
-        await Appointment.findByIdAndUpdate({_id: id}, { status: "Completed" }, {new:true})
-        return res.status(200).json({ message: 'Success'});
-      }  
-      catch(err)
-      {
-        console.log(err.message);
-        return res.status(500).json({ message: "Something went wrong" });
-      }
+        try {
+            const { id } = req.body;
+            await Appointment.findByIdAndUpdate({ _id: id }, { status: "Completed" }, { new: true })
+            return res.status(200).json({ message: 'Success' });
+        }
+        catch (err) {
+            console.log(err.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
     },
     addSlots: async (req, res) => {
         const { slots } = req.body;
@@ -202,7 +201,7 @@ const doctorController = {
             if (!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
             const newSlots = doctor.appointmentSlots.filter(slot1 => slot1.date !== date)
-            const slots3=newSlots.filter(slot1 => slot1.time !== time)
+            const slots3 = newSlots.filter(slot1 => slot1.time !== time)
             doctor.appointmentSlots = slots3;
             await doctor.save();
             return res.status(200).json({ message: "Success", slots: slots3 });
@@ -344,8 +343,12 @@ const doctorController = {
             AppointmentDetail.patientId.user.profilePicture = null;
 
             AppointmentDetail.doctorId.certificates = undefined;
+            const diagnosis = await Diagnosis.findOne({ appointmentId: id });
+            if (diagnosis != null) {
+                return res.status(200).json({ AppointmentDetail: AppointmentDetail, message: "Exists" });
+            }
 
-            return res.status(200).json({ AppointmentDetail });
+            return res.status(200).json({ AppointmentDetail: AppointmentDetail });
         } catch (error) {
             console.log(error.message);
             return res.status(502).json({ message: "Something went wrong" });
@@ -384,7 +387,7 @@ const doctorController = {
                     if (userdata.profilePicture && fs.existsSync(`./uploads/${userdata.profilePicture}`)) {
                         fs.unlinkSync(`./uploads/${userdata.profilePicture}`);
                     }
-                    const fileName = userdata._id+ path.extname(file.name);
+                    const fileName = userdata._id + path.extname(file.name);
                     file.mv(`./uploads/${fileName}`, async (err) => {
                         if (err) {
                             console.log(err);
