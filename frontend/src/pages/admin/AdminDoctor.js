@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, TextField, IconButton } from '@mui/material';
+import { Box, Button, TextField, IconButton, Link } from '@mui/material';
 import TextRotationNoneIcon from '@mui/icons-material/TextRotationNone';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
@@ -141,7 +141,7 @@ const AdminDoctor = () => {
                 <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
                     {doctors?.length > 0 && doctors.map((doctor, index) => {
                         return (
-                            <DoctorCard user={doctor} key={index} />
+                            <DoctorCard user={doctor} key={index} role='admin' />
                         );
                     })}
                 </Box>

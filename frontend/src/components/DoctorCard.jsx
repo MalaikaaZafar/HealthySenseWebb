@@ -14,7 +14,7 @@ import addFavorite from '../services/addFavorite';
 import removeFavorite from '../services/removeFavorite';
 import { useNavigate, useParams } from 'react-router-dom';
 
-function DoctorCard({ user, buttons, onFavChanged }) {
+function DoctorCard({ user, buttons, onFavChanged, role }) {
     const [favourite, setFavourite] = React.useState(false);
     const { user: loggedUser, updateUser } = useUserStore();
     const [actionCompleted, setActionCompleted] = React.useState(true);
@@ -38,6 +38,9 @@ function DoctorCard({ user, buttons, onFavChanged }) {
     }, [user]);
     const goToUserPage = () => {
         //Navigate to user page
+        if (role == 'admin') {
+            navigate(`../doctor-detail/${user.user._id}`);
+        }
         alert("Navigate to user page");
     }
 

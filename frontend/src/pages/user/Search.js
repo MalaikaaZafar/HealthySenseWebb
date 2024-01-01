@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Button, TextField, IconButton } from '@mui/material';
+import { Box, Button, TextField, IconButton, CircularProgress } from '@mui/material';
 import TextRotationNoneIcon from '@mui/icons-material/TextRotationNone';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
@@ -8,10 +8,8 @@ import searchDoctors from '../../services/searchDoctors';
 import FilterPopover from '../../components/FilterPopover';
 import './Search.css';
 import styles from '../../styles/searchStyles';
-import useUserStore from '../../stores/userStore';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import SearchErrorMessage from '../../components/SearchErrorMessage';
-
 
 const Search = () => {
 
@@ -27,7 +25,6 @@ const Search = () => {
     const [error, setError] = React.useState(false);
     const initialRender = useRef(true);
 
-    let direction = 'asc';
     // ...
 
     const fetchMoreData = async () => {
@@ -75,7 +72,6 @@ const Search = () => {
     const toggleSortDirection = () => {
         setSortDirection(prevDirection => {
             const newDirection = prevDirection === 'asc' ? 'desc' : 'asc';
-            direction = newDirection;
             return newDirection;
         });
     };
@@ -85,7 +81,6 @@ const Search = () => {
         //     alert('Please enter a search query');
         // }
         setActionCompleted(false);
-        console.log("searching", direction);
         const result = await searchDoctors(searchText, selectedButton, sortDirection, specialtyFilter, minRating, 0);
         console.log(result);
         if (result == -1) {
@@ -159,7 +154,7 @@ const Search = () => {
                 dataLength={doctors.length}
                 next={fetchMoreData}
                 hasMore={hasMore}
-                loader={doctors && doctors.length > 3 ? <h4 style={{ textAlign: 'center' }}>Loading...</h4> : null}
+                loader={doctors && doctors.length > 3 ? <CircularProgress style={{ height: '150px', width: '150px', color: '#2854c3' }} alt="Loading..." /> : null}
 
                 endMessage={
                     <p style={{ textAlign: 'center' }}>

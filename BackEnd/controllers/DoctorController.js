@@ -52,17 +52,19 @@ const doctorController = {
 
     // view all consultations of a doctor, both pending and completed
     consultations: async (req, res) => {
-        const UserId = "658aeab2a07cfdec21fc4931";
+        const UserId = req.user._id;
         try {
-            const apptList = await Appointment.find({ doctorId: UserId })
-                .populate({ path: 'doctorId', populate: { path: 'user' } }).
-                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
-            return res.status(200).json({ message: "Success", appt: apptList });
-        } catch (error) {
-            console.log(error.message);
-            return res.status(500).json({ message: "Something went wrong" });
-        }
-    },
+          const doc = await Doctor.findOne({ user: UserId });
+          const apptList = await Appointment.find({ doctorId: doc._id })
+            .populate({ path: "doctorId", populate: { path: "user" } })
+            .populate({ path: "patientId", populate: { path: "user" } })
+            .exec();
+          return res.status(200).json(apptList);
+        } catch (error) { 
+          console.log(error.message);
+          return res.status(500).json({ message: "Something went wrong" });
+        } 
+      },
 
     // view details of a specific appointment 
     getConsultationById: async (req, res) => {
@@ -225,9 +227,10 @@ const doctorController = {
             if (specialty) {
                 filter.specialization = specialty;
             }
-            // if (minRating) {
-            //     filter.rating = { $gte: minRating };
-            // }
+            if (minRating) {
+                console.log(minRating)
+                filter.rating = { $gte: Number(minRating) , $exists: true};
+            }
             let doctors = await Doctor.find(filter).where('approvedStatus').equals(true).populate('user');
             if (doctors.length !== 0) {
                 if (sort == 'A-Z') {
@@ -278,11 +281,13 @@ const doctorController = {
 
 
                 }
-                // else if(sort==='Rating'){
-                //     doctors = doctors.sort((a, b) => {
-                //         return direction === 'asc' ? a.rating - b.rating : b.rating - a.rating;
-                //     });
-                // }
+                else if (sort === 'Rating') {
+                    doctors = doctors.sort((a, b) => {
+                        const aRating = a?.rating === undefined ? 0 : a?.rating;
+                        const bRating = b?.rating === undefined ? 0 : b?.rating;
+                        return sortOrder === 'asc' ? aRating - bRating : bRating - aRating;
+                    });
+                }
             }
             doctors = doctors.slice(skip, skip + 6);
             return res.status(200).json(doctors);

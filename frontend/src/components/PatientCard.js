@@ -4,15 +4,16 @@ import Avatar from '@mui/material/Avatar';
 import { Divider } from '@mui/material';
 import './DoctorCard.css';
 import { Box } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
 
 
-function PatientCard({ user, buttons }) {
+function PatientCard({ user, buttons, role }) {
     const [age, setAge] = React.useState(0);
-
+    const navigate = useNavigate();
     useEffect(() => {
         const dob = new Date(user.user.dob);
         const today = new Date();
-        const agee = today.getFullYear() - dob.getFullYear();
+        let agee = today.getFullYear() - dob.getFullYear();
         const m = today.getMonth() - dob.getMonth();
         if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
             agee--;
@@ -22,6 +23,11 @@ function PatientCard({ user, buttons }) {
 
     const goToUserPage = () => {
         //Navigate to user page
+        if (role === 'admin') {
+            navigate(`../doctor-detail/${user.user._id}`);
+
+        }
+
         alert("Navigate to user page");
     }
 

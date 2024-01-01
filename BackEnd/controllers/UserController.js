@@ -173,6 +173,7 @@ const userController = {
 
             let temp = {
                 name: doctor.user.name,
+                isBanned: doctor.user.isBanned,
                 specialization: doctor.specialization,
                 rating: doctor.rating,
                 experience: doctor.experience,
