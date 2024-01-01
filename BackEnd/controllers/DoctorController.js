@@ -5,6 +5,7 @@ const fs = require('fs');
 const Chat = require('../models/Message');
 const Patient = require('../models/Patient');
 const Diagnosis = require('../models/Diagnosis');
+const path = require('path');
 
 const doctorController = {
 
@@ -384,7 +385,7 @@ const doctorController = {
                     if (userdata.profilePicture && fs.existsSync(`./uploads/${userdata.profilePicture}`)) {
                         fs.unlinkSync(`./uploads/${userdata.profilePicture}`);
                     }
-                    const fileName = Date.now() + file.name;
+                    const fileName = userdata._id+ path.extname(file.name);
                     file.mv(`./uploads/${fileName}`, async (err) => {
                         if (err) {
                             console.log(err);

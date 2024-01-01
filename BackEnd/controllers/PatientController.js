@@ -6,6 +6,7 @@ const Appointment = require("../models/Apointments");
 const Diagnosis = require("../models/Diagnosis");
 const Payment = require("../models/Payment");
 const fs = require("fs");
+const path = require("path");
 
 const patientController = {
   // view all consultations of a doctor, both pending and completed
@@ -251,7 +252,7 @@ const patientController = {
       patient.history = JSON.parse(history);
       patient.bloodGroup = bloodGroup;
       if (File) {
-        var fileName = `${user._id}_${File.name}`;
+        var fileName = user._id + path.extname(File.name);
         //Check if file exists
         if (fs.existsSync(`./uploads/${user.profilePicture}`)) {
           fs.unlinkSync(`./uploads/${user.profilePicture}`);
