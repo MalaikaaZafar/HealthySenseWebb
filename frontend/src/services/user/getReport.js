@@ -3,7 +3,7 @@ import api from "../api";
 
 const GetReport = async (reportId) => {
     try {
-        const response = await api.get(`http://localhost:5000/report/${reportId}`);
+        const response = await api.get(`/report/${reportId}`);
         const data = await response.data;
         if (data.message && data.message !== 'Success'){
             return null;

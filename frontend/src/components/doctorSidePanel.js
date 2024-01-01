@@ -21,19 +21,20 @@ const DoctorSidePanel = ({ appt }) => {
   function rescheduleNav() {
     if (!appt.status === "Completed" && !appt.status === "Cancelled")
       Navigate(`/doctor/appointments/reschedule/${appt._id}`);
-      else{
-        setOpenError(true);
-        setErrorMessage("You cannot reschedule a completed or cancelled appointment");
-        setErrorType("error")
-      }  }
+    else {
+      setOpenError(true);
+      setErrorMessage("You cannot reschedule a completed or cancelled appointment");
+      setErrorType("error")
+    }
+  }
 
   function cancelNav() {
     if (!appt.status === "Completed" && !appt.status === "Cancelled")
       Navigate(`/doctor/appointments/cancel/${appt._id}`);
-    else{
-    setOpenError(true);
-    setErrorMessage("You cannot cancel a completed or cancelled appointment");
-    setErrorType("error")
+    else {
+      setOpenError(true);
+      setErrorMessage("You cannot cancel a completed or cancelled appointment");
+      setErrorType("error")
     }
   }
 
@@ -112,10 +113,10 @@ const DoctorSidePanel = ({ appt }) => {
         </ListItemButton>
       </List>
       <Snackbar open={openError} autoHideDuration={2000} onClose={handleClose} >
-        <MuiAlert elevation={6}  variant="filled" severity={errorType}>
-         {errorMessage}
-       </MuiAlert>
-     </Snackbar>
+        <MuiAlert elevation={6} variant="filled" severity={errorType}>
+          {errorMessage}
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };
