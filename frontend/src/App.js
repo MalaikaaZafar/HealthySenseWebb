@@ -69,7 +69,7 @@ function App() {
             <Route path="appointmentSlots" element={<AppointmentSlots />} />
             <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
             <Route path='patient-detail' element={<PatientDetail />} />
-            <Route path='account' element={<DoctorManageAccount />} />
+            <Route path='account/:id' element={<DoctorManageAccount />} />
             <Route path='diagnosis' element={<DiagnosisPage />} />
             <Route path='report/:id' element={<ViewReportDoctor />} />
           </Route>
@@ -83,6 +83,7 @@ function App() {
             <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
             <Route path='book-appointment/:id' element={<BookAppointment />} />
             <Route path='review' element={<DoctorReview />} />
+            <Route path="account/:id" element={<PatientManageAccount />} />
           </Route>
           <Route path="/" element={<NavBar />}>
             <Route path='doctor-detail' element={<DoctorDetail />} />
