@@ -9,11 +9,11 @@ require('dotenv').config();
 
 const parse = require('./middleware/parse');
 
-const app=express();
+const app = express();
 
 app.use(cookieParser());
-app.use(bodyParser.json({limit: "30mb", extended:true}));
-app.use(bodyParser.urlencoded({limit: "30mb", extended:true}));
+app.use(bodyParser.json({ limit: "30mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(fileUpload({
     createParentPath: true
 }));
@@ -32,8 +32,8 @@ app.use('/admin', require('./routes/AdminRoutes'));
 app.use('/patient', require('./routes/PatientRoutes'));
 app.use('/payment', require('./routes/PaymentRoutes'));
 
-const PORT =process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 mongoose.connect(process.env.CONNECTION_URL)
-    .then(()=> app.listen(PORT, ()=> console.log('Server Running on port:', PORT)))
-    .catch((error)=>console.log(error.message));
+    .then(() => app.listen(PORT, () => console.log('Server Running on port:', PORT)))
+    .catch((error) => console.log(error.message));

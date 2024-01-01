@@ -8,6 +8,10 @@ import { Box, Snackbar, Alert, Button, Table, TableBody, TableCell, TableHead, T
 import HealthySenseLogo from "../../components/healthySenseLogo.png";
 import GetSpecificReport from "../../services/doctor/diagnosis/getSpecificReport";
 import DownloadReport from "../../components/Report/DownloadReport";
+import { useImmer } from "use-immer";
+import updateDiagnosis from "../../services/doctor/diagnosis/updateDiagnosis";
+import UpdateDiagnosisReport from "./UpdateDiagnosisReport";
+import DoctorSidePanel from "../../components/doctorSidePanel";
 
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
@@ -35,33 +39,69 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 const ViewReportDoctor = () => {
-    const { id } = useParams();
+    const { appid } = useParams();
     const navigate = useNavigate();
-    const [report, setReport] = useState({});
+    const [page, setPage] = useState(1);
+    const [report, setReport] = useImmer({});
     const [loading, setLoading] = useState(true);
     const [msg, setMsg] = useState('');
+    const [variant, setVariant] = useState('error');
     const [open, setOpen] = useState(false);
+    const [diagnosis, setDiagnosis] = useImmer({
+        diagnosis: "",
+        prescription: [],
+        tests: [],
+        notes: ""
+    });
 
     const getReportdata = async () => {
-        const data = await GetSpecificReport(id);
+        const data = await GetSpecificReport(appid);
         if (data) {
             if (data.message && data.message === 'Diagnosis not found') {
                 setMsg('Diagnosis not found');
+                setVariant('error');
                 setOpen(true);
             }
             else {
                 setReport(data.data);
-                console.log(data);
+                setDiagnosis(draft => {
+                    draft.diagnosis = data.data.Diagnosis;
+                    draft.prescription = data.data.Prescription;
+                    draft.tests = data.data.Tests;
+                    draft.notes = data.data.Notes;
+                });
             }
             setLoading(false);
         }
         else {
             setMsg('Error getting report');
             setOpen(true);
+            setVariant('error');
             setTimeout(() => {
                 //navigate('/app/patient');
                 navigate('/login');
             }, 2000);
+        }
+    }
+
+    const updatediagnosisreport = async () => {
+        const data = await updateDiagnosis(appid, diagnosis);
+        if (data) {
+            setMsg('Diagnosis updated successfully');
+            setVariant('success');
+            setOpen(true);
+            setReport(draft => {
+                draft.Diagnosis = diagnosis.diagnosis;
+                draft.Prescription = diagnosis.prescription;
+                draft.Tests = diagnosis.tests;
+                draft.Notes = diagnosis.notes;
+            });
+            setPage(1);
+        }
+        else {
+            setMsg('Error updating diagnosis');
+            setOpen(true);
+            setVariant('error');
         }
     }
 
@@ -72,14 +112,23 @@ const ViewReportDoctor = () => {
     return (
         <>
             <LoadingAnimation isVisible={loading} />
-            {
-                !loading && report &&
+            
+            <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'row',justifyContent:'left', gap:'10%'}} className='change' >
+                {
+                    !loading && report &&
+                    <DoctorSidePanel appt={report.appt} />
+                }
+                {
+                !loading && report && page === 1 &&
                 <Box
                     sx={{
-                        backgroundColor: 'lightgrey',
+                        backgroundColor: 'inherit',
                         minHeight: '100%',
+                        width: '100%',
                         py: 3,
+                        marginRight: '10%',
                     }}
+                    className="changes"
                 >
                     <Container
                         sx={{
@@ -98,11 +147,12 @@ const ViewReportDoctor = () => {
                             boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
                             backgroundColor: 'white',
                         }}
+                        className="changes1"
                     >
                         <Button
                             variant="contained"
                             onClick={() => {
-                                navigate('/patient/reports');
+                                navigate('/login');
                             }}
                             color="info"
                             style={{
@@ -162,7 +212,7 @@ const ViewReportDoctor = () => {
                                     width: '100%',
                                     borderBottom: '1px solid rgba(224, 224, 224, 1)',
                                 }}
-                                className="changes"
+                                className="changes2"
                             >
                                 <Box
                                     sx={{
@@ -178,6 +228,7 @@ const ViewReportDoctor = () => {
                                         py: 3,
                                         borderRight: '1px solid rgba(224, 224, 224, 1)',
                                     }}
+                                    className="changes3"
                                 >
                                     <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
                                         Doctor Details
@@ -269,6 +320,7 @@ const ViewReportDoctor = () => {
                                         py: 3,
                                         marginLeft: '30px',
                                     }}
+                                    className="changes3"
                                 >
                                     <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
                                         Patient Details
@@ -595,47 +647,60 @@ const ViewReportDoctor = () => {
                                 sx={{
                                     display: 'flex',
                                     flexDirection: 'row',
-                                    justifyContent: 'right',
+                                    justifyContent: 'space-between',
                                     alignItems: 'center',
                                     gap: '10px',
                                     py: 3,
                                 }}
                             >
+                                <Button variant="contained" onClick={() => setPage(2)} color="info" style={{ fontSize: '12px' }}>
+                                    Update Diagnosis
+                                </Button>
                                 <DownloadReport AppointmentData={report} />
                             </Container>
                         </Box>
                     </Container>
                 </Box>
             }
-            {
-                !loading && !report &&
-                <Box
-                    sx={{
-                        backgroundColor: 'lightgrey',
-                        minHeight: '100%',
-                        py: 3,
-                    }}
-                >
-                    <Container
+                {
+                    !loading && report && page === 2 &&
+                    <UpdateDiagnosisReport
+                        diagnosis={diagnosis}
+                        setDiagnosis={setDiagnosis}
+                        updatediagnosisreport={updatediagnosisreport}
+                        PageChange={setPage}
+                    />
+                }
+                {
+                    !loading && !report &&
+                    <Box
                         sx={{
-                            display: 'grid',
-                            placeItems: 'center',
-                            height: '100%',
-                            border: '1px solid rgba(224, 224, 224, 1)',
-                            borderRadius: '10px',
-                            padding: '20px',
-                            boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
-                            backgroundColor: 'white',
+                            backgroundColor: 'lightgrey',
+                            minHeight: '100%',
+                            py: 3,
                         }}
                     >
-                        <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
-                            {msg}
-                        </Typography>
-                    </Container>
-                </Box>
-            }
+                        <Container
+                            sx={{
+                                display: 'grid',
+                                placeItems: 'center',
+                                height: '100%',
+                                border: '1px solid rgba(224, 224, 224, 1)',
+                                borderRadius: '10px',
+                                padding: '20px',
+                                boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
+                                backgroundColor: 'white',
+                            }}
+                        >
+                            <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
+                                {msg}
+                            </Typography>
+                        </Container>
+                    </Box>
+                }
+            </Box>
             <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
-                <Alert onClose={() => setOpen(false)} severity="error" sx={{ width: '100%' }}>
+                <Alert onClose={() => setOpen(false)} severity={variant} sx={{ width: '100%' }}>
                     {msg}
                 </Alert>
             </Snackbar>

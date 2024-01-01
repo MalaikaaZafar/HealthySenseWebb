@@ -7,11 +7,18 @@ const Patient = require('../models/Patient');
 const Doctor = require('../models/Doctor');
 const Appointment = require("../models/Apointments");
 const Review = require("../models/Reviews");
+const { default: mongoose } = require('mongoose');
 
 
 const secret = process.env.SECRET;
 
 const userController = {
+
+    getUserType: async (req, res) => {
+        console.log(req.user);
+        const userType = req.user.type;
+        return res.status(200).json(userType);
+    },
     signup: async (req, res) => {
         const { name, email, password, dob, country, phoneNumber, gender, type, bloodGroup } = req.body;
 
@@ -58,20 +65,26 @@ const userController = {
         }
     },
 
-    login: login = async (req, res) => {
+    login: async (req, res) => {
         const { email, password } = req.body;
 
         try {
+            // Fetch the user with the provided email
             const existingUser = await User.findOne({ email });
+
+            if (!existingUser) {
+                return res.status(404).json({ message: "User not found" });
+            }
 
             if (!existingUser) return res.status(404).json({ message: "User doesn't exist" });
 
             const isPasswordCorrect = await bcrypt.compare(String(password), existingUser.password);
 
-            if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+            if (!isPasswordCorrect) {
+                return res.status(400).json({ message: "Invalid credentials" });
+            }
 
             const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, secret);
-
             return res.status(200).json({ result: existingUser, token });
         } catch (error) {
             console.log(error);
@@ -81,38 +94,46 @@ const userController = {
 
     getMessages: async (req, res) => {
         try {
-            const userId = "658aeab2a07cfdec21fc4968";
-            const doctorChats = await Chat.find({ primary: userId })
-                .populate({ path: 'primary', populate: { path: 'user' } })
-                .populate({ path: 'secondary', populate: { path: 'user' } });
-            if (!doctorChats)
-                return res.status(404).json({ message: "Doctor not found" });
-            return res.status(200).json({ message: "Success", messages: doctorChats });
+          const secondaryId = req.params.id;
+          console.log(secondaryId)
+          const userId = "658aeab2a07cfdec21fc4946";
+          let doctorChats = await Chat.findOne({ $or: [{ primary: userId, secondary: new mongoose.Types.ObjectId(secondaryId) }, { primary: new mongoose.Types.ObjectId(secondaryId), secondary: userId }] }).populate('primary');
+          console.log(doctorChats)
+          if (!doctorChats) {
+            console.log("heelllooo")
+            doctorChats = await Chat.create({ primary: new mongoose.Types.ObjectId(userId), secondary: new mongoose.Types.ObjectId(secondaryId), date: new Date(), messages: [] });
+            await doctorChats.save();
+          }
+          const chat = await Chat.find({$or:[{primary:userId}, {secondary:userId}]})
+          .populate('primary')
+          .populate('secondary');
+          console.log(chat)
+          return res.status(200).json({ message: "Success", chat: chat });
+        } catch (error) {
+          console.log(error.message);
+          return res.status(500).json({ message: "Something went wrong" });
         }
-        catch (error) {
-            console.log(error.message);
-            return res.status(500).json({ message: "Something went wrong" });
-        }
-    },
+      },
 
     sendMessage: async (req, res) => {
         try {
+            console.log(req.body)
             const { message, secondary } = req.body;
-            const userId = "658aeab2a07cfdec21fc4968";
-            const doctorChats = await Chat.findOneAndUpdate({ primary: userId, secondary: secondary }, { $push: { messages: message } });
+            console.log(message)
+            
+            const doctorChats = await Chat.findOneAndUpdate(
+              { $or: [{ primary: message.senderId, secondary: secondary }, { primary: secondary, secondary: message.senderId }] },
+              { $push: { messages: message } },
+              { new: true }
+            );
             if (!doctorChats)
-                return res.status(404).json({ message: "Doctor not found" });
+              return res.status(404).json({ message: "Doctor not found" });
+          
             return res.status(200).json({ message: "Success", messages: doctorChats });
-        }
-        catch (err) {
+          } catch (err) {
             console.log(err);
             return res.status(500).json({ message: "Something went wrong" });
-        }
-    },
-
-    getUser: async (req, res) => {
-        const arr = await User.find({ type: 'Patient' });
-        return res.status(200).json(arr);
+          }
     },
 
     getDoctorDetails: async (req, res) => {

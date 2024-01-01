@@ -7,8 +7,8 @@ const messageSchema = new mongoose.Schema({
 })
 
 const chatSchema = new mongoose.Schema({
-    primary: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true },
-    secondary: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient', required: true },
+    primary: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    secondary: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     date: { type: Date, required: true },
     messages:[messageSchema],
 });

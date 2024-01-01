@@ -5,6 +5,7 @@ const fs = require('fs');
 const Chat = require('../models/Message');
 const Patient = require('../models/Patient');
 const Diagnosis = require('../models/Diagnosis');
+const path = require('path');
 
 const doctorController = {
 
@@ -29,7 +30,7 @@ const doctorController = {
         }
 
         try {
-            
+
             certificates.forEach((certificate, index) => {
                 certificate.file = fileNames[index];
             });
@@ -150,16 +151,15 @@ const doctorController = {
     },
 
     completeAppt: async (req, res) => {
-      try{
-        const {id} = req.body;
-        await Appointment.findByIdAndUpdate({_id: id}, { status: "Completed" }, {new:true})
-        return res.status(200).json({ message: 'Success'});
-      }  
-      catch(err)
-      {
-        console.log(err.message);
-        return res.status(500).json({ message: "Something went wrong" });
-      }
+        try {
+            const { id } = req.body;
+            await Appointment.findByIdAndUpdate({ _id: id }, { status: "Completed" }, { new: true })
+            return res.status(200).json({ message: 'Success' });
+        }
+        catch (err) {
+            console.log(err.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
     },
     addSlots: async (req, res) => {
         const { slots } = req.body;
@@ -202,7 +202,7 @@ const doctorController = {
                 return res.status(404).json({ message: "Doctor not found" });
             const newSlots = doctor.appointmentSlots.filter(slot1 => slot1.date !== date)
             const slots3 = newSlots.filter(slot1 => slot1.time !== time)
-            // doctor.appointmentSlots = newSlots;
+            doctor.appointmentSlots = slots3;
             await doctor.save();
             return res.status(200).json({ message: "Success", slots: slots3 });
         }
@@ -218,7 +218,7 @@ const doctorController = {
         const { query, sort, sortOrder, specialty, minRating, skip } = req.query;
 
         try {
-            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor');
+            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor').where('approvedStatus').equals(true);
             const users = await q.exec();
             const userIds = users.map(user => user._id);
             let filter = { user: { $in: userIds } };
@@ -229,7 +229,6 @@ const doctorController = {
             //     filter.rating = { $gte: minRating };
             // }
             let doctors = await Doctor.find(filter).populate('user');
-
             if (doctors.length !== 0) {
                 if (sort == 'A-Z') {
                     doctors = doctors.sort((a, b) => {
@@ -344,8 +343,12 @@ const doctorController = {
             AppointmentDetail.patientId.user.profilePicture = null;
 
             AppointmentDetail.doctorId.certificates = undefined;
+            const diagnosis = await Diagnosis.findOne({ appointmentId: id });
+            if (diagnosis != null) {
+                return res.status(200).json({ AppointmentDetail: AppointmentDetail, message: "Exists" });
+            }
 
-            return res.status(200).json({ AppointmentDetail });
+            return res.status(200).json({ AppointmentDetail: AppointmentDetail });
         } catch (error) {
             console.log(error.message);
             return res.status(502).json({ message: "Something went wrong" });
@@ -384,7 +387,7 @@ const doctorController = {
                     if (userdata.profilePicture && fs.existsSync(`./uploads/${userdata.profilePicture}`)) {
                         fs.unlinkSync(`./uploads/${userdata.profilePicture}`);
                     }
-                    const fileName = Date.now() + file.name;
+                    const fileName = userdata._id + path.extname(file.name);
                     file.mv(`./uploads/${fileName}`, async (err) => {
                         if (err) {
                             console.log(err);
@@ -478,18 +481,43 @@ const doctorController = {
     },
 
     getPatientHistory: async (req, res) => {
-        const { id } = req.params;
+        const { appid ,id } = req.params;
         try {
             const patient = await Patient.findById(id);
             if (!patient)
                 return res.status(404).json({ message: "Patient not found" });
-            return res.status(200).json({ message: "Success", History: patient.history });
+            const appointment = await Appointment.findById(appid).
+                    populate({ path: 'doctorId', populate: { path: 'user' } }).
+                    populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+            return res.status(200).json({ message: "Success", History: patient.history, app: appointment });
         }
         catch (error) {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
         }
-    }
+    },
+
+    updateDiagnosis: async (req, res) => {
+        const { id } = req.params;
+        const { diagnosis, prescription, tests, notes } = req.body;
+        console.log(req.body);
+        try {
+            const diagnosisData = await Diagnosis.findOne({ appointmentId: id });
+            if (!diagnosisData)
+                return res.status(404).json({ message: "Diagnosis not found" });
+            diagnosisData.description = diagnosis;
+            diagnosisData.prescription = prescription;
+            diagnosisData.tests = tests;
+            diagnosisData.notes = notes;
+            await diagnosisData.save();
+            console.log(diagnosisData);
+            return res.status(200).json({ message: "Success" });
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
 };
 
 module.exports = doctorController;

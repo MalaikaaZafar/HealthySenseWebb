@@ -7,8 +7,9 @@ import AddTest from './modals/AddTest';
 import EditTest from './modals/EditTest';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import { Box, styled } from "@mui/system";
-import { useNavigate, useParams } from "react-router-dom";
+import "../../pages/report/Report.css"
 import "@fontsource/roboto";
+import DoctorSidePanel from '../../components/doctorSidePanel';
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
     display: 'flex',
@@ -50,9 +51,10 @@ const CreateDiagnosis = () => {
     const [TestIndex, setTestIndex] = useState(-1);
 
 
-    const EditMedicineModalClose = () => { setEditMedicine(false) };
-    const EditMedicineModalOpen = () => {
+    const EditMedicineModalClose = () => { 
         setMedicineIndex(-1);
+        setEditMedicine(false) };
+    const EditMedicineModalOpen = () => {
         setEditMedicine(true)
     };
 
@@ -87,7 +89,7 @@ const CreateDiagnosis = () => {
             setMsg("Diagnosis is Required");
             return;
         }
-        if(Diagnosis.notes.trim() === ""){
+        if (Diagnosis.notes.trim() === "") {
             setDiagnosis(draft => { draft.notes = "No Notes" });
         }
         setDiagnosis(draft => { draft.type = AppointmentData.type });
@@ -95,302 +97,310 @@ const CreateDiagnosis = () => {
     }
 
     return (
-        <><Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%',
-                height: '100%',
-                backgroundColor: '#f5f5f5',
-                py: 3
-            }}
-        >
-            <Container
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    justifyContent: 'center',
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'white',
-                    borderRadius: '10px',
-                    boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
-                    py: 3,
-                }}
-            >
-                <Button variant="contained"
-                    style={{ backgroundColor: '#3f51b5', color: 'white', marginBottom: '20px' }}
-                    onClick={() => PageChange(1)}
-                >
-                    Back
-                </Button>
+        <>
+            <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'left', gap: '10%' }} className='change' >
+                <DoctorSidePanel appt={AppointmentData} />
                 <Box
                     sx={{
                         display: 'flex',
-                        flexDirection: 'row',
+                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
                         width: '100%',
                         height: '100%',
-                        marginTop: '-20px',
+                        backgroundColor: '#f5f5f5',
+                        py: 3
                     }}
                 >
-                    <Typography variant="h4" style={{ textAlign: 'center' }}>Create Diagnosis</Typography>
-                </Box>
-                <Container className="Diagnosis-Diag">
-                    <Box
+                    <Container
                         sx={{
                             display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            justifyContent: 'center',
                             width: '100%',
                             height: '100%',
+                            backgroundColor: 'white',
+                            borderRadius: '10px',
+                            boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
                             py: 3,
-                            borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                            borderTop: '1px solid rgba(224, 224, 224, 1)',
                         }}
                     >
-                        <Typography variant="h6" style={{ fontWeight: 'bold' }}>Patient Problem: </Typography>
-                        <Typography variant="h6" style={{ color: 'GrayText', fontWeight: 'bold' }}>{AppointmentData.problem}</Typography>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'left',
-                            width: '100%',
-                            height: '100%',
-                            py: 4,
-                            borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                        }}
-                    >
-                        <TextField
-                            id="outlined-multiline-static"
-                            multiline
-                            rows={4}
-                            defaultValue={Diagnosis.diagnosis}
-                            label="Diagnosis"
-                            variant="outlined"
-                            onChange={(e) => setDiagnosis(draft => { draft.diagnosis = e.target.value })}
-                            style={{ width: '100%' }}
-                        />
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'flex-start',
-                            justifyContent: 'center',
-                            width: '100%',
-                            height: '100%',
-                            py: 2,
-                            gap: '10px',
-                            borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                        }}
-                    >
-                        <Typography variant="h6" style={{ fontWeight: 'bold' }}>Prescription: </Typography>
-                        <Table
-                            sx={{
-                                border: '1px solid rgba(100, 100, 100, 0.5)',
-                            }}
+                        <Button variant="contained"
+                            style={{ backgroundColor: '#3f51b5', color: 'white', marginBottom: '20px' }}
+                            onClick={() => PageChange(1)}
                         >
-                            <TableHead>
-                                <CustomTableRow>
-                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '25%' }}>Medicine</CustomTableCell>
-                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '55%' }}>Dosage & Duration</CustomTableCell>
-                                    <CustomTableCell style={{ width: '20%' }}></CustomTableCell>
-                                </CustomTableRow>
-                            </TableHead>
-                            <TableBody>
-                                {Diagnosis.prescription.length > 0 ?
-                                    Diagnosis.prescription.map((item, index) => {
-                                        return (
-                                            <CustomTableRow
-                                                key={index}
-                                            >
-                                                <CustomTableCell style={{ width: '25%' }}>{item.Name}</CustomTableCell>
-                                                <CustomTableCell style={{ width: '55%' }}>{item.Dosage}</CustomTableCell>
-                                                <CustomTableCell style={{ width: '20%' }}>
-                                                    <Container
-                                                        sx={{
-                                                            display: 'flex',
-                                                            flexDirection: 'row',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            width: '100%',
-                                                            height: '100%',
-                                                        }}
-                                                    >
-                                                        <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}
-                                                            onClick={() => HandleEditMedicine(index)}
-                                                            color='success'
-                                                        >
-                                                            Edit
-                                                        </Button>
-                                                        <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}
-                                                            onClick={() => {
-                                                                setDiagnosis(draft => { draft.prescription.splice(index, 1); });
-                                                            }}
-                                                            color='error'
-                                                        >
-                                                            Delete
-                                                        </Button>
-                                                    </Container>
-                                                </CustomTableCell>
-                                            </CustomTableRow>
-                                        )
-                                    }) :
-                                    <CustomTableRow>
-                                        <CustomTableCell>No Medicines</CustomTableCell>
-                                    </CustomTableRow>
-                                }
-                            </TableBody>
-                        </Table>
-                        <Button
-                            style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '10px' }}
-                            startIcon={<AddCircleOutline />}
-                            onClick={MedicineModalOpen}
-                        >
-                            Add Medicine
+                            Back
                         </Button>
-                        <AddMedicine
-                            setDiagnosis={setDiagnosis}
-                            MedicineModal={MedicineModal}
-                            MedicineModalClose={MedicineModalClose}
-                        />
-                        <EditMedicine
-                            setDiagnosis={setDiagnosis}
-                            EditMedicineModal={EditMedicineModal}
-                            EditMedicineModalClose={EditMedicineModalClose}
-                            MedicineIndex={MedicineIndex}
-                        />
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'flex-start',
-                            justifyContent: 'center',
-                            width: '100%',
-                            height: '100%',
-                            py: 2,
-                            gap: '10px',
-                            borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                        }}
-                    >
-                        <Typography variant="h6" style={{ fontWeight: 'bold' }}>Tests: </Typography>
-                        <Table
+                        <Box
                             sx={{
-                                border: '1px solid rgba(100, 100, 100, 0.5)',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '100%',
+                                height: '100%',
+                                marginTop: '-20px',
                             }}
                         >
-                            <TableHead>
-                                <CustomTableRow>
-                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '80%' }}>Test</CustomTableCell>
-                                    <CustomTableCell style={{ width: '20%' }}></CustomTableCell>
-                                </CustomTableRow>
-                            </TableHead>
-                            <TableBody>
-                                {Diagnosis.tests.length > 0 ?
-                                    Diagnosis.tests.map((item, index) => {
-                                        return (
+                            <Typography variant="h4" style={{ textAlign: 'center' }}>Create Diagnosis</Typography>
+                        </Box>
+                        <Container className="Diagnosis-Diag">
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    width: '100%',
+                                    height: '100%',
+                                    py: 3,
+                                    borderBottom: '1px solid rgba(224, 224, 224, 1)',
+                                    borderTop: '1px solid rgba(224, 224, 224, 1)',
+                                }}
+                            >
+                                <Typography variant="h6" style={{ fontWeight: 'bold' }}>Patient Problem: </Typography>
+                                <Typography variant="h6" style={{ color: 'GrayText', fontWeight: 'bold' }}>{AppointmentData.problem}</Typography>
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'left',
+                                    width: '100%',
+                                    height: '100%',
+                                    py: 4,
+                                    borderBottom: '1px solid rgba(224, 224, 224, 1)',
+                                }}
+                            >
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    multiline
+                                    rows={4}
+                                    defaultValue={Diagnosis.diagnosis}
+                                    label="Diagnosis"
+                                    variant="outlined"
+                                    onChange={(e) => setDiagnosis(draft => { draft.diagnosis = e.target.value })}
+                                    style={{ width: '100%' }}
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-start',
+                                    justifyContent: 'center',
+                                    width: '100%',
+                                    height: '100%',
+                                    py: 2,
+                                    gap: '10px',
+                                    borderBottom: '1px solid rgba(224, 224, 224, 1)',
+                                }}
+                            >
+                                <Typography variant="h6" style={{ fontWeight: 'bold' }}>Prescription: </Typography>
+                                <Table
+                                    sx={{
+                                        border: '1px solid rgba(100, 100, 100, 0.5)',
+                                    }}
+                                >
+                                    <TableHead>
+                                        <CustomTableRow>
+                                            <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '20%' }}>Medicine</CustomTableCell>
+                                            <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '50%' }}>Dosage & Duration</CustomTableCell>
+                                            <CustomTableCell style={{ width: '30%' }}></CustomTableCell>
+                                        </CustomTableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {Diagnosis.prescription.length > 0 ?
+                                            Diagnosis.prescription.map((item, index) => {
+                                                return (
+                                                    <CustomTableRow
+                                                        key={index}
+                                                    >
+                                                        <CustomTableCell style={{ width: '20%' }}>{item.Name}</CustomTableCell>
+                                                        <CustomTableCell style={{ width: '50%' }}>{item.Dosage}</CustomTableCell>
+                                                        <CustomTableCell style={{ width: '30%' }}>
+                                                            <Container
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    flexDirection: 'row',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    width: '100%',
+                                                                    height: '100%',
+                                                                    flexWrap: 'wrap',
+                                                                }}
+                                                            >
+                                                                <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}
+                                                                    onClick={() => HandleEditMedicine(index)}
+                                                                    color='success'
+                                                                >
+                                                                    Edit
+                                                                </Button>
+                                                                <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}
+                                                                    onClick={() => {
+                                                                        setDiagnosis(draft => { draft.prescription.splice(index, 1); });
+                                                                    }}
+                                                                    color='error'
+                                                                >
+                                                                    Delete
+                                                                </Button>
+                                                            </Container>
+                                                        </CustomTableCell>
+                                                    </CustomTableRow>
+                                                )
+                                            }) :
                                             <CustomTableRow>
-                                                <CustomTableCell style={{ width: '80%' }}>{item}</CustomTableCell>
-                                                <CustomTableCell style={{ width: '20%' }}>
-                                                    <Container
-                                                        sx={{
-                                                            display: 'flex',
-                                                            flexDirection: 'row',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            width: '100%',
-                                                            height: '100%',
-                                                        }}
-                                                    >
-                                                        <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}
-                                                            onClick={() => HandleEditTest(index)}
-                                                            color='success'
-                                                        >
-                                                            Edit
-                                                        </Button>
-                                                        <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}
-                                                            onClick={() => {
-                                                                setDiagnosis(draft => { draft.tests.splice(index, 1); });
-                                                            }}
-                                                            color='error'
-                                                        >
-                                                            Delete
-                                                        </Button>
-                                                    </Container>
-                                                </CustomTableCell>
+                                                <CustomTableCell>No Medicines</CustomTableCell>
                                             </CustomTableRow>
-                                        )
-                                    }) :
-                                    <CustomTableRow>
-                                        <CustomTableCell>No Tests</CustomTableCell>
-                                    </CustomTableRow>
-                                }
-                            </TableBody>
-                        </Table>
-                        <Button
-                            style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '10px' }}
-                            startIcon={<AddCircleOutline />}
-                            onClick={TestModalOpen}
-                        >
-                            Add Test
-                        </Button>
-                        <AddTest
-                            setDiagnosis={setDiagnosis}
-                            TestModal={TestModal}
-                            TestModalClose={TestModalClose}
-                        />
-                        <EditTest
-                            Diagnosis={Diagnosis}
-                            setDiagnosis={setDiagnosis}
-                            EditTestModal={EditTestModal}
-                            EditTestModalClose={EditTestModalClose}
-                            TestIndex={TestIndex}
-                        />
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'left',
-                            width: '100%',
-                            height: '100%',
-                            py: 4,
-                            borderBottom: '1px solid rgba(224, 224, 224, 1)',
-                        }}
-                    >
-                        <TextField
-                            id="outlined-multiline-static"
-                            multiline
-                            rows={4}
-                            defaultValue={Diagnosis.notes}
-                            variant="outlined"
-                            label="Notes"
-                            onChange={(e) => setDiagnosis(draft => { draft.notes = e.target.value })}
-                            style={{ width: '100%' }}
-                        />
-                    </Box>
-                </Container>
-                <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '70px' }}>
-                    <Button variant="contained"
-                        style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }}
-                        onClick={HandleSubmission}
-                    >
-                        Submit Diagnosis
-                    </Button>
-                </Container>
-            </Container>
-        </Box>
+                                        }
+                                    </TableBody>
+                                </Table>
+                                <Button
+                                    style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '10px' }}
+                                    startIcon={<AddCircleOutline />}
+                                    onClick={MedicineModalOpen}
+                                >
+                                    Add Medicine
+                                </Button>
+                                <AddMedicine
+                                    setDiagnosis={setDiagnosis}
+                                    MedicineModal={MedicineModal}
+                                    MedicineModalClose={MedicineModalClose}
+                                />
+                                <EditMedicine
+                                    Diagnosis={Diagnosis}
+                                    setDiagnosis={setDiagnosis}
+                                    EditMedicineModal={EditMedicineModal}
+                                    EditMedicineModalClose={EditMedicineModalClose}
+                                    MedicineIndex={MedicineIndex}
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-start',
+                                    justifyContent: 'center',
+                                    width: '100%',
+                                    height: '100%',
+                                    py: 2,
+                                    gap: '10px',
+                                    borderBottom: '1px solid rgba(224, 224, 224, 1)',
+                                }}
+                            >
+                                <Typography variant="h6" style={{ fontWeight: 'bold' }}>Tests: </Typography>
+                                <Table
+                                    sx={{
+                                        border: '1px solid rgba(100, 100, 100, 0.5)',
+                                    }}
+                                >
+                                    <TableHead>
+                                        <CustomTableRow>
+                                            <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '70%' }}>Test</CustomTableCell>
+                                            <CustomTableCell style={{ width: '30%' }}></CustomTableCell>
+                                        </CustomTableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {Diagnosis.tests.length > 0 ?
+                                            Diagnosis.tests.map((item, index) => {
+                                                return (
+                                                    <CustomTableRow>
+                                                        <CustomTableCell style={{ width: '70%' }}>{item}</CustomTableCell>
+                                                        <CustomTableCell style={{ width: '30%' }}>
+                                                            <Container
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    flexDirection: 'row',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    width: '100%',
+                                                                    height: '100%',
+                                                                    flexWrap: 'wrap',   
+                                                                }}
+                                                            >
+                                                                <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}
+                                                                    onClick={() => HandleEditTest(index)}
+                                                                    color='success'
+                                                                >
+                                                                    Edit
+                                                                </Button>
+                                                                <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}
+                                                                    onClick={() => {
+                                                                        setDiagnosis(draft => { draft.tests.splice(index, 1); });
+                                                                    }}
+                                                                    color='error'
+                                                                >
+                                                                    Delete
+                                                                </Button>
+                                                            </Container>
+                                                        </CustomTableCell>
+                                                    </CustomTableRow>
+                                                )
+                                            }) :
+                                            <CustomTableRow>
+                                                <CustomTableCell>No Tests</CustomTableCell>
+                                            </CustomTableRow>
+                                        }
+                                    </TableBody>
+                                </Table>
+                                <Button
+                                    style={{ backgroundColor: 'inherit', color: '#3f51b5', width: 'fit-content', fontWeight: 'bold', fontSize: '16px', marginTop: '10px' }}
+                                    startIcon={<AddCircleOutline />}
+                                    onClick={TestModalOpen}
+                                >
+                                    Add Test
+                                </Button>
+                                <AddTest
+                                    setDiagnosis={setDiagnosis}
+                                    TestModal={TestModal}
+                                    TestModalClose={TestModalClose}
+                                />
+                                <EditTest
+                                    Diagnosis={Diagnosis}
+                                    setDiagnosis={setDiagnosis}
+                                    EditTestModal={EditTestModal}
+                                    EditTestModalClose={EditTestModalClose}
+                                    TestIndex={TestIndex}
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'left',
+                                    width: '100%',
+                                    height: '100%',
+                                    py: 4,
+                                    borderBottom: '1px solid rgba(224, 224, 224, 1)',
+                                }}
+                            >
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    multiline
+                                    rows={4}
+                                    defaultValue={Diagnosis.notes}
+                                    variant="outlined"
+                                    label="Notes"
+                                    onChange={(e) => setDiagnosis(draft => { draft.notes = e.target.value })}
+                                    style={{ width: '100%' }}
+                                />
+                            </Box>
+                        </Container>
+                        <Container style={{ display: 'flex', justifyContent: 'end', paddingRight: '70px' }}>
+                            <Button variant="contained"
+                                style={{ backgroundColor: '#3f51b5', color: 'white', marginTop: '20px' }}
+                                onClick={HandleSubmission}
+                            >
+                                Submit Diagnosis
+                            </Button>
+                        </Container>
+                    </Container>
+                </Box>
+            </Box>
+
             <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
                 <Alert onClose={() => setOpen(false)} severity="error" sx={{ width: '100%' }}>
                     {msg}

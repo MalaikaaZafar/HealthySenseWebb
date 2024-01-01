@@ -22,6 +22,7 @@ import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
 import StarRatings from 'react-star-ratings';
 import ReactStars from "react-rating-stars-component";
 import styles from './DoctorReview.module.css';
+import api from '../../services/api';
 
 const CustomTextField = styled(TextField)({
   '& .MuiInputAdornment-root.MuiInputAdornment-positionStart': {

@@ -39,8 +39,8 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import { styled } from '@mui/system';
 import styles from './Login.module.css';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
 const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -165,7 +165,7 @@ const Signup = () => {
         data.append('type', accountType);
         data.append('bloodGroup', formData.blood);
 
-        axios.post('http://localhost:3000/signup', data)
+        api.post('/signup', data)
             .then(res => {
                 console.log(res);
                 document.cookie = `token=${res.data.token}`;

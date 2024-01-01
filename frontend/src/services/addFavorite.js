@@ -1,10 +1,10 @@
-import axios from 'axios';
+import api from './api';
 
 const addFavorite = async (doctorId) => {
     try {
         console.log(doctorId);
         const token = localStorage.getItem('token');
-        const response = await axios.post(`http://localhost:3000/favorites/${doctorId}`, {}, {
+        const response = await api.post(`/favorites/${doctorId}`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

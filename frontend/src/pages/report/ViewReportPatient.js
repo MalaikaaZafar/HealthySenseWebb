@@ -35,7 +35,7 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 const ViewReportPatient = () => {
-    const { id } = useParams();
+    const { diagid } = useParams();
     const navigate = useNavigate();
     const [report, setReport] = useState({});
     const [loading, setLoading] = useState(true);
@@ -43,7 +43,7 @@ const ViewReportPatient = () => {
     const [open, setOpen] = useState(false);
 
     const getReportdata = async () => {
-        const data = await GetReport(id);
+        const data = await GetReport(diagid);
         if (data) {
             setReport(data);
             setLoading(false);
@@ -70,7 +70,7 @@ const ViewReportPatient = () => {
                 !loading &&
                 <Box
                     sx={{
-                        backgroundColor: 'lightgrey',
+                        backgroundColor: 'inherit',
                         minHeight: '100%',
                         py: 3,
                     }}
@@ -92,6 +92,7 @@ const ViewReportPatient = () => {
                             boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
                             backgroundColor: 'white',
                         }}
+                        className="changes1"
                     >
                         <Button
                             variant="contained"
@@ -156,7 +157,7 @@ const ViewReportPatient = () => {
                                     width: '100%',
                                     borderBottom: '1px solid rgba(224, 224, 224, 1)',
                                 }}
-                                className="changes"
+                                className="changes2"
                             >
                                 <Box
                                     sx={{
@@ -172,6 +173,7 @@ const ViewReportPatient = () => {
                                         py: 3,
                                         borderRight: '1px solid rgba(224, 224, 224, 1)',
                                     }}
+                                    className="changes3"
                                 >
                                     <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
                                         Doctor Details
@@ -263,6 +265,7 @@ const ViewReportPatient = () => {
                                         py: 3,
                                         marginLeft: '30px',
                                     }}
+                                    className="changes3"
                                 >
                                     <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
                                         Patient Details

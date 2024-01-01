@@ -6,6 +6,7 @@ const Appointment = require("../models/Apointments");
 const Diagnosis = require("../models/Diagnosis");
 const Payment = require("../models/Payment");
 const fs = require("fs");
+const path = require("path");
 
 const patientController = {
   // view all consultations of a doctor, both pending and completed
@@ -162,7 +163,8 @@ const patientController = {
 
     if (!doctorId)
       return res.status(400).json({ message: "Doctor ID not provided" });
-    const patient = await Patient.findOne({ user: req.userId });
+
+    const patient = await Patient.findOne({ user: req.user._id });
     if (!patient)
       return res.status(404).json({ message: "Patient not found" });
     const doctor = await Doctor.findOne({ user: doctorId });
@@ -251,7 +253,7 @@ const patientController = {
       patient.history = JSON.parse(history);
       patient.bloodGroup = bloodGroup;
       if (File) {
-        var fileName = `${user._id}_${File.name}`;
+        var fileName = user._id + path.extname(File.name);
         //Check if file exists
         if (fs.existsSync(`./uploads/${user.profilePicture}`)) {
           fs.unlinkSync(`./uploads/${user.profilePicture}`);

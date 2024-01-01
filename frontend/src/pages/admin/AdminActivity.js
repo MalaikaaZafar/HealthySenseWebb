@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import axios from 'axios';
 import { Box, Paper } from '@mui/material';
+import api from '../../services/api';
 
 const fetchActivity = async () => {
-    const res = await axios.get("http://localhost:3000/admin/activity")
+    const res = await api.get("/admin/activity")
         .then(response => response.data);
     return res;
 }

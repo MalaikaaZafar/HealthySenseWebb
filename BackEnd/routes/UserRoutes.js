@@ -5,10 +5,11 @@ const reportController = require('../controllers/ReportController');
 
 const router = express.Router();
 
+router.get('/verifyuser', auth, userController.getUserType);
 router.post('/login', userController.login);
 router.post('/signup', userController.signup);
 
-router.get('/messages', userController.getMessages);
+router.get('/messages/:id', userController.getMessages);
 router.post('/messages', userController.sendMessage);
 
 router.get('/report/:id', reportController.getReport);

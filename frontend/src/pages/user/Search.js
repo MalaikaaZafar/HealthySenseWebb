@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, TextField, IconButton } from '@mui/material';
 import TextRotationNoneIcon from '@mui/icons-material/TextRotationNone';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -9,7 +9,6 @@ import FilterPopover from '../../components/FilterPopover';
 import './Search.css';
 import styles from '../../styles/searchStyles';
 import useUserStore from '../../stores/userStore';
-import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import SearchErrorMessage from '../../components/SearchErrorMessage';
 
@@ -22,18 +21,19 @@ const Search = () => {
     const [doctors, setDoctors] = React.useState([]);
     const [specialtyFilter, setSpecialtyFilter] = React.useState('');
     const [minRating, setMinRating] = React.useState(0);
-    const { updateUser } = useUserStore();
     const [notFound, setNotFound] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [actionCompleted, setActionCompleted] = React.useState(true);
     const [error, setError] = React.useState(false);
+    const initialRender = useRef(true);
+
     let direction = 'asc';
     // ...
 
     const fetchMoreData = async () => {
         console.log("fetching more data")
         const skip = doctors.length;
-        let moreDoctors = await searchDoctors(searchText, selectedButton, direction, specialtyFilter, minRating, skip);
+        let moreDoctors = await searchDoctors(searchText, selectedButton, sortDirection, specialtyFilter, minRating, skip);
         if (moreDoctors.length === 0) {
             setHasMore(false);
             return;
@@ -42,8 +42,13 @@ const Search = () => {
     };
 
     useEffect(() => {
-        updateUser();
-    }, []);
+        if (initialRender.current) {
+            initialRender.current = false;
+            return;
+        }
+        else
+            searchPressed();
+    }, [sortDirection]);
 
     const handleButtonClick = (value) => {
         setSelectedButton((prevSelected) => {
@@ -73,16 +78,15 @@ const Search = () => {
             direction = newDirection;
             return newDirection;
         });
-        searchPressed();
     };
 
-    const searchPressed = async () => {
+    const searchPressed = async (direction = sortDirection) => {
         // if (searchText === '') {
         //     alert('Please enter a search query');
         // }
         setActionCompleted(false);
         console.log("searching", direction);
-        const result = await searchDoctors(searchText, selectedButton, direction, specialtyFilter, minRating, 0);
+        const result = await searchDoctors(searchText, selectedButton, sortDirection, specialtyFilter, minRating, 0);
         console.log(result);
         if (result == -1) {
             setError(true);
