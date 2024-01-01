@@ -3,7 +3,7 @@ import api from "../../api";
 
 const saveDiagnosis = async (id, diagnosis) => {
     try {
-        const response = await api.post(`http://localhost:5000/doctor/appointments/${id}/diagnosis`, diagnosis);
+        const response = await api.post(`http://localhost:3000/doctor/appointments/${id}/diagnosis`, diagnosis);
         const data = response.data;
         if (data.ID) {
             return data.ID;

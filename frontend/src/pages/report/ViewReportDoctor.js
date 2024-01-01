@@ -38,7 +38,8 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 const ViewReportDoctor = () => {
-    const { id } = useParams();
+    //const { id } = useParams();
+    const id="658bd21cd54145942c66e9be";
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [report, setReport] = useImmer({});

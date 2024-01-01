@@ -6,6 +6,7 @@ import AddTest from "./modals/AddTest";
 import EditTest from "./modals/EditTest";
 import EditMedicine from "./modals/EditMedicine";
 import { AddCircleOutline } from "@mui/icons-material";
+import "@fontsource/roboto";
 
 const CustomTableRow = styled(TableRow)(({ }) => ({
     display: 'flex',
