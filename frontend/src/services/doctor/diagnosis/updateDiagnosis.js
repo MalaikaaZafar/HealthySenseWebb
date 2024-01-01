@@ -3,9 +3,9 @@ import api from "../../api";
 
 const updateDiagnosis = async (id, diagnosis) => {
     try {
-        const response = await api.post(`/doctor/diagnosis/update/${id}/diagnosis`, diagnosis);
+        const response = await api.put(`/doctor/diagnosis/update/${id}`, diagnosis);
         const data = response.data;
-        if (data.success) {
+        if (data.message === "Success") {
             return true;
         }
         else {

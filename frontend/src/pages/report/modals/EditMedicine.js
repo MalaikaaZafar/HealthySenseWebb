@@ -29,8 +29,10 @@ const EditMedicine = ({ Diagnosis, setDiagnosis, EditMedicineModal, EditMedicine
                 draft.Name = Diagnosis.prescription[MedicineIndex].Name;
                 draft.Dosage = Diagnosis.prescription[MedicineIndex].Dosage;
             })
+            console.log(Medicine);
         }
-    }, []);
+        console.log("Edit Medicine Modal");
+    }, [MedicineIndex]);
 
     return (
         <Modal
@@ -45,7 +47,7 @@ const EditMedicine = ({ Diagnosis, setDiagnosis, EditMedicineModal, EditMedicine
                     id="outlined-multiline-static"
                     label="Medicine Name"
                     variant="outlined"
-                    defaultValue={Medicine.Name}
+                    value={Medicine.Name}
                     onChange={(e) => setMedicine(draft => { draft.Name = e.target.value })}
                     style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
                 />
@@ -55,7 +57,7 @@ const EditMedicine = ({ Diagnosis, setDiagnosis, EditMedicineModal, EditMedicine
                     rows={4}
                     label="Dosage & Duration"
                     variant="outlined"
-                    defaultValue={Medicine.Dosage}
+                    value={Medicine.Dosage}
                     onChange={(e) => setMedicine(draft => { draft.Dosage = e.target.value })}
                     style={{ width: '100%', minWidth: '350px', marginBottom: '20px' }}
                 />

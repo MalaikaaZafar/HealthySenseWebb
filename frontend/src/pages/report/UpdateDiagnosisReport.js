@@ -30,6 +30,7 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
     overflowWrap: 'break-word',
     width: '100%',
     border: 'none',
+    flexWrap: 'wrap',
     gap: '10px'
 }));
 
@@ -43,9 +44,11 @@ const UpdateDiagnosisReport = ({ diagnosis, setDiagnosis, updatediagnosisreport,
     const [TestIndex, setTestIndex] = useState(-1);
 
 
-    const EditMedicineModalClose = () => { setEditMedicine(false) };
-    const EditMedicineModalOpen = () => {
+    const EditMedicineModalClose = () => {
         setMedicineIndex(-1);
+        setEditMedicine(false) 
+    };
+    const EditMedicineModalOpen = () => {
         setEditMedicine(true)
     };
     const HandleEditMedicine = (index) => {
@@ -160,9 +163,9 @@ const UpdateDiagnosisReport = ({ diagnosis, setDiagnosis, updatediagnosisreport,
                         >
                             <TableHead>
                                 <CustomTableRow>
-                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '25%' }}>Medicine</CustomTableCell>
-                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '55%' }}>Dosage & Duration</CustomTableCell>
-                                    <CustomTableCell style={{ width: '20%' }}></CustomTableCell>
+                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '20%' }}>Medicine</CustomTableCell>
+                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '50%' }}>Dosage & Duration</CustomTableCell>
+                                    <CustomTableCell style={{ width: '30%' }}></CustomTableCell>
                                 </CustomTableRow>
                             </TableHead>
                             <TableBody>
@@ -172,9 +175,9 @@ const UpdateDiagnosisReport = ({ diagnosis, setDiagnosis, updatediagnosisreport,
                                             <CustomTableRow
                                                 key={index}
                                             >
-                                                <CustomTableCell style={{ width: '25%' }}>{item.Name}</CustomTableCell>
-                                                <CustomTableCell style={{ width: '55%' }}>{item.Dosage}</CustomTableCell>
-                                                <CustomTableCell style={{ width: '20%' }}>
+                                                <CustomTableCell style={{ width: '20%' }}>{item.Name}</CustomTableCell>
+                                                <CustomTableCell style={{ width: '50%' }}>{item.Dosage}</CustomTableCell>
+                                                <CustomTableCell style={{ width: '30%' }}>
                                                     <Container
                                                         sx={{
                                                             display: 'flex',
@@ -183,10 +186,15 @@ const UpdateDiagnosisReport = ({ diagnosis, setDiagnosis, updatediagnosisreport,
                                                             justifyContent: 'center',
                                                             width: '100%',
                                                             height: '100%',
+                                                            flexWrap: 'wrap',
+                                                            gap: '10px',
                                                         }}
                                                     >
                                                         <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}
-                                                            onClick={() => HandleEditMedicine(index)}
+                                                            onClick={() => {
+                                                                HandleEditMedicine(index)
+                                                            }}
+
                                                             color='success'
                                                         >
                                                             Edit
@@ -251,8 +259,8 @@ const UpdateDiagnosisReport = ({ diagnosis, setDiagnosis, updatediagnosisreport,
                         >
                             <TableHead>
                                 <CustomTableRow>
-                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '80%' }}>Test</CustomTableCell>
-                                    <CustomTableCell style={{ width: '20%' }}></CustomTableCell>
+                                    <CustomTableCell style={{ fontWeight: 'bold', fontSize: '16px', width: '70%' }}>Test</CustomTableCell>
+                                    <CustomTableCell style={{ width: '30%' }}></CustomTableCell>
                                 </CustomTableRow>
                             </TableHead>
                             <TableBody>
@@ -260,8 +268,8 @@ const UpdateDiagnosisReport = ({ diagnosis, setDiagnosis, updatediagnosisreport,
                                     diagnosis.tests.map((item, index) => {
                                         return (
                                             <CustomTableRow>
-                                                <CustomTableCell style={{ width: '80%' }}>{item}</CustomTableCell>
-                                                <CustomTableCell style={{ width: '20%' }}>
+                                                <CustomTableCell style={{ width: '70%' }}>{item}</CustomTableCell>
+                                                <CustomTableCell style={{ width: '30%' }}>
                                                     <Container
                                                         sx={{
                                                             display: 'flex',
@@ -270,6 +278,8 @@ const UpdateDiagnosisReport = ({ diagnosis, setDiagnosis, updatediagnosisreport,
                                                             justifyContent: 'center',
                                                             width: '100%',
                                                             height: '100%',
+                                                            flexWrap: 'wrap',
+                                                            gap: '10px',
                                                         }}
                                                     >
                                                         <Button variant="contained" style={{ color: 'white', marginLeft: '10px' }}

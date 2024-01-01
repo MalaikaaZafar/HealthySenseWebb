@@ -497,6 +497,7 @@ const doctorController = {
     updateDiagnosis: async (req, res) => {
         const { id } = req.params;
         const { diagnosis, prescription, tests, notes } = req.body;
+        console.log(req.body);
         try {
             const diagnosisData = await Diagnosis.findOne({ appointmentId: id });
             if (!diagnosisData)
@@ -506,6 +507,7 @@ const doctorController = {
             diagnosisData.tests = tests;
             diagnosisData.notes = notes;
             await diagnosisData.save();
+            console.log(diagnosisData);
             return res.status(200).json({ message: "Success" });
         }
         catch (error) {
