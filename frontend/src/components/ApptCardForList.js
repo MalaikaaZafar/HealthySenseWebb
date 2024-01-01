@@ -5,12 +5,14 @@ import {createContext, useContext} from 'react';
 
 import DateIcon from '@mui/icons-material/DateRangeOutlined';
 import TimeIcon from '@mui/icons-material/AccessTimeOutlined';
-
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 
+
 const appointmentContext=createContext();
+
 function ApptCardForList({ type, appt }) {
+  console.log(appt?._id)
   const Navigate = useNavigate();
   const goToDetails = (event) => {
     event.preventDefault();
@@ -25,11 +27,13 @@ function ApptCardForList({ type, appt }) {
       variant="outlined"
       sx={{
         minWidth: 300,
-        maxWidth: 500,
+        maxWidth: 600,
         background: "white",
-        borderRadius: 5,
+        borderRadius: 2,
+        height:"100%",
         m: 1,
          p: 2,
+         boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .1)',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -123,6 +127,8 @@ function IsNotComplete({type, Navigate}) {
     </Box>
   );
 }
+
+
 function PatientDetails() {
   const appt=useContext(appointmentContext);
   const calcAge=()=>{

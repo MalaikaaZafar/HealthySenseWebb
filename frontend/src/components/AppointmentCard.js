@@ -46,11 +46,12 @@ function AppointmentCard({ type, appt }) {
       variant="outlined"
       onClick={goToDetails}
       sx={{
-        maxwidth: "300px",
-        minWidth: "80%",
-        background: "#F4F9FB",
-        borderRadius: "10px",
+        minWidth:'350px',
+        maxWidth:'100%',
+        background: "#white",
+        borderRadius: 3,
         margin: 2,
+        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .1)',
       }}
     >
       <Container
@@ -63,9 +64,9 @@ function AppointmentCard({ type, appt }) {
               sx={{ width: "100%", display: "flex", flexDirection: "column" }}
             >
               <Box
-                sx={{ width: "100%", display: "flex", flexDirection: "row" }}
+                sx={{ width: "100%", display: "flex", flexDirection: "row", mb:2 }}
               >
-                <Typography width="100%" variant="h5">
+                <Typography width="100%" variant="h5" sx={{mx:3}}>
                   {type === "doctor"
                     ? "Dr. " + appt?.doctorId?.user?.name : appt?.patientId?.user?.name
                     }
@@ -93,10 +94,12 @@ function AppointmentCard({ type, appt }) {
                           : "red",
                       display: "flex",
                       alignItems: "center",
+                      ml: "auto",
+                      mr:5,
                     }}
                   >
                     <Dot sx={{ fontSize: "smaller", mr: 1 }} />
-                    <Typography variant="caption" sx={{ ml: "auto" }}>
+                    <Typography variant="caption" sx={{  }}>
                       {appt?.status}
                     </Typography>
                   </Box>
@@ -106,17 +109,19 @@ function AppointmentCard({ type, appt }) {
               <Container
                 sx={{
                   display: "flex",
-                  margin: 0,
-                  padding: 0,
+                
                   flexDirection: "row",
+                 width:'100%',
+                 alignItems:'center',
+                  justifyContent: "space-between",
                 }}
               >
-                <Box sx={{ width: "100%" }}>
+                <Box sx={{ width: "100%", margin:0 }}>
                   <Typography sx={{ display: "flex"}}>
                     {appt?.type === "Online" ? (
-                      <VideoCameraFrontIcon sx={{ margin: "1%" }} />
+                      <VideoCameraFrontIcon sx={{ marginRight: "1%" }} />
                     ) : (
-                      <NoteAltIcon sx={{ margin: "1%" }} />
+                      <NoteAltIcon sx={{ marginRight: "1%" }} />
                     )}
                     {appt?.type ? appt.type : null} Session
                   </Typography>
@@ -126,11 +131,11 @@ function AppointmentCard({ type, appt }) {
                       width: "100%",
                     }}
                   >
-                    <TimeIcon sx={{ margin: "1%" }} />
+                    <TimeIcon sx={{ marginRight: "1%" }} />
                     {appt?.time}
                   </Typography>
-                  <Typography sx={{ display: "flex", alignItems: "center" }}>
-                    <DateIcon sx={{ margin: "1%" }} />
+                  <Typography sx={{ display: "flex"}}>
+                    <DateIcon sx={{ marginRight: "1%" }} />
                     {appt?.date
                       ? format(new Date(appt?.date), "yyyy-MM-dd")
                       : null}

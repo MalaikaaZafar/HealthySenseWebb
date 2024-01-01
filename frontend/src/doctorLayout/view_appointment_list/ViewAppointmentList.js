@@ -2,21 +2,12 @@ import {React, useEffect, useState} from 'react';
 import { Box, Container, Tab, Tabs, Typography } from '@mui/material';
 
 import ApptCardForList from '../../components/ApptCardForList';
-
-
-
-
-
-
+import api from '../../services/api';
 
 async function fetchAppointments() {
   try{
-    const appoinmentList= await fetch(`/doctor/consultations`,{
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    }).then(response =>  response.json());
+    const formattedStr= `/doctor/consultations`;
+    const appoinmentList= await api.get(formattedStr).then((response) => response.data);
     if(appoinmentList.message=== 'Success')
     {
         return appoinmentList.appt;
