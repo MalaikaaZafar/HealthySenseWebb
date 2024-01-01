@@ -1,12 +1,9 @@
 import { React, useEffect, useState } from "react";
 import axios from "axios";
 
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
+import { Container, Box, Tabs, Tab } from '@mui/material';
 
 import ApptCardForList from "../../components/ApptCardForList";
-import "./ViewApptList.css";
 
 const fetchAppointments = async () => {
   const appoinmentList = await axios.get(`http://localhost:3000/patient/consultations`)
@@ -19,7 +16,6 @@ export const AppointmentList = () => {
   const [appointmentList, setAppointmentList] = useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    console.log(newValue);
   };
 
   useEffect(() => {
@@ -33,8 +29,8 @@ export const AppointmentList = () => {
   }, []);
 
   return (
-    <div className="apptListScreen">
-      <Box sx={{ justifyContent: "center", width: "100%" }}>
+    <Container maxWidth="md" width="100%">
+      <Box display="flex" justifyContent="center" width="100%">
         <Tabs
           value={value}
           onChange={handleChange}
@@ -42,35 +38,21 @@ export const AppointmentList = () => {
           indicatorColor="primary"
           aria-label="secondary tabs example"
         >
-          <Tab
-            value="Booked"
-            label="Scheduled"
-            style={{ textTransform: "none" }}
-          />
-          <Tab
-            value="Completed"
-            label="Completed"
-            style={{ textTransform: "none" }}
-          />
-          <Tab
-            value="Cancelled"
-            label="Cancelled"
-            style={{ textTransform: "none" }}
-          />
+          <Tab value="Booked" label="Scheduled" />
+          <Tab value="Completed" label="Completed" />
+          <Tab value="Cancelled" label="Cancelled" />
         </Tabs>
       </Box>
-      <div className="apptListBody">
-        <div className="apptList">
-          {appointmentList &&
-            appointmentList.map((app, index) =>
-              app.status === value ? (
-                <div className="apptCard">
-                  <ApptCardForList key={index} type="doctor" appt={app} />
-                </div>
-              ) : null
-            )}
-        </div>
-      </div>
-    </div>
+      <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop:4,justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
+              {appointmentList &&
+          appointmentList.map((app, index) =>
+            app.status === value ? (
+              // <Box key={index} width="50%" >
+                <ApptCardForList type="doctor" appt={app} />
+              // </Box>
+            ) : null
+          )}
+      </Box>
+    </Container>
   );
 };

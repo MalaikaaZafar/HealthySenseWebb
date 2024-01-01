@@ -50,7 +50,7 @@ function App() {
             <Route path='activity' element={<AdminActivity />} />
           </Route>
 
-          <Route path="/doctor" element={<NavBar />}>
+          <Route path="/doctor" element={<NavBar />} >
             <Route index element={<CustomTabPanel />} />
             <Route path="appointments/:id" element={<AppointmentDetail />} />
             <Route path="appointments" element={<CustomTabPanel />} />

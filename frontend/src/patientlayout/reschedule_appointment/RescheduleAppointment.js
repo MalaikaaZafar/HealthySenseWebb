@@ -4,15 +4,16 @@ import StarIcon from "@mui/icons-material/StarBorderOutlined";
 import CalendarIcon from "@mui/icons-material/CalendarTodayOutlined";
 import TimeIcon from "@mui/icons-material/AccessTime";
 import ReschedIcon from '@mui/icons-material/EditCalendarOutlined';
-import { ReactComponent as ClinicIcon } from './healthIcons.svg';
-import { ReactComponent as HealthIconBlue } from './healthIconBlue.svg';
+import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
+import NoteAltIcon from "@mui/icons-material/NoteAlt";
 
 import "@fontsource/roboto";
 
 import "@fontsource/roboto";
 import { Box, Grid, Container, Typography, Card, CardContent, FormControl, RadioGroup, FormControlLabel, Radio, TextareaAutosize, Button, InputLabel, Select, MenuItem } from '@mui/material';
-
-import { format, set } from "date-fns";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import { format } from "date-fns";
 
 import { useImmer } from "use-immer";
 import { useState, useEffect, createContext, useContext } from "react";
@@ -45,6 +46,7 @@ export const RescheduleAppointment = () => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [groupedSlots, setGroupedSlots] = useState(null);
   const [type, setType] = useState("Online");
+  const [open, setOpen] = useState(false);
   const { id } = useParams();
 
   function setReasonHandler(event) {
@@ -78,7 +80,7 @@ export const RescheduleAppointment = () => {
       }))
       .then(response=>response.data);
       if (resched.message==="Success") {
-        alert("Appointment Rescheduled Successfully! Please check your email for further details.");
+      setOpen(true);
         setAppointment(draft=>{
           draft.date=resched.appointment.date;
           draft.time=resched.appointment.time;
@@ -114,14 +116,9 @@ export const RescheduleAppointment = () => {
     setSelectedTime(e.target.value);
   };
 
-  const setOnline = () => {
-    setType("Online");
+  const handleClose = () => {
+    setOpen(false);
   }
-
-  const setClinic = () => {
-    setType("Clinic");
-  }
-
 
   return (
     <Container >
@@ -230,8 +227,9 @@ export const RescheduleAppointment = () => {
       <Box
       onClick={()=>{setType(session.type)}} 
       sx={{ display: 'flex', alignItems: 'center'}}>
-        {type===session.type?   <ClinicIcon/> : <HealthIconBlue/>}
-      </Box>
+{session.type === "Online" ? 
+                        <VideoCameraFrontIcon sx={{color: type===session.type? "white":"#2854C3", ml:1}}/>:
+                        <NoteAltIcon sx={{color: type===session.type? "white":"#2854C3", ml:1}}/>}      </Box>
       <CardContent>
       <Box
   onClick={()=>{setType(session.type)}}  
@@ -290,6 +288,11 @@ export const RescheduleAppointment = () => {
   </Box>
 </Container>
       </Box>
+      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+         <MuiAlert elevation={6} variant="filled">
+          Your appointment has been rescheduled successfully!
+        </MuiAlert>
+      </Snackbar>
     </Container>
   );
 }

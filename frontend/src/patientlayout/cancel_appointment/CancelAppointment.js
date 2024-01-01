@@ -8,7 +8,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs from 'dayjs';
 import CancelIcon from '@mui/icons-material/EventBusyOutlined';
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -20,6 +21,9 @@ import AppointmentCard from "../../components/AppointmentCard";
 export const CancelAppointment = () => {
     const [reason, setReason]= useState("Something urgent came up");
     const [appointment, setAppointment] = useImmer(null);
+    const [open, setOpen] = useState(false);
+    const [openError, setOpenError] = useState(false);
+    const [openErr, setOpenErr] = useState(false);
     const {id}= useParams();
     const fetchAppointment=async ()=>{
       const formattedStr = `http://localhost:3000/patient/consultations/${id}`;
@@ -32,26 +36,47 @@ export const CancelAppointment = () => {
       setAppointment(appoinmentList);
     }
 
+    
+
     const cancelAppointment=async ()=>{
-      if (appointment.status!=="Cancelled")
-      {const formattedStr = `http://localhost:3000/patient/consultations/cancel`;
-      const appointmentList= await axios.put(formattedStr, {id: id, reason: reason}).then((response) => response.data);
-      if (appointmentList.message==="Success")
+      if (reason)
       {
-        alert("Appointment Cancelled");
-        setAppointment(draft=>{
-          draft.status="Cancelled";
-          draft.updateReason=reason;
-        })
+        if (appointment.status!=="Cancelled"){
+        try{
+        const formattedStr = `http://localhost:3000/patient/consultations/cancel`;
+        const appointmentList= await axios.put(formattedStr, {id: id, reason: reason}).then((response) => response.data);
+        if (appointmentList.message==="Success")
+        {
+          setOpen(true);
+          setAppointment(draft=>{
+            draft.status="Cancelled";
+            draft.updateReason=reason;
+          })
+        }
+        else 
+        {
+          alert("Something went wrong"); 
+        }}
+        catch(err){
+          alert("Something went wrong");
+        }}
+
+        else 
+        {
+          setOpenError(true);
+        }
       }
-      else 
-      {
-        alert("Something went wrong"); 
-      }}
-      else 
-      {
-        alert ("Appointment already cancelled");
+      else {
+        setOpenErr(true);
       }
+     
+    }
+
+    const handleCloseError = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setOpenError(false);
     }
 
     useEffect(() => {
@@ -66,6 +91,13 @@ export const CancelAppointment = () => {
 
     function setReasonHandler(event){
         setReason(event.target.value);
+    }
+
+    const handleCloseErr = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setOpenErr(false);
     }
 
 return (
@@ -199,7 +231,21 @@ return (
   </Grid>
 
 </Grid>
-
+<Snackbar open={open} autoHideDuration={1000} onClose={handleCloseError}>
+         <MuiAlert severity="success" elevation={6} variant="filled">
+          Your appointment has been cancelled successfully!
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar open={openError} autoHideDuration={1000} onClose={handleCloseError}>
+         <MuiAlert severity="error" elevation={6} variant="filled">
+          Your appointment was already cancelled
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar open={openErr} autoHideDuration={500} onClose={handleCloseErr}>
+         <MuiAlert elevation={6}  variant="filled" severity="error">
+          Please fill all the fields!
+        </MuiAlert>
+      </Snackbar>
   </Container>
 );
 }

@@ -16,7 +16,14 @@ import dayjs from 'dayjs';
 import { style } from '@mui/system';
 
 
-const DetailComponent = ({appt}) => {
+const DetailComponent = ({appt, user}) => {
+  const getAge = () => {
+    const date=new Date(appt?.patientId?.dob);
+    console.log(date);
+    const ageDifMs = Date.now() - date.getTime();
+    const ageDate = new Date(ageDifMs); 
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  }
   const  navigate  = useNavigate();
   const reschedAppt = () => {
     navigate(`/patient/appointments/reschedule/${appt._id}`);
@@ -25,35 +32,41 @@ const DetailComponent = ({appt}) => {
   const cancelAppt = () => {
     navigate(`/patient/appointments/cancel/${appt._id}`);
   };
-
-
+  console.log(appt?.status);
+  console.log(appt?.status==="Cancelled"?'red': appt?.status==="Booked"?"#2854C3": appt?.status==="Completed" ? "green":null)
   return (
     <Container x={{paddingLeft:0, paddingRight:0}}>
-      <Card sx={{ marginTop: 2, padding:2, display: 'flex', flexDirection: 'row', background:'#eeeeee' }}>
+      <Card sx={{ marginTop: 2, padding:2, display: 'flex', flexDirection: {xs:'column', md:'row'}, background:'#eeeeee' }}>
         <Box display='flex' flexDirection='column' alignItems='flex-start' sx={{margin:4, width:'100%'}}>
-        <Box display="flex" alignItems="center" sx={styles.heading}>
-            <TimeIcon sx={{ marginRight: 1 }} />
-            <Typography variant="h6">Appointment Timing</Typography>
-          </Box>
-         <Box display="flex" flexDirection="column" sx={{ marginLeft: 4 }}>
-            <Typography variant="body1">{appt.time}</Typography>
-            <Typography variant="body1">{format(new Date(appt.date), 'yyyy-MM-dd')}</Typography>
-          </Box>
+        {user==="patient" ?
+        <>
           <Box display="flex" alignItems="center" sx={styles.heading}>
             <PatientIcon sx={{ marginRight: 1 }} />
             <Typography variant="h6" >Doctor Information</Typography>
           </Box>
           <Box display="flex" flexDirection="column" sx={{ marginLeft: 4 }}>
-            <Typography variant="body1">{appt.doctorId.specialization}</Typography>
-            <Typography variant="body1">{appt.doctorId.experience} Years of Experience</Typography>
-            <Typography variant="body1">{appt.doctorId.workingHours}</Typography>
+            <Typography variant="body1">{appt?.doctorId?.specialization}</Typography>
+            <Typography variant="body1">{appt?.doctorId?.experience} Years of Experience</Typography>
+            <Typography variant="body1">{appt?.doctorId?.workingHours}</Typography>
           </Box>
+          </> : 
+          <>
+          <Box display="flex" alignItems="center" sx={styles.heading}>
+            <PatientIcon sx={{ marginRight: 1 }} />
+            <Typography variant="h6" >Patient Information</Typography>
+          </Box>
+          <Box display="flex" flexDirection="column" sx={{ marginLeft: 4 }}>
+            <Typography variant="body1">{appt?.patientId?.bloodGroup}</Typography>
+            <Typography variant="body1">{getAge()} Years Old</Typography>
+          </Box>
+          </>
+          }
           <Box display="flex" alignItems="center" sx={styles.heading}>
             <ProblemIcon sx={{ marginRight: 1 }} />
             <Typography variant="h6" >Problem Description</Typography>
           </Box>
           <Box display="flex" flexDirection="column" sx={{ marginLeft: 4 }}>
-            <Typography variant="body1">{appt.problem}</Typography>
+            <Typography variant="body1">{appt?.problem}</Typography>
           </Box>
           <Box display="flex" alignItems='center' sx={styles.heading}>
             <FeeIcon sx={{ marginRight: 1 }} />
@@ -62,25 +75,24 @@ const DetailComponent = ({appt}) => {
           <Box display="flex" flexDirection="column" sx={{ marginLeft: 4 }}>
             <Typography color="primary" fontWeight="bold">{appt.paymentStatus}</Typography>
             {
-              appt.doctorId.session.map((sess) => {
-                if (sess.type === appt.type) {
+              appt?.doctorId?.session?.map((sess) => {
+                if (sess?.type === appt?.type) {
                   return <Typography variant="body1">Rs. {sess.fee}</Typography>
                 }
               })
             }
           </Box>
         </Box>
-        <Box sx={{margin:4, width:'100%'}}>
+        <Box sx={{margin:4, width:'100%', display:"flex" }}>
           <Box display="flex" flexDirection="column" >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateCalendar defaultValue={dayjs(appt.date)} readOnly disabled
-                             sx={{ '& .Mui-selected': {  backgroundColor: appt?.status==="Cancelled"?'red': appt?.status==="Booked"?"#2854C3":"green" } }}/>
-            </LocalizationProvider>
+            <DateCalendar value={dayjs(appt?.date)} readOnly disabled
+               sx={{ '& .Mui-selected': {  backgroundColor: appt?.status==="Cancelled"?'red': appt?.status==="Booked"?"#2854C3": appt?.status==="Completed" ? "green":null } }}/>
+             </LocalizationProvider>
             <Box display="flex" justifyContent="center">
           {appt &&
            appt.status ==="Booked" && (
               <Box display="flex" flexDirection="row" justifyContent="center">
-                 <Button onClick={reschedAppt} variant="contained" sx={styles.button} startIcon={<MessageIcon/>}>Chat</Button>
                 <Button onClick={reschedAppt} variant="contained" sx={styles.button} startIcon={<ReschedIcon/>}>Reschedule</Button>
                 <Button onClick={cancelAppt} variant="contained" sx={styles.button} startIcon={<CancelIcon/>}>Cancel</Button>
               </Box>)}
@@ -106,7 +118,7 @@ const styles={
   },
 
   button:{
-    padding:2, width:"100%", m:1, textAlign:'left', textTransform:'none', background:'#2854C3',
+    padding:1.5, width:"100%", m:1, textAlign:'left', textTransform:'none', background:'#2854C3',
     "&:hover": {
       background: "#2854C3",
       boxShadow: "0 0 0 0.2rem #2854C3",

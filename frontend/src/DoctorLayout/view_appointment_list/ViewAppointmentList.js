@@ -1,10 +1,13 @@
 import {React, useEffect, useState} from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
+import { Box, Container, Tab, Tabs, Typography } from '@mui/material';
 
 import ApptCardForList from '../../components/ApptCardForList';
-import './ViewApptList.css';
+
+
+
+
+
+
 
 async function fetchAppointments() {
   try{
@@ -47,30 +50,28 @@ async function fetchAppointments() {
   }, []);
 
   return (
-<div className="apptListScreen">
-     <Box sx={{justifyContent:'center', width:'100%'}} >
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        textColor="primary"
-        indicatorColor="primary"
-        aria-label="secondary tabs example"
-      >
-        <Tab value="Booked" label="Scheduled" style={{textTransform:'none'}} />
-        <Tab value="Completed" label="Completed" style={{textTransform:'none'}} />
-        <Tab value="Cancelled" label="Cancelled" style={{textTransform:'none'}} />
-      </Tabs>
-    </Box>
-      <div className="apptListBody">
-          <div className="apptList">
-    {appointmentList && appointmentList.map((app, index) => 
-        app?.status === value ? <div style={{ margin:'10px', width:'45%'}}><ApptCardForList key={index} type="patient" appt={app}/></div> : null
-  )}
-    </div>
-    </div>
-    </div>
-    
- 
+    <Container maxWidth="lg">
+      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mb: 2 }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          textColor="primary"
+          indicatorColor="primary"
+          aria-label="secondary tabs example"
+        >
+          <Tab value="Booked" label="Scheduled" sx={{ textTransform: 'none' }} />
+          <Tab value="Completed" label="Completed" sx={{ textTransform: 'none' }} />
+          <Tab value="Cancelled" label="Cancelled" sx={{ textTransform: 'none' }} />
+        </Tabs>
+      </Box>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems:'center', justifyContent:'center' }}>
+        {appointmentList && appointmentList.map((app, index) => 
+          app?.status === value ? (
+              <ApptCardForList type="patient" appt={app} />
+          ) : null
+        )}
+      </Box>
+    </Container>
   );
 }
 

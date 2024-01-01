@@ -212,7 +212,7 @@ const doctorController = {
                 return res.status(404).json({ message: "Doctor not found" });
             const newSlots = doctor.appointmentSlots.filter(slot1 => slot1.date !== date)
             const slots3=newSlots.filter(slot1 => slot1.time !== time)
-            // doctor.appointmentSlots = newSlots;
+            doctor.appointmentSlots = slots3;
             await doctor.save();
             return res.status(200).json({ message: "Success" , slots:slots3});
         }

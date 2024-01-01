@@ -7,6 +7,6 @@ const router = express.Router();
 router.post('/login', userController.login);
 router.post('/signup', userController.signup);
 
-router.get('/messages', userController.getMessages);
+router.get('/messages/:id', userController.getMessages);
 router.post('/messages', userController.sendMessage);
 module.exports = router;

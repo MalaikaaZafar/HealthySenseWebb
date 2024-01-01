@@ -1,23 +1,30 @@
 import "@fontsource/roboto";
-import "./AppointmentSlots.css";
 import { React, useState, createContext, useContext, useEffect } from "react";
-import axios from "axios";  
+import axios from "axios";
 
 import { format } from "date-fns";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { FormControl } from "@mui/material";
 import { Card } from "@mui/material";
-import {CardContent} from "@mui/material";
-
+import { CardContent } from "@mui/material";
+import { Container, Box, Button, Typography } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
 
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const groupSlotsByDate = (slotData) => {
   const groupedSlots = {};
@@ -60,17 +67,21 @@ const AddSlotDialog = ({ open, setOpen }) => {
   const [date, setDate] = useState();
   const [timeList, setTimeList] = useState([]);
   const { slotList, setSlotList } = useContext(slotContext);
-  const [type,setType]=useState("Online");
+  const { addSlotOpen, setAddSlotOpen } = useContext(addContext);
+  const {openErrAdd, setOpenErrAdd} = useContext(errAddContext);
+  const [type, setType] = useState("Online");
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleSave = async () => {
-    const responseObj=await axios.put(`http://localhost:3000/doctor/addSlots`,{slots: timeList})
-                      .then(response=>response.data);
+    if (timeList.length !== 0) {
+    const responseObj = await axios
+      .put(`http://localhost:3000/doctor/addSlots`, { slots: timeList })
+      .then((response) => response.data);
 
     if (responseObj.message === "Success") {
-      alert("Slots added successfully!");
+      setAddSlotOpen(true);
       setSlotList((prevSlotList) => {
         const currentDateKey = format(new Date(date), "yyyy-MM-dd");
         const updatedSlotList = { ...prevSlotList };
@@ -82,11 +93,14 @@ const AddSlotDialog = ({ open, setOpen }) => {
           [currentDateKey]: [...updatedSlotList[currentDateKey], ...timeList],
         };
       });
-    }
-    else{
+    } else {
       alert("Slots could not be added!");
     }
     handleClose();
+  }
+  else {
+    setOpenErrAdd(true)
+  }
   };
 
   const handleDateChange = (newDate) => {
@@ -94,8 +108,6 @@ const AddSlotDialog = ({ open, setOpen }) => {
   };
 
   const handleTimeChange = (newTime) => {
-    console.log("newTime:", newTime);
-
     if (newTime) {
       if (
         Array.isArray(newTime) &&
@@ -123,7 +135,7 @@ const AddSlotDialog = ({ open, setOpen }) => {
             const timeObj = {
               time: timeStr,
               availability: true,
-              type:type,
+              type: type,
               date: format(new Date(date), "yyyy-MM-dd"),
             };
             setTimeList([...timeList, timeObj]);
@@ -178,18 +190,30 @@ const AddSlotDialog = ({ open, setOpen }) => {
         }}
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div className="typeSetter">
-              <FormControl sx={{ width: "100%", margin: "5px",marginBottom:'0px' }}>
-                <Card onClick={()=>{setType("Online")}} sx={type && type==="Online"? styles.card1:styles.card2}>
-                 <CardContent>Online Session</CardContent>
-                </Card>
-              </FormControl> 
-              <FormControl sx={{ width: "100%", margin: "5px" }}>
-                <Card onClick={()=>{setType("Clinic")}} sx={type && type==="Clinic"? styles.card1:styles.card2}>
-                 <CardContent>Clinic Session</CardContent>
-                </Card>
-              </FormControl>
-            </div>
+          <div className="typeSetter">
+            <FormControl
+              sx={{ width: "100%", margin: "5px", marginBottom: "0px" }}
+            >
+              <Card
+                onClick={() => {
+                  setType("Online");
+                }}
+                sx={type && type === "Online" ? styles.card1 : styles.card2}
+              >
+                <CardContent>Online Session</CardContent>
+              </Card>
+            </FormControl>
+            <FormControl sx={{ width: "100%", margin: "5px" }}>
+              <Card
+                onClick={() => {
+                  setType("Clinic");
+                }}
+                sx={type && type === "Clinic" ? styles.card1 : styles.card2}
+              >
+                <CardContent>Clinic Session</CardContent>
+              </Card>
+            </FormControl>
+          </div>
           <h3 style={{ margin: "5px" }}>Select Date</h3>
           <DatePicker
             format="YYYY - MM - DD "
@@ -224,90 +248,141 @@ const AddSlotDialog = ({ open, setOpen }) => {
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+const delContext = createContext();
+const addContext = createContext();
+const errAddContext = createContext();
 
 function AppointmentSlots() {
   const [open, setOpen] = useState(false);
   const [slotList, setSlotList] = useState(null);
-  const [groupedSlots, setGroupedSlots] = useState(null); // [date, slots
+  const [groupedSlots, setGroupedSlots] = useState(null);
+  const [openDel, setOpenDel] = useState(false);
+  const [addSlotOpen, setAddSlotOpen] = useState(false);
+  const [openErrAdd, setOpenErrAdd] = useState(false);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const handleCloseDel = () => {
+    setOpenDel(false);
+  };
 
-  console.log("slotList:", slotList);
+  const handleCloseAdd = () => {
+    setAddSlotOpen(false);
+    setOpenErrAdd(false);
+  }
+
+  
   const getSlots = async () => {
-    try{
+    try {
       const responseObj = await axios.get(`http://localhost:3000/doctor/slots`);
       if (responseObj.data.message === "Success") {
         setSlotList(groupSlotsByDate(responseObj.data.slots));
-        // setslotList(groupSlotsByDate(responseObj.data.slots));
-        
-      }else
-      {
+      } else {
         alert("Slots could not be fetched!");
       }
-    }
-    catch(err){
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchFunc = async () => {
-    getSlots();
+      getSlots();
     };
     fetchFunc();
-  },[]);
- 
+  }, []);
 
   return (
-    <div className="appointmentDetailsScreen">
-      <div className="ScreenBodyAppointment">
-        <div className="halfApp">
-          <div className="slotList">
-            {slotList &&
-              Object.keys(slotList).map((date) => {
-                return (
-                  <slotContext.Provider value={{ slotList, setSlotList }}>
-                  <SlotList date={date} slotListByDate={slotList[date]} />
-                  </slotContext.Provider>
-                  )
-              })}
-          </div>
+    <Container>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            mt: 3,
+            alignItems: "stretch",
+            justifyContent: "center",
+          }}
+        >
+          {slotList &&
+            Object.keys(slotList).map((date) => {
+              return (
+                <slotContext.Provider value={{ slotList, setSlotList }}>
+                  <delContext.Provider value={{ openDel, setOpenDel }}>
+                    <SlotList date={date} slotListByDate={slotList[date]} />
+                  </delContext.Provider>
+                </slotContext.Provider>
+              );
+            })}
+        </Box>
 
-          <div className="appointmentBtns">
-            <Button
-              variant="contained"
-              style={{
-                background: "#2854c3",
-                margin: "10px",
-                width: "25%",
-                padding: "10px",
-                textTransform: "none",
-                borderRadius: "10px",
-              }}
-              onClick={handleClickOpen}
-            >
-              Add Slots
-            </Button>
-          </div>
-          {open ? (
-            <slotContext.Provider value={{ slotList, setSlotList }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Button
+            variant="contained"
+            sx={{
+              background: "#2854c3",
+              m: 1,
+              width: "100%",
+              p: 1,
+              textTransform: "none",
+              borderRadius: 1,
+            }}
+            onClick={handleClickOpen}
+          >
+            Add Slots
+          </Button>
+        </Box>
+        {open ? (
+          <slotContext.Provider value={{ slotList, setSlotList }}>
+            <addContext.Provider value={{ addSlotOpen, setAddSlotOpen }}>
+              <errAddContext.Provider value={{ openErrAdd, setOpenErrAdd }}>
               <AddSlotDialog open={open} setOpen={setOpen} />
-            </slotContext.Provider>
-          ) : null}
-        </div>
-      </div>
-    </div>
+              </errAddContext.Provider>
+            </addContext.Provider>
+          </slotContext.Provider>
+        ) : null}
+      </Box>
+      <Snackbar open={openDel} autoHideDuration={500} onClose={handleCloseDel}>
+        <MuiAlert elevation={6} variant="filled">
+          The slot has been deleted successfully!
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={addSlotOpen}
+        autoHideDuration={500}
+        onClose={handleCloseAdd}
+      >
+        <MuiAlert elevation={6} variant="filled">
+          The slot has been added successfully!
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar open={openErrAdd} autoHideDuration={500} onClose={handleCloseAdd}>
+        <MuiAlert severity="error" elevation={6} variant="filled">
+          Please select a date and time to add a slot!
+        </MuiAlert>
+      </Snackbar>
+
+    </Container>
   );
 }
 
 const SlotList = ({ date, slotListByDate }) => {
   const [open, setOpen] = useState(false);
-  const {slotList,setSlotList}=useContext(slotContext);
+  const { slotList, setSlotList } = useContext(slotContext);
+  const { openDel, setOpenDel } = useContext(delContext);
   function checkDate(date) {
     const today = new Date();
-    const todayDate = format(today, "yyyy-MM-dd");
     if (date >= format(today.setDate(today.getDate() + 1), "yyyy-MM-dd")) {
       return true;
     } else {
@@ -315,72 +390,86 @@ const SlotList = ({ date, slotListByDate }) => {
     }
   }
 
-  const deleteSlot = async (time,type) => {
-    console.log("e.target.value:", time);
-    console.log("e.target.value2:", type);
-    const responseObj=await axios.put(`http://localhost:3000/doctor/deleteSlot`,{date:date, time:time, type:type})
-                      .then(response=>response.data);
-    if (responseObj.message === "Success") {
-      alert("Slot deleted successfully!");
-      setSlotList(groupSlotsByDate(responseObj.slots))
+  const deleteSlot = async (time, type) => {
+    try {
+      const responseObj = await axios
+        .put(`http://localhost:3000/doctor/deleteSlot`, {
+          date: date,
+          time: time,
+          type: type,
+        })
+        .then((response) => response.data);
+      if (responseObj.message === "Success") {
+        setOpenDel(true);
+        setSlotList(groupSlotsByDate(responseObj.slots));
+      }
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   const day = findDayFromDate(date);
   return (
-    <div className="slotDay">
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          borderRadius: "10px",
-          overflow: "hidden",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        }}
+    <Box sx={{ m: 1, mt: 3 }}>
+      <Table
+        sx={{ minWidth: 300, maxWidth: 500, height: "100%", borderRadius: 10 }}
       >
-        <thead>
-          <tr>
-            <th
+        <TableHead>
+          <TableRow>
+            <TableCell
               colSpan={3}
-              style={{
+              sx={{
                 background: "#2854C3",
                 color: "#ffff",
-                padding: "15px",
-                borderTopLeftRadius: "10px",
-                borderTopRightRadius: "10px",
+                padding: 2,
+                width: "33%",
               }}
             >
-              {date} {day}
-            </th>
-          </tr>
-          <tr
-            style={{
-              background: "#f9f9f9",
-              color: "#2854C3",
-              fontWeight: "bold",
-            }}
+              <Typography variant="h6">
+                {date} {day}
+              </Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow
+            sx={{ background: "#f9f9f9", color: "#2854C3", fontWeight: "bold" }}
           >
-            <td style={{ padding: "10px", textAlign: "left" }}>Slot Timing</td>
-            <td style={{ padding: "10px", textAlign: "center" }}>
+            <TableCell sx={{ padding: "5px", textAlign: "left", width: "33%" }}>
+              Slot Timing
+            </TableCell>
+            <TableCell
+              sx={{ padding: "5px", textAlign: "center", width: "33%" }}
+            >
               Availability
-            </td>
-            <td style={{ padding: "10px", textAlign: "right" }}>Actions</td>
-          </tr>
-        </thead>
-        <tbody>
+            </TableCell>
+            <TableCell
+              sx={{ padding: "5px", textAlign: "right", width: "33%" }}
+            >
+              Actions
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {slotListByDate &&
             slotListByDate.map((slot) => {
               return (
-                <tr>
-                  <td style={{ padding: "10px" }}>{slot.time}</td>
-                  <td style={{ padding: "10px" }}>
+                <TableRow key={slot.time}>
+                  <TableCell
+                    sx={{ padding: "5px", textAlign: "left", width: "33%" }}
+                  >
+                    {slot.time}
+                  </TableCell>
+                  <TableCell
+                    sx={{ padding: "5px", textAlign: "center", width: "33%" }}
+                  >
                     {slot.availability ? "Available" : "Unavailable"}
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "right" }}>
+                  </TableCell>
+                  <TableCell
+                    sx={{ padding: "5px", textAlign: "right", width: "33%" }}
+                  >
                     <Button
                       disabled={!checkDate(date)}
-                      onClick={()=>deleteSlot(slot.time, slot.type)}
-                      style={{
+                      onClick={() => deleteSlot(slot.time, slot.type)}
+                      sx={{
                         textTransform: "none",
                         background: !checkDate(date) ? "gray" : "#2854c3",
                         color: "#ffffff",
@@ -388,36 +477,33 @@ const SlotList = ({ date, slotListByDate }) => {
                     >
                       Delete Slot
                     </Button>
-                  </td>
-                </tr>
-              )
+                  </TableCell>
+                </TableRow>
+              );
             })}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </Box>
   );
 };
 
-
-const styles={
-  card1:{
+const styles = {
+  card1: {
     width: "90%",
-    marginBottom:'0px',
+    marginBottom: "0px",
     background: "#2854c3",
     color: "white",
     borderRadius: "10px",
     padding: "10px",
   },
-  card2:{
+  card2: {
     width: "90%",
     margin: "5px",
     background: "#f7f7f7",
     color: "black",
     borderRadius: "10px",
     padding: "10px",
-  }
-}
-
-
+  },
+};
 
 export default AppointmentSlots;

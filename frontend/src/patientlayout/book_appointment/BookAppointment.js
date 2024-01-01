@@ -1,37 +1,48 @@
 import PatientIcon from "@mui/icons-material/PeopleAltOutlined";
 import ExperienceIcon from "@mui/icons-material/WorkspacePremiumOutlined";
 import StarIcon from "@mui/icons-material/StarBorderOutlined";
-import ClinicIcon from "./healthIcons.svg";
 import CalendarIcon from "@mui/icons-material/CalendarTodayOutlined";
 import TimeIcon from "@mui/icons-material/AccessTime";
+import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
+import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import "@fontsource/roboto";
 
-import { Form, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import  DoctorCard  from "../../components/DoctorCard";
+import DoctorCard2 from "../../components/DoctorCardMalaika";
 
-import "./BookAppointment.css";
-import Button from "@mui/material/Button";
 import "@fontsource/roboto";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import { format } from "date-fns";
-import Card from "@mui/material/Card";
-import { CardContent } from "@mui/material";
+import {
+  Box,
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Typography,
+} from "@mui/material";
+
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 
 export const BookAppointment = () => {
   const [doctor, setDoctor] = useState(null);
-  const [type, setType] = useState(null);
+  const [type, setType] = useState("Online");
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [problem, setProblem] = useState(null);
   const [groupedSlots, setGroupedSlots] = useState(null);
   const { id } = useParams();
-
+  const [open, setOpen] = useState(false);
+  const [openErr, setOpenErr] = useState(false);
+  const [appt, setAppt] = useState(null);
   const groupSlotsByDate = (slotData) => {
     console.log(slotData);
     const groupedSlots = {};
@@ -49,8 +60,6 @@ export const BookAppointment = () => {
   };
 
   const Navigate = useNavigate();
-
-  //Input handlers
   const setDate = (event) => {
     setSelectedDate(event.target.value);
     setSelectedTime(null);
@@ -61,23 +70,16 @@ export const BookAppointment = () => {
   const setReasonHandler = (event) => {
     setProblem(event.target.value);
   };
-  const setOnline = () => {
-    setType("Online");
-  }
-  const setClinic = () => {
-    setType("Clinic");
-  }
 
-  
   const fetchAppointment = async () => {
     try {
-      const formattedStr = `http://localhost:3000/patient/doctors/658aeab2a07cfdec21fc4989`;
+      const formattedStr = `http://localhost:3000/patient/doctors/${id}`;
       const doctorObj = await axios
         .get(formattedStr)
         .then((response) => response.data);
       if (doctorObj.message === "Success") {
         setDoctor(doctorObj.doctor);
-        const grp=groupSlotsByDate(doctorObj.doctor.appointmentSlots);
+        const grp = groupSlotsByDate(doctorObj.doctor.appointmentSlots);
         setGroupedSlots(grp);
       }
     } catch (err) {
@@ -86,24 +88,30 @@ export const BookAppointment = () => {
   };
 
   const bookAppt = async () => {
-    try{
-        const resched=await axios.post("http://localhost:3000/patient/consultations/bookAppt", ({
-          patientId:"6585484c797f80875a8a769c",
-          doctorId:doctor._id,
+    if (selectedDate && selectedTime && problem ){
+    try {
+        const resched = await axios
+        .post("http://localhost:3000/patient/consultations/bookAppt", {
+          patientId: "6585484c797f80875a8a769c",
+          doctorId: doctor._id,
           date: selectedDate,
           time: selectedTime,
           problem: problem,
-          type:type,
-        }))
-        .then(response=>response.data);
-        if (resched.message==="Success") {
-          Navigate(`/patient/appointments/${resched.id}`);
-        }
-    }
-    catch(err){
-        alert(err);
+          type: type,
+        })
+        .then((response) => response.data);
+      if (resched.message === "Success") {
+        setOpen(true);
+        setAppt(resched.id);
+      }
+    } catch (err) {
+      alert(err);
     }
   }
+  else {
+    setOpenErr(true);
+  }
+  };
   useEffect(() => {
     const fetchData = async () => {
       await fetchAppointment();
@@ -111,61 +119,147 @@ export const BookAppointment = () => {
     fetchData();
   }, []);
 
-  const reschedAppt = () => {
-    Navigate(`/patient/appointments/reschedule/${id}`);
+
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+    Navigate(`/patient/appointments/${appt}`);
   };
 
-  const cancelAppt = () => {
-    Navigate(`/patient/appointments/cancel/${id}`);
-  };
+  const handleCloseErr = (event, reason) => {
+    setOpenErr(false);
+  }
   return (
-    <div className="bookApptScreen">
-      <div className="bookApptScreenBody">
-        <div className="bookApptTop">
-          {doctor && (
-            <div className="bookApptTopLeft">
-              <DoctorCard user={doctor} />
-            </div>
-          )}
-          <div className="bookApptTopRight">
-            <div className="bookApptRight">
-              <PatientIcon sx={styles.icon} />
-              <p>
+    <Container sx={{mt:2}}>
+      <Box>
+        <Grid container spacing={2} alignItems="stretch">
+          <Grid item md={6} sm={12} display="flex" alignItems="center">
+            {doctor && <DoctorCard2 user={doctor} />}
+          </Grid>
+          <Grid item xs={3} sm={4} md={2}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              height="50%"
+              padding="10px"
+              sx={{
+                margin: 3,
+                backgroundColor: "#eeeeee",
+                borderRadius: "10px",
+              }}
+            >
+              <PatientIcon fontSize="large" />
+              <Typography variant="body1">
                 <b>90</b>
-              </p>
-              <p>Patients</p>
-            </div>
-            <div className="bookApptRight">
-              <ExperienceIcon sx={styles.icon} />
-              <p>
+              </Typography>
+              <Typography variant="body2">Patients</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={3} sm={4} md={2}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              height="50%"
+              padding="10px"
+              sx={{
+                margin: 3,
+                backgroundColor: "#eeeeee",
+                borderRadius: "10px",
+              }}
+            >
+              <ExperienceIcon fontSize="large" />
+              <Typography variant="body1">
                 <b>{doctor?.experience} Years</b>
-              </p>
-              <p> Experience</p>
-            </div>
-            <div className="bookApptRight">
-              <StarIcon sx={styles.icon} />
-              <p>
+              </Typography>
+              <Typography variant="body2">Experience</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={3} sm={4} md={2}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              height="50%"
+              padding="10px"
+              sx={{
+                margin: 3,
+                backgroundColor: "#eeeeee",
+                borderRadius: "10px",
+              }}
+            >
+              <StarIcon fontSize="large" />
+              <Typography variant="body1">
                 <b>4.5</b>
-              </p>
-              <p>Rating</p>
-            </div>
-          </div>
-        </div>
-        <div className="bookApptBottom">
-          <div className="bookApptSlotSelector">
-            <div className="apptTypeSelect">
-              <Card 
-              onClick={setOnline}
-              sx={type === "Online" ? styles.cardSelected : styles.card}>
-                <CardContent>Online Session</CardContent>
-              </Card>
-              <Card
-              onClick={setClinic}
-                sx={type === "Clinic" ? styles.cardSelected : styles.card}>
-                <CardContent>Clinic Session</CardContent>
-              </Card>
-            </div>
-            <FormControl sx={styles.selector}>
+              </Typography>
+              <Typography variant="body2">Rating</Typography>
+            </Box>
+          </Grid>
+        </Grid>
+        <Container sx={{display:'flex', flexDirection:{md:'row', sm:'column', xs:"column"}, background:' #eeeeee' , padding: 2, borderTopRightRadius:10, borderTopLeftRadius:10, gap: 2, marginTop:4}}>
+        <Box width="100%" display="flex" flexDirection="column" alignItems="center"> 
+          <Typography variant="h6" color="primary" sx={{ textAlign: "center" }}>Select Session Type </Typography>
+              {doctor?.session &&
+                doctor?.session.map((session) => {
+                  return (
+                    <Card
+                    onClick={() => {
+                      setType(session.type);
+                    }}
+                      sx={{
+                        display: "flex",
+                        mb: 2,
+                        mt:1,
+                        width: "80%",
+                        color: type === session.type ? "white" : "#2854C3",
+                        background: type === session.type ? "#2854C3" : "white",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Box
+                        onClick={() => {
+                          setType(session.type);
+                        }}
+                        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                      >
+                        {session.type === "Online" ? 
+                        <VideoCameraFrontIcon sx={{color: type===session.type? "white":"#2854C3", ml:1}}/>:
+                        <NoteAltIcon sx={{color: type===session.type? "white":"#2854C3", ml:1}}/>}
+                      </Box>
+                      <CardContent  display="flex" justifyContent="center" alignItems= "center" padding="0px">
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          
+                          }}
+                        >
+                          <Typography variant="body1" sx={{ mr: 10 }}>
+                            {session.type} Session
+                          </Typography>
+                          <Typography variant="body1">
+                            Rs. {session.fee} /Session
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+           
+            </Box>
+
+          <Box width="100%" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+            <Typography variant="h5" color="primary" sx={{ textAlign: "center" }}>Select Date And Time </Typography>
+            <FormControl sx={styles.selector} required>
               <InputLabel sx={styles.text}>
                 <CalendarIcon sx={styles.icon2} /> YYYY - MM - DD
               </InputLabel>
@@ -177,13 +271,14 @@ export const BookAppointment = () => {
               >
                 {groupedSlots &&
                   Object.keys(groupedSlots).map((slot) => (
+                    groupedSlots[slot].some(x=>x.availability===true && x.type===type) && (
                     <MenuItem key={slot} value={slot}>
                       {slot}
                     </MenuItem>
-                  ))}
+                  )))}
               </Select>
             </FormControl>
-            <FormControl sx={styles.selector}>
+            <FormControl sx={styles.selector} required>
               <InputLabel id="time-label" sx={styles.text}>
                 <TimeIcon sx={styles.icon2} />
                 HH:MM (AM/PM)
@@ -197,7 +292,8 @@ export const BookAppointment = () => {
                   groupedSlots &&
                   groupedSlots[selectedDate].map(
                     (slot) =>
-                      slot.availability === true && slot.type===type && (
+                      slot.availability === true &&
+                      slot.type === type && (
                         <MenuItem key={slot.time} value={slot.time}>
                           {slot.time}
                         </MenuItem>
@@ -206,50 +302,37 @@ export const BookAppointment = () => {
               </Select>
             </FormControl>
 
-            <FormControl sx={styles.selector}>
+            <FormControl sx={styles.selector} required>
               <textarea
                 rows={10}
+                placeholder="Describe your problem here..."
                 value={problem ? problem : ""}
-                disabled={(selectedDate && selectedTime )? false : true}
+                disabled={selectedDate && selectedTime ? false : true}
                 onChange={setReasonHandler}
                 style={{ borderRadius: "10px", padding: "10px" }}
               ></textarea>
             </FormControl>
-          </div>
-          <div className="bookApptBottomRight">
-          
-              
-                {doctor?.session && doctor.session.map((session) => {
-                    return (
-                      <div className="feeInfo">
-                      <div className="feeInfoLeft">
-                        <img
-                          src={ClinicIcon}
-                          alt="Clinic Icon"
-                          style={{ width: "50px", height: "50px" }}
-                        />
-                      </div>
-                      <div className="feeInfoRight">
-                      <div className="feeInfoTop">
-                        <p>{session.type} Session</p>
-                        <p>Rs. {session.fee} /Session</p>
-                      </div>
-                      </div>
-                      </div>
-                    );
-                  }
-                )}
-            <Button
-              onClick={bookAppt}
-              variant="contained"
-              sx={styles.button}
-            >
+            <Button onClick={bookAppt} variant="contained" sx={styles.button}>
               Book Appointment
             </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        
+          
+  
+        </Container>
+      </Box>
+      <Snackbar open={open} autoHideDuration={500} onClose={handleClose}>
+         <MuiAlert elevation={6} variant="filled">
+          Your appointment has been booked successfully!
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar open={openErr} autoHideDuration={500} onClose={handleCloseErr}>
+         <MuiAlert elevation={6}  variant="filled" severity="error">
+          Please fill all the fields!
+        </MuiAlert>
+      </Snackbar>
+    </Container>
+
   );
 };
 
@@ -264,7 +347,7 @@ const styles = {
     },
     borderRadius: "10px",
     padding: "10px 20px",
-    width: "90%",
+    width: "50%",
     marginTop: "5%",
     fontSize: "smaller",
     textTransform: "none",
@@ -278,6 +361,7 @@ const styles = {
     width: "100%",
     marginTop: "5px",
     marginBottom: "5px",
+    background:'white'
   },
   text: {
     width: "100%",

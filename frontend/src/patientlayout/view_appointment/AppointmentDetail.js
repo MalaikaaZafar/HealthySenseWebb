@@ -101,7 +101,7 @@ export const AppointmentDetail = () => {
       <Box>
       {appointment && (
             <Box>
-              <DetailComponent appt={appointment} />
+              <DetailComponent appt={appointment} user={"patient"} />
             </Box>
           )}
       </Box>

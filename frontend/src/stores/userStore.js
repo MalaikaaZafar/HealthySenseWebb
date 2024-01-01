@@ -7,7 +7,7 @@ import fetchUser from '../services/fetchUser';
 const useUserStore = create((set, get) => ({
     user: {
         user: {
-            _id: '65854380aa6b07046cf14509'
+            _id: '6585484c797f80875a8a769c'
         }
     },
     setUser: (user) => set({ user }),
