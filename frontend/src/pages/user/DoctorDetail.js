@@ -19,7 +19,10 @@ import {
     TableCell,
     TableBody,
     Divider,
+    Hidden,
 } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Link as MuiLink } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import PeopleIcon from '@mui/icons-material/People';
 import School from '@mui/icons-material/School';
@@ -27,6 +30,9 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarRatings from 'react-star-ratings';
+import DownloadIcon from '@mui/icons-material/Download';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
 import styles from './DoctorDetail.module.css';
 import { styled } from '@mui/system';
 
@@ -48,51 +54,52 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function DoctorDeatils() {
+function DoctorDeatils({ type }) {
 
     const [open, setOpen] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [currentCertificate, setCurrentCertificate] = useState({
+        name: '',
+        file: null
+    });
 
     const handleClickOpen = () => {
         setOpen(true);
+    };
+
+    const handleCertificateChange = async (certificate) => {
+        try {
+            const response = await axios.get(`http://localhost:3000/uploads/${certificate.file}`, { responseType: 'blob' });
+            setCurrentCertificate({
+                name: certificate.name,
+                file: new File([response.data], certificate.file, { type: response.data.type })
+            });
+            openDialog();
+        } catch (error) {
+            console.error('Fetch error:', error);
+        }
     };
 
     const handleClose = () => {
         setOpen(false);
     };
 
-    // const rating = 3;
-    // const checkupRating = 80;
-    // const clinicRating = 60;
-    // const staffRating = 40;
+    const openDialog = () => {
+        setDialogOpen(true);
+    }
 
-    // const ratingPercentage = (rating / 5) * 100;
+    const closeDialog = () => {
+        setDialogOpen(false);
+    }
 
-    // const doctor = {
-    //     name: "Dr. Amna Irum hvjviiviv",
-    //     specialization: "Dermatologist",
-    //     rating: 3,
-    //     experience: 5,
-    //     patients: 100,
-    //     certifications: ["MBBS", "FCPS"],
-    //     services: ["Hair Transplant", "Laser Treatment", "Skin Care"],
-    //     reviews: [
-    //         {
-    //             comment: "Good",
-    //             rating: 5,
-    //             date: "2021-10-10 12:00:00",
-    //         },
-    //         {
-    //             comment: "I expected more",
-    //             rating: 3,
-    //             date: "2021-10-10 13:00:00",
-    //         },
-    //         {
-    //             comment: "I have to wait for 30 minutes",
-    //             rating: 1,
-    //             date: "2021-10-10 14:00:00",
-    //         },
-    //     ],
-    // };
+    const downloadFile = () => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(currentCertificate.file);
+        link.download = currentCertificate.file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     const [doctor, setDoctor] = useState({
         name: "",
@@ -114,7 +121,7 @@ function DoctorDeatils() {
 
     useEffect(() => {
 
-        console.log("cookie: ", document.cookie);
+        console.log(type);
 
         const fetchData = () => {
             console.log("cookie: ", document.cookie);
@@ -184,7 +191,7 @@ function DoctorDeatils() {
                             <Paper className={styles.innerBigPane1}>
                                 <Box display="flex" alignItems="center" height={100} flexDirection={'column'} justifyContent={'center'} >
                                     <StarRatings
-                                        rating={doctor.rating / 5}
+                                        rating={(doctor.rating / 5.0)}
                                         starRatedColor="black"
                                         numberOfStars={1}
                                         name='rating'
@@ -215,7 +222,7 @@ function DoctorDeatils() {
                                             justifyContent="center"
                                             mr={1}
                                         >
-                                            <Typography variant="subtitle1" fontWeight="bold" component="div" color="textSecondary">
+                                            <Typography variant="subtitle1" fontWeight="bold" component="div" color="textSecondary" marginLeft={1}>
                                                 {`${Math.round((doctor.rating / 5.0 * 100))}%`}
                                             </Typography>
                                         </Box>
@@ -282,20 +289,112 @@ function DoctorDeatils() {
                                 <Table>
                                     <TableHead>
                                         <StyledTableRow>
-                                            <StyledTableCell>Certification Name</StyledTableCell>
+                                            <StyledTableCell>Name</StyledTableCell>
+                                            <StyledTableCell>File</StyledTableCell>
                                         </StyledTableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {doctor.certifications.map((certification, index) => (
+                                        {doctor.certifications.length > 0 ? doctor.certifications.map((certification, index) => (
                                             <StyledTableRow key={index}>
-                                                <TableCell>{certification}</TableCell>
+                                                <TableCell>{certification.name}</TableCell>
+                                                <TableCell>
+                                                    <MuiLink component={RouterLink} href="" color="primary" underline="none" onClick={() => handleCertificateChange(certification)}>
+                                                        Certificate {index + 1}
+                                                    </MuiLink>
+                                                </TableCell>
                                             </StyledTableRow>
-                                        ))}
+                                        )) :
+                                            <StyledTableRow>
+                                                <TableCell>No Certifications</TableCell>
+                                            </StyledTableRow>
+                                        }
                                     </TableBody>
                                 </Table>
                             </TableContainer>
                         </DialogContent>
                     </Dialog>
+                    {currentCertificate.file &&
+                        <Dialog
+                            open={dialogOpen}
+                            onClose={closeDialog}
+                            aria-labelledby="file-dialog-title"
+                            aria-describedby="file-dialog-description"
+                            maxWidth="md"
+                            fullWidth
+                            PaperProps={{
+                                sx: {
+                                    position: 'relative',
+                                    backgroundColor: 'transparent',
+                                    '&::before': {
+                                        content: '""',
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        height: '100%',
+                                        backgroundColor: 'white',
+                                        opacity: { xs: 1, sm: 0.7 },
+                                        zIndex: -1,
+                                    },
+                                },
+                            }}
+                        >
+                            <DialogTitle id="file-dialog-title" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+                                <Typography variant="h7" fontSize={18} fontWeight={600}>Certificate File</Typography>
+                                <IconButton aria-label="close" onClick={closeDialog} sx={{ position: 'absolute', right: 8 }}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </DialogTitle>
+                            <DialogContent sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                overflow: 'auto',
+                                height: 'auto',
+                                padding: '2.5rem',
+                            }}
+                            >
+                                {currentCertificate.file.type.startsWith('image/') ? (
+                                    <Box
+                                        component="img"
+                                        src={URL.createObjectURL(currentCertificate.file)}
+                                        title="Certificate File"
+                                        sx={{
+                                            maxWidth: '100%',
+                                            maxHeight: '100%',
+                                            objectFit: 'contain',
+                                            border: 'none',
+                                            marginBottom: '1rem',
+                                        }}
+                                    />
+                                ) : (
+                                    <>
+                                        <Hidden smDown>
+                                            <Box
+                                                component="iframe"
+                                                src={URL.createObjectURL(currentCertificate.file)}
+                                                title="Certificate File"
+                                                sx={{
+                                                    width: '100%',
+                                                    height: '70vh',
+                                                    border: 'none',
+                                                    marginBottom: '1rem',
+                                                }}
+                                            />
+                                        </Hidden>
+                                    </>
+                                )}
+                                <Button
+                                    variant='contained'
+                                    startIcon={<DownloadIcon />}
+                                    onClick={downloadFile}
+                                >
+                                    Download PDF
+                                </Button>
+                            </DialogContent>
+                        </Dialog>
+                    }
                     <Grid container p={3} bgcolor='#eff6fc' mt={3} borderRadius={2}>
                         <Grid item xs={12}>
                             <Typography variant="h6" color="text.secondary" gutterBottom fontWeight={'bold'} fontSize={18}>
@@ -318,9 +417,17 @@ function DoctorDeatils() {
                                     ))}
                                 </Grid>
                                 <Grid item xs={12} mt={2}>
-                                    <Button variant="contained" color="primary" fullWidth>
-                                        Book Appointment
-                                    </Button>
+                                    {type === 'patient' &&
+                                        <Button variant="contained" color="primary" fullWidth>
+                                            Book Appointment
+                                        </Button>
+                                    }
+                                    {type === 'admin' &&
+                                        <Button variant="contained" color="primary" fullWidth>
+                                            Verify Doctor
+                                        </Button>
+                                    }
+
                                 </Grid>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -370,30 +477,34 @@ function DoctorDeatils() {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Typography variant="h6" color="text.primary" mb={2} mt={3} fontWeight={'bold'} fontSize={18}>
-                        Latest Reviews
-                    </Typography>
-                    {doctor.reviews.sort((a, b) => new Date(b.date) - new Date(a.date)).map((review, index) => (
-                        <Paper key={index} sx={{ p: 3, mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: 2, boxShadow: 3 }}>
-                            <Typography variant="body1" color="text.secondary" sx={{ pr: 2, fontSize: 14, fontWeight: 'bold' }}>
-                                {review.comment}
+                    {doctor.reviews.length > 0 && (
+                        <>
+                            <Typography variant="h6" color="text.primary" mb={2} mt={3} fontWeight={'bold'} fontSize={18}>
+                                Latest Reviews
                             </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', ml: 2 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <StarRatings
-                                        rating={review.rating / 5}
-                                        starRatedColor="black"
-                                        numberOfStars={1}
-                                        name='rating'
-                                        starDimension="20px"
-                                    />
-                                    <Typography variant="body2" color="text.secondary" sx={{ ml: 1, fontSize: 14, fontWeight: 'bold' }}>
-                                        {review.rating}
+                            {doctor.reviews.sort((a, b) => new Date(b.date) - new Date(a.date)).map((review, index) => (
+                                <Paper key={index} sx={{ p: 3, mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: 2, boxShadow: 3 }}>
+                                    <Typography variant="body1" color="text.secondary" sx={{ pr: 2, fontSize: 14, fontWeight: 'bold' }}>
+                                        {review.comment}
                                     </Typography>
-                                </Box>
-                            </Box>
-                        </Paper>
-                    ))}
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', ml: 2 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                            <StarRatings
+                                                rating={review.experience / 5}
+                                                starRatedColor="black"
+                                                numberOfStars={1}
+                                                name='rating'
+                                                starDimension="20px"
+                                            />
+                                            <Typography variant="body2" color="text.secondary" sx={{ ml: 1, fontSize: 14, fontWeight: 'bold' }}>
+                                                {review.experience}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Paper>
+                            ))}
+                        </>
+                    )}
                 </Box>
             </Container>
         </div >

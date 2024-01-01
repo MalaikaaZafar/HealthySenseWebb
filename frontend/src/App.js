@@ -53,10 +53,10 @@ function App() {
             <Route path='' index element={<AdminActivity />} />
             <Route path="doctors" element={<AdminDoctor />} />
             <Route path='patients' element={<AdminPatient />} />
+            <Route path='doctor-detail' element={<DoctorDetail type='admin' />} />
           </Route>
           <Route path="/:id/doctor" element={<ProtectedRoute />}>
             <Route element={<DocNavbar />}>
-
               <Route index element={<CustomTabPanel />} />
               <Route path="appointments/:id" element={<AppointmentDetail />} />
               <Route path="appointments" element={<CustomTabPanel />} />
@@ -68,6 +68,7 @@ function App() {
               <Route path='account' element={<DoctorManageAccount />} />
               <Route path='diagnosis/:appid' element={<DiagnosisPage />} />
               <Route path='report/:appid' element={<ViewReportDoctor />} />
+              <Route path='doctor-detail' element={<DoctorDetail type='doctor' />} />
             </Route>
           </Route>
 
@@ -85,7 +86,7 @@ function App() {
               <Route path='review' element={<DoctorReview />} />
               <Route path="account" element={<PatientManageAccount />} />
               <Route path='favorites' element={<Favorites />} />
-              <Route path='doctor-detail' element={<DoctorDetail />} />
+              <Route path='doctor-detail' element={<DoctorDetail type='patient' />} />
               <Route path='faq' element={<FAQ />} />
             </Route>
           </Route>
