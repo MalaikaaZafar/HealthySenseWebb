@@ -523,6 +523,42 @@ const doctorController = {
             return res.status(500).json({ message: "Something went wrong" });
         }
     },
+
+    getPatientDetails: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const patient = await Patient.findOne({ user: id }).populate({ path: 'user' }).exec();
+            if (!patient)
+                return res.status(404).json({ message: "Patient not found" });
+
+            const appointments = await Appointment.find({ patientId: id, status: "Completed" }).populate({ path: 'doctorId', populate: { path: 'user' } }).exec();
+            const completedAppointments = appointments.map(appointment => {
+                return {
+                    doctor: appointment.doctorId.user.name,
+                    date: appointment.date,
+                    id: appointment._id
+                }
+            });
+            let temp = {
+                name: patient.user.name,
+                email: patient.user.email,
+                dob: patient.user.dob,
+                country: patient.user.country,
+                gender: patient.user.gender,
+                phoneNumber: patient.user.phoneNumber,
+                medicalHistory: patient.history,
+                previousAppointments: completedAppointments,
+                complaints: patient.complaints,
+                image: patient.user.profilePicture
+            }
+
+            return res.status(200).json(temp);
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(502).json({ message: "Something went wrong" });
+        }
+    },
 };
 
 module.exports = doctorController;
