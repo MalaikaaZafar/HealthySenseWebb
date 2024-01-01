@@ -1,12 +1,13 @@
 
 import "@fontsource/roboto";
-import "./AppointmentDetail.css";
 
 import UserCard from "../../components/UserCard";
-import DetailComponent from "./DetailComponent";
+import DetailComponent from "../../components/DetailComponent";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DoctorSidePanel from "../../components/doctorSidePanel";
+import AppointmentCard from "../../components/AppointmentCard";
+import { Box, Container, Typography } from '@mui/material';
 
 function AppointmentDetail() {
   const [appointment, setAppointment] = useState(null);
@@ -44,21 +45,19 @@ function AppointmentDetail() {
   }, []);
 
   return (
-    <div className="appointmentDetailsScreenDoc">
-      <div className="sidePanel">
-        <DoctorSidePanel appt={appointment}/></div>
-      
-      <div className="ScreenBodyADoc">
-        <div className="halfADoc">
-          {appointment && (
-            <>
-              <UserCard user={appointment} />
-              <DetailComponent appt={appointment} />
-            </>
-          )}
-        </div>
-      </div>
-    </div>
+    <Box sx={{ display: 'flex', flexDirection: {xs:'column', md:'row'}}}>
+      <Box sx={{ flex: 1}}>
+        <DoctorSidePanel appt={appointment} />
+      </Box>
+      <Box sx={{ flex: {xs:1, sm:2, md:3}, display:'flex',flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+        {appointment && (
+          <>
+            <AppointmentCard appt={appointment} type="patient" />
+            <DetailComponent appt={appointment} user="doctor" />
+          </>
+        )}
+      </Box>
+    </Box>
   );
 }
 

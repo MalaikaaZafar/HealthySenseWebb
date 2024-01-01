@@ -1,24 +1,23 @@
-import PatientIcon from '@mui/icons-material/PeopleAltOutlined';
-import ExperienceIcon from '@mui/icons-material/WorkspacePremiumOutlined';
-import StarIcon from '@mui/icons-material/StarBorderOutlined';
-import Button from '@mui/material/Button';
+import PatientIcon from "@mui/icons-material/PeopleAltOutlined";
+import ExperienceIcon from "@mui/icons-material/WorkspacePremiumOutlined";
+import StarIcon from "@mui/icons-material/StarBorderOutlined";
 import "@fontsource/roboto";
+import { Box, Typography, Button, Grid } from "@mui/material";
 
 import { format } from "date-fns"
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import './AppointmentDetail.css';
-import DetailComponent from './DetailComponent';
+import DetailComponent from '../../components/DetailComponent';
 import AppointmentCard from '../../components/AppointmentCard';
 import PersonOutlineOutlined from '@mui/icons-material/PersonOutlineOutlined';
+import { Container } from '@mui/material';
 import api from '../../services/api';
 
 export const AppointmentDetail = () => {
   const [appointment, setAppointment] = useState(null);
   const { id } = useParams();
 
-  const Navigate = useNavigate();
   console.log(appointment);
   const date = appointment?.date;
   const fetchAppointment = async () => {
@@ -32,7 +31,7 @@ export const AppointmentDetail = () => {
     catch (err) {
       alert(err);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,77 +40,76 @@ export const AppointmentDetail = () => {
     fetchData();
   }, []);
 
-  const reschedAppt = () => {
-    Navigate(`/patient/appointments/reschedule/${id}`);
-  }
 
-  const cancelAppt = () => {
-    Navigate(`/patient/appointments/cancel/${id}`);
-  }
   return (
-    <div className="viewApptScreen">
-      <div className="viewApptScreenBody">
-        <div className="viewApptTop">
-          {appointment && (
-            <div className="viewApptTopLeft">
-              <AppointmentCard type="doctor" appt={appointment} />
-            </div>
+    <Container>
+      <Grid container spacing={2} alignItems="stretch">
+        <Grid item xs={12} sm={6}>
+          {appointment && <AppointmentCard type="doctor" appt={appointment} />}
+        </Grid>
+        <Grid item xs={12} sm={2}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            height="70%"
+            padding="10px"
+            sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+          >
+            <PatientIcon fontSize="large" />
+            <Typography variant="body1">
+              <b>90</b>
+            </Typography>
+            <Typography variant="body2">Patients</Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={2}>
+          <Box
+           display="flex"
+           flexDirection="column"
+           alignItems="center"
+           justifyContent="center"
+           height="70%"
+           padding="10px"
+           sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+          >
+            <ExperienceIcon fontSize="large" />
+            <Typography variant="body1">
+              <b>{appointment?.doctorId?.experience} Years</b>
+            </Typography>
+            <Typography variant="body2">Experience</Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={2}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            height="70%"
+            padding="10px"
+            sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+          >
+            <StarIcon fontSize="large" />
+            <Typography variant="body1">
+              <b>4.5</b>
+            </Typography>
+            <Typography variant="body2">Rating</Typography>
+          </Box>
+        </Grid>
+
+      </Grid>
+      <Box>
+      {appointment && (
+            <Box>
+              <DetailComponent appt={appointment} user={"patient"} />
+            </Box>
           )}
-          <div className="viewApptTopRight">
-            <div className="viewApptRight">
-              <PatientIcon sx={styles.icon} />
-              <p>
-                <b>90</b>
-              </p>
-              <p>Patients</p>
-            </div>
-            <div className="viewApptRight">
-              <ExperienceIcon sx={styles.icon} />
-              <p>
-                <b>{appointment?.doctorId?.experience} Years</b>
-              </p>
-              <p> Experience</p>
-            </div>
-            <div className="viewApptRight">
-              <StarIcon sx={styles.icon} />
-              <p>
-                <b>4.5</b>
-              </p>
-              <p>Rating</p>
-            </div>
-          </div>
-        </div>
-        <div className="viewApptBottom">
-          <div className="viewAppt">
-            <div className="viewApptDetails">
-              {appointment && <div className="viewApptDetailsLeft"><DetailComponent appt={appointment} /></div>}
-            </div>
-            {appointment && !appointment.status === "Completed" && !appointment.status === "Cancelled" &&
-              <div className="viewApptBottomRight">
-                <Button sx={styles.button} onClick={reschedAppt}>
-                  Reschedule Appointment
-                </Button>
-                <Button sx={styles.button} onClick={cancelAppt}>
-                  Cancel Appointment
-                </Button>
-              </div>
-            }
-            {appointment && appointment.status === "Completed" &&
-              <div className="viewApptBottomRight">
-                <Button sx={styles.button} onClick={reschedAppt}>
-                  View Diagnosis
-                </Button>
-                <Button sx={styles.button} onClick={cancelAppt}>
-                  View Report
-                </Button>
-              </div>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
+      </Box>
+    </Container>
   );
-}
+};
 
 const styles = {
   button: {

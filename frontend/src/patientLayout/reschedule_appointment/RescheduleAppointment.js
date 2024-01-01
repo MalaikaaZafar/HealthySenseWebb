@@ -3,28 +3,21 @@ import ExperienceIcon from "@mui/icons-material/WorkspacePremiumOutlined";
 import StarIcon from "@mui/icons-material/StarBorderOutlined";
 import CalendarIcon from "@mui/icons-material/CalendarTodayOutlined";
 import TimeIcon from "@mui/icons-material/AccessTime";
+import ReschedIcon from '@mui/icons-material/EditCalendarOutlined';
+import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
+import NoteAltIcon from "@mui/icons-material/NoteAlt";
+
 import "@fontsource/roboto";
 
-import Button from "@mui/material/Button";
 import "@fontsource/roboto";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import Card from "@mui/material/Card"
-import { CardContent } from "@mui/material";
-
+import { Box, Grid, Container, Typography, Card, CardContent, FormControl, RadioGroup, FormControlLabel, Radio, TextareaAutosize, Button, InputLabel, Select, MenuItem } from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import { format } from "date-fns";
 
 import { useImmer } from "use-immer";
 import { useState, useEffect, createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
-
-
-import "./RescheduleAppointment.css";
 import AppointmentCard from "../../components/AppointmentCard";
 import api from "../../services/api";
 
@@ -53,6 +46,7 @@ export const RescheduleAppointment = () => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [groupedSlots, setGroupedSlots] = useState(null);
   const [type, setType] = useState("Online");
+  const [open, setOpen] = useState(false);
   const { id } = useParams();
 
   function setReasonHandler(event) {
@@ -83,23 +77,23 @@ export const RescheduleAppointment = () => {
         type: type,
         reason: reason,
       }))
-        .then(response => response.data);
-      if (resched.message === "Success") {
-        alert("Appointment Rescheduled Successfully! Please check your email for further details.");
-        setAppointment(draft => {
-          draft.date = resched.appointment.date;
-          draft.time = resched.appointment.time;
-          draft.updateReason = reason;
-          draft.doctorId.appointmentSlots = resched.appointment.doctorId.appointmentSlots;
-          draft.type = resched.appointment.type;
-        })
-        setGroupedSlots(groupSlotsByDate(resched.appointment.doctorId.appointmentSlots));
-      }
-      else {
-        alert("Something went wrong");
-      }
-    }
-    catch (err) {
+      .then(response=>response.data);
+      if (resched.message==="Success") {
+      setOpen(true);
+        setAppointment(draft=>{
+          draft.date=resched.appointment.date;
+          draft.time=resched.appointment.time;
+          draft.updateReason=reason;
+          draft.doctorId.appointmentSlots=resched.appointment.doctorId.appointmentSlots;
+          draft.type=resched.appointment.type;
+      })
+      setGroupedSlots(groupSlotsByDate(resched.appointment.doctorId.appointmentSlots));  
+    } 
+    else {
+      alert("Something went wrong");
+    }}
+    catch(err)
+    {
       alert(err);
     }
   };
@@ -121,178 +115,196 @@ export const RescheduleAppointment = () => {
     setSelectedTime(e.target.value);
   };
 
-  const setOnline = () => {
-    setType("Online");
+  const handleClose = () => {
+    setOpen(false);
   }
-
-  const setClinic = () => {
-    setType("Clinic");
-  }
-
 
   return (
-    <div className="reschedApptScreen">
-      <div className="reschedApptScreenBody">
-        <div className="reschedApptTop">
-          {appointment && (
-            <div className="reschedApptTopLeft">
-              <AppointmentCard type="doctor" appt={appointment} />
-            </div>
-          )}
-          <div className="reschedApptTopRight">
-            <div className="reschedApptRight">
-              <PatientIcon sx={styles.icon} />
-              <p>
-                <b>90</b>
-              </p>
-              <p>Patients</p>
-            </div>
-            <div className="reschedApptRight">
-              <ExperienceIcon sx={styles.icon} />
-              <p>
-                <b>{appointment?.doctorId?.experience} Years</b>
-              </p>
-              <p> Experience</p>
-            </div>
-            <div className="reschedApptRight">
-              <StarIcon sx={styles.icon} />
-              <p>
-                <b>4.5</b>
-              </p>
-              <p>Rating</p>
-            </div>
-          </div>
-        </div>
-        <div className="reschedApptBottom">
-          <div className="reschedAppt">
-            <div className="reschedApptBottomLeft">
-              <h2 style={{ color: "#2854C3" }}>Reason for Rescheduling</h2>
-              <FormControl>
-                <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="Something urgent came up"
-                  name="radio-buttons-group"
-                >
-                  <FormControlLabel
-                    value="Something urgent came up"
-                    control={<Radio />}
-                    label="Something urgent came up"
-                    onChange={setReasonHandler}
-                  />
-                  <FormControlLabel
-                    value="I'm not feeling well"
-                    control={<Radio />}
-                    label="I'm not feeling well"
-                    onChange={setReasonHandler}
-                  />
-                  <FormControlLabel
-                    value="other"
-                    control={<Radio />}
-                    label="Other"
-                    onChange={setReasonHandler}
-                  />
-                </RadioGroup>
-              </FormControl>
-              <textarea
-                rows={10}
-                disabled={reason === "other" ? false : true}
-                onChange={setReasonHandler}
-                style={{ borderRadius: "10px" }}
-              ></textarea>
-            </div>
-            <div className="reschedApptBottomRight">
-              <div className="reschedApptSlotSelector">
-                <h2 style={{ color: "#2854C3" }}>Select a New Slot</h2>
-                <div className="apptTypeSelect">
-                  <Card
-                    onClick={setOnline}
-                    sx={type === "Online" ? styles.cardSelected : styles.card}>
-                    <CardContent>Online Session</CardContent>
-                  </Card>
-                  <Card
-                    onClick={setClinic}
-                    sx={type === "Clinic" ? styles.cardSelected : styles.card}>
-                    <CardContent>Clinic Session</CardContent>
-                  </Card>
-                </div>
-                <FormControl sx={styles.selector}>
-                  <InputLabel sx={styles.text}>
-                    <CalendarIcon sx={styles.icon2} /> YYYY - MM - DD
-                  </InputLabel>
-                  <Select
-                    labelId="date-label"
-                    id="demo-simple-select-filled"
-                    value={selectedDate ? selectedDate : ""}
-                    onChange={setDate}
-                  >
-                    {groupedSlots &&
-                      Object.keys(groupedSlots).map((slot) => (
-                        <MenuItem key={slot} value={slot}>
-                          {slot}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl>
-                <FormControl sx={styles.selector}>
-                  <InputLabel id="time-label" sx={styles.text}>
-                    <TimeIcon sx={styles.icon2} />
-                    HH:MM (AM/PM)
-                  </InputLabel>
-                  <Select
-                    labelId="time-label"
-                    value={selectedTime ? selectedTime : ""}
-                    onChange={setTime}
-                  >
-                    {selectedDate &&
-                      groupedSlots &&
-                      groupedSlots[selectedDate].map(
-                        (slot) =>
-                          slot.availability === true && slot.type === type && (
-                            <MenuItem key={slot.time} value={slot.time}>
-                              {slot.time}
-                            </MenuItem>
-                          )
-                      )}
-                  </Select>
-                </FormControl>
+    <Container >
+      <Box >
+      <Grid container spacing={2} alignItems="stretch">
+        <Grid item md={6} sm={12}>
+          {appointment && <AppointmentCard type="doctor" appt={appointment} />}
+        </Grid>
+        <Grid item xs={5} sm={4} md={2}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            height="70%"
+            padding="10px"
+            sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+          >
+            <PatientIcon fontSize="large" />
+            <Typography variant="body1">
+              <b>90</b>
+            </Typography>
+            <Typography variant="body2">Patients</Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={5} sm={4} md={2}>
+          <Box
+           display="flex"
+           flexDirection="column"
+           alignItems="center"
+           justifyContent="center"
+           height="70%"
+           padding="10px"
+           sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+          >
+            <ExperienceIcon fontSize="large" />
+            <Typography variant="body1">
+              <b>{appointment?.doctorId?.experience} Years</b>
+            </Typography>
+            <Typography variant="body2">Experience</Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={5} sm={4} md={2}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            height="70%"
+            padding="10px"
+            sx={{margin:3, backgroundColor: "#eeeeee", borderRadius: "10px" }}
+          >
+            <StarIcon fontSize="large" />
+            <Typography variant="body1">
+              <b>4.5</b>
+            </Typography>
+            <Typography variant="body2">Rating</Typography>
+          </Box>
+        </Grid>
 
-                <FormControl sx={styles.selector}>
-                  <textarea
-                    rows={10}
-                    value={reason ? reason : ""}
-                    disabled={(selectedDate && selectedTime) ? false : true}
-                    onChange={setReasonHandler}
-                    style={{ borderRadius: "10px" }}
-                  ></textarea>
-                </FormControl>
-              </div>
-              <Button sx={styles.button} onClick={rescheduleAppt}>
-                Reschedule Appointment
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </Grid>
+      <Container sx={{display:'flex', flexDirection:{md:'row', sm:'column', xs:"column"}, gap: 2, marginTop:2}}>
+  <Box width="100%" display="flex" flexDirection="column">
+    <Typography variant="h6" color="primary">Reason for Rescheduling</Typography>
+    <FormControl>
+      <RadioGroup
+        aria-labelledby="demo-radio-buttons-group-label"
+        defaultValue="Something urgent came up"
+        name="radio-buttons-group"
+      >
+        <FormControlLabel
+          value="Something urgent came up"
+          control={<Radio />}
+          label="Something urgent came up"
+          onChange={setReasonHandler}
+        />
+        <FormControlLabel
+          value="I'm not feeling well"
+          control={<Radio />}
+          label="I'm not feeling well"
+          onChange={setReasonHandler}
+        />
+        <FormControlLabel
+          value="other"
+          control={<Radio />}
+          label="Other"
+          onChange={setReasonHandler}
+        />
+      </RadioGroup>
+    </FormControl>
+    <TextareaAutosize
+      minRows={10}
+      placeholder="Enter your reason here"
+      cols={50}
+      disabled={reason !== "I'm not feeling well" && reason !== "Something urgent came up" ? false : true}
+      onChange={setReasonHandler}
+      sx={{ borderRadius: "10px" }}
+    />
+  </Box>
+  <Box  width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+    <Typography variant="h6" color="primary">Select a New Slot</Typography>
+    <Box width="100%">
+    {appointment?.doctorId?.session && appointment?.doctorId?.session.map((session) => {
+  return (
+    <Card sx={{ display: 'flex', mb: 2, width: "100%", color: type===session.type? "white":"#2854C3", background: type===session.type? "#2854C3":"white"  }}>
+      <Box
+      onClick={()=>{setType(session.type)}} 
+      sx={{ display: 'flex', alignItems: 'center'}}>
+{session.type === "Online" ? 
+                        <VideoCameraFrontIcon sx={{color: type===session.type? "white":"#2854C3", ml:1}}/>:
+                        <NoteAltIcon sx={{color: type===session.type? "white":"#2854C3", ml:1}}/>}      </Box>
+      <CardContent>
+      <Box
+  onClick={()=>{setType(session.type)}}  
+  sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+  <Typography variant="body1" sx={{mr:20}}>{session.type} Session</Typography>
+  <Typography variant="body1">Rs. {session.fee} /Session</Typography>
+</Box>
+</CardContent>
+    </Card>
+  );
+})}
+    </Box>
+    <FormControl sx={styles.selector}>
+      <InputLabel sx={styles.text}>
+        <CalendarIcon sx={styles.icon2} /> YYYY - MM - DD
+      </InputLabel>
+      <Select
+        labelId="date-label"
+        id="demo-simple-select-filled"
+        value={selectedDate ? selectedDate : ""}
+        onChange={setDate}
+      >
+        {groupedSlots &&
+          Object.keys(groupedSlots).map((slot) => (
+            <MenuItem key={slot} value={slot}>
+              {slot}
+            </MenuItem>
+          ))}
+      </Select>
+    </FormControl>
+    <FormControl sx={styles.selector}>
+      <InputLabel id="time-label" sx={styles.text}>
+        <TimeIcon sx={styles.icon2} />
+        HH:MM (AM/PM)
+      </InputLabel>
+      <Select
+        labelId="time-label"
+        value={selectedTime ? selectedTime : ""}
+        onChange={setTime}
+      >
+        {selectedDate &&
+          groupedSlots &&
+          groupedSlots[selectedDate].map(
+            (slot) =>
+              slot.availability === true && slot.type===type && (
+                <MenuItem key={slot.time} value={slot.time}>
+                  {slot.time}
+                </MenuItem>
+              )
+          )}
+      </Select>
+    </FormControl>
+    <Button sx={styles.button} onClick={rescheduleAppt} startIcon={<ReschedIcon/>}>
+      Reschedule
+    </Button>
+  </Box>
+</Container>
+      </Box>
+      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+         <MuiAlert elevation={6} variant="filled">
+          Your appointment has been rescheduled successfully!
+        </MuiAlert>
+      </Snackbar>
+    </Container>
   );
 }
 
 
 const styles = {
-  button: {
-    color: "white",
-    backgroundColor: "#2854C3",
+  button:{
+    padding:2, width:"50%", m:1, textAlign:'left', textTransform:'none', background:'#2854C3', color:'white',
     "&:hover": {
-      backgroundColor: "#2854C3",
-      boxShadow: "10px 0px 10px 10px rgba(0, 0, 0, 0.10)",
       cursor: "pointer",
-    },
-    borderRadius: "10px",
-    padding: "10px 20px",
-    width: "90%",
-    marginTop: "5%",
-    fontSize: "smaller",
-    textTransform: "none",
+      boxShadow: "10px 0px 10px 0px rgba(0, 0, 0, 0.15)",
+      background:'#2854C3',
+    }
   },
   icon: {
     fontSize: "30px",
@@ -301,7 +313,8 @@ const styles = {
   },
   selector: {
     width: "100%",
-    marginTop: "5px",
+    marginTop: "20px",
+
   },
   text: {
     width: "100%",
@@ -309,31 +322,7 @@ const styles = {
     flexDirection: "row",
     alignItems: "center",
   },
-  icon2: {
-    marginRight: "5px",
-  },
-  card: {
-    width: "100%",
-    margin: "1%",
-    textAlign: "center",
-    borderRadius: "10px",
-    "&:hover": {
-      cursor: "pointer",
-      backgroundColor: "#F4F8FB",
-      boxShadow: "10px 0px 10px 0px rgba(0, 0, 0, 0.10)",
-    },
-  },
-  cardSelected: {
-    width: "100%",
-    margin: "1%",
-    backgroundColor: "#2854c3",
-    color: "white",
-    borderRadius: "10px",
-    textAlign: "center",
-    "&:hover": {
-      cursor: "pointer",
-    },
-  },
+
 };
 
 
