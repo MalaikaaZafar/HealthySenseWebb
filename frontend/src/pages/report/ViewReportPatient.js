@@ -35,7 +35,7 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 }));
 
 const ViewReportPatient = () => {
-    const { id } = useParams();
+    const { diagid } = useParams();
     const navigate = useNavigate();
     const [report, setReport] = useState({});
     const [loading, setLoading] = useState(true);
@@ -43,7 +43,7 @@ const ViewReportPatient = () => {
     const [open, setOpen] = useState(false);
 
     const getReportdata = async () => {
-        const data = await GetReport(id);
+        const data = await GetReport(diagid);
         if (data) {
             setReport(data);
             setLoading(false);

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import GetAllDiagnosis from '../../services/patient/report/GetAllDiagnosis';
 import { useNavigate, useParams } from 'react-router-dom';
 import LoadingAnimation from '../../components/Loader/LoadingAnimation';
-import { Container, color, styled } from "@mui/system";
+import { Container, styled } from "@mui/system";
 import SummarizeIcon from '@mui/icons-material/Summarize';
 
 
@@ -34,14 +34,14 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 
 const AllReports = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { patid } = useParams();
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [msg, setMsg] = useState('');
     const [open, setOpen] = useState(false);
 
     const getReports = async () => {
-        const response = await GetAllDiagnosis(id);
+        const response = await GetAllDiagnosis(patid);
         if (response !== null) {
             console.log(response);
             setReports(response);

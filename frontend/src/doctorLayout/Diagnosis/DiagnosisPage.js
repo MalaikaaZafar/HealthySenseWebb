@@ -16,9 +16,8 @@ export function useDiagnosis() {
 }
 
 const DiagnosisPage = () => {
-    //const { appointmentID } = useParams();
+    const { appid } = useParams();
     const navigate =useNavigate();
-    const appointmentID = "658bd21cd54145942c66e9be";
     const [CurrentPage, setCurrentPage] = useState(0);
     const [AppointmentData, setAppointmentData] = useImmer({});
     const [Diagnosis, setDiagnosis] = useImmer({
@@ -38,7 +37,7 @@ const DiagnosisPage = () => {
         setCurrentPage(page);
     }
     const FetchDetails = async () => {
-        const data =await getAppointmentData(appointmentID);
+        const data =await getAppointmentData(appid);
         if(data===null)
         {
             setOpen(true);

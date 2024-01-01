@@ -13,7 +13,7 @@ const stripePromise = loadStripe("pk_test_51ORCE8COwHOebIPaJuo4wEtBzTUJBXnMudevC
 
 const Payment = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const { appid } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [clientSecret, setClientSecret] = useState(null);
     const [data, setData] = useState({});
@@ -31,7 +31,7 @@ const Payment = () => {
     };
 
     const fetchSecret = async () => {
-        const data = await GetClientSecret(id);
+        const data = await GetClientSecret(appid);
         if (data) {
             console.log(data);
             if (data.Data.Status == true) {

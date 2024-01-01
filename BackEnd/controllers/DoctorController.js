@@ -481,12 +481,15 @@ const doctorController = {
     },
 
     getPatientHistory: async (req, res) => {
-        const { id } = req.params;
+        const { appid ,id } = req.params;
         try {
             const patient = await Patient.findById(id);
             if (!patient)
                 return res.status(404).json({ message: "Patient not found" });
-            return res.status(200).json({ message: "Success", History: patient.history });
+            const appointment = await Appointment.findById(appid).
+                    populate({ path: 'doctorId', populate: { path: 'user' } }).
+                    populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+            return res.status(200).json({ message: "Success", History: patient.history, app: appointment });
         }
         catch (error) {
             console.log(error.message);

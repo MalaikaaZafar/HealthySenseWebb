@@ -174,6 +174,7 @@ const PatientManageAccount = () => {
                                         draft.bloodGroup = History.bloodGroup;
                                         draft.history = History.history;
                                     })
+                                    setImageUrl(null);
                                     setChanges(false);
                                 }}
                             >
