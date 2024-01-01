@@ -218,7 +218,7 @@ const doctorController = {
         const { query, sort, sortOrder, specialty, minRating, skip } = req.query;
 
         try {
-            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor');
+            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor').where('approvedStatus').equals(true);
             const users = await q.exec();
             const userIds = users.map(user => user._id);
             let filter = { user: { $in: userIds } };
@@ -230,7 +230,6 @@ const doctorController = {
             // }
             let doctors = await Doctor.find(filter).populate('user');
             if (doctors.length !== 0) {
-                doctors = doctors.slice(skip, skip + 6);
                 if (sort == 'A-Z') {
                     doctors = doctors.sort((a, b) => {
                         const [nameA, numberA = ''] = a.user.name.toUpperCase().split(' ');
@@ -285,6 +284,7 @@ const doctorController = {
                 //     });
                 // }
             }
+            doctors = doctors.slice(skip, skip + 6);
             return res.status(200).json(doctors);
         } catch (error) {
             console.log(error);

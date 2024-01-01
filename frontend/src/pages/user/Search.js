@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, TextField, IconButton } from '@mui/material';
 import TextRotationNoneIcon from '@mui/icons-material/TextRotationNone';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -21,11 +21,12 @@ const Search = () => {
     const [doctors, setDoctors] = React.useState([]);
     const [specialtyFilter, setSpecialtyFilter] = React.useState('');
     const [minRating, setMinRating] = React.useState(0);
-    const { updateUser } = useUserStore();
     const [notFound, setNotFound] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [actionCompleted, setActionCompleted] = React.useState(true);
     const [error, setError] = React.useState(false);
+    const initialRender = useRef(true);
+
     let direction = 'asc';
     // ...
 
@@ -41,8 +42,13 @@ const Search = () => {
     };
 
     useEffect(() => {
-        updateUser();
-    }, []);
+        if (initialRender.current) {
+            initialRender.current = false;
+            return;
+        }
+        else
+            searchPressed();
+    }, [sortDirection]);
 
     const handleButtonClick = (value) => {
         setSelectedButton((prevSelected) => {
@@ -69,14 +75,12 @@ const Search = () => {
     const toggleSortDirection = () => {
         setSortDirection(prevDirection => {
             const newDirection = prevDirection === 'asc' ? 'desc' : 'asc';
-            console.log(newDirection);
             direction = newDirection;
-            searchPressed();
             return newDirection;
         });
     };
 
-    const searchPressed = async (direction=sortDirection) => {
+    const searchPressed = async (direction = sortDirection) => {
         // if (searchText === '') {
         //     alert('Please enter a search query');
         // }

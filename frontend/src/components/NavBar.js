@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import logo from './healthySenseLogo.png';
 import './NavBar.css';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { useState } from 'react';
 
@@ -22,9 +22,12 @@ import AccountCircleOutlined from '@mui/icons-material/AccountCircleOutlined';
 import { style } from '@mui/system';
 import UserNotifications from './UserNotifications';
 import Cookies from 'js-cookie';
+import LiveHelpIcon from '@mui/icons-material/LiveHelp';
+
 
 function NavBar() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [selectedButton, setSelectedButton] = useState('/');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -47,7 +50,7 @@ function NavBar() {
 
 
   const handleButtonClick = (path) => {
-    navigate(path);
+    navigate(`/${id}/patient${path}`);
     setSelectedButton(path);
   };
 
@@ -135,10 +138,10 @@ function NavBar() {
                 <ListItemText sx={selectedButton === '/appointments' ? styles.selectedBtnText : styles.btnText} primary="Appointments" />
               </ListItemButton>
               <ListItemButton
-                sx={selectedButton === '/contact' ? styles.selectedListItem : null}
-                onClick={() => handleButtonClick('/contact')}>
-                <ListItemIcon sx={selectedButton === '/contact' ? styles.selectedListItemIcon : styles.listItemIcon}><MailIcon /></ListItemIcon>
-                <ListItemText sx={selectedButton === '/contact' ? styles.selectedBtnText : styles.btnText} primary="Contact Us" />
+                sx={selectedButton === '/faq' ? styles.selectedListItem : null}
+                onClick={() => handleButtonClick('/faq')}>
+                <ListItemIcon sx={selectedButton === '/faq' ? styles.selectedListItemIcon : styles.listItemIcon}><LiveHelpIcon /></ListItemIcon>
+                <ListItemText sx={selectedButton === '/faq' ? styles.selectedBtnText : styles.btnText} primary="Support" />
               </ListItemButton>
               <ListItemButton
                 sx={selectedButton === '/about' ? styles.selectedListItem : null}
@@ -172,8 +175,12 @@ function NavBar() {
           Favorites
         </Button>
         <Button sx={styles.btn}>Appointments</Button>
-        <Button sx={styles.btn}>About Us</Button>
-        <Button sx={styles.btn}>Contact Us</Button>
+        <Button
+          onClick={() => handleButtonClick('/faq')}
+          sx={styles.btn}>Support</Button>
+        <Button
+          onClick={() => handleButtonClick('/about')}
+          sx={styles.btn}>About Us</Button>
       </Box>
 
       <Outlet />

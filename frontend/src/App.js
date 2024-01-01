@@ -37,6 +37,7 @@ import AllReports from './patientLayout/reports/AllReports.js';
 import PatientHistory from './pages/doctor/PatientHisttory.js';
 import ViewReportPatient from './pages/report/ViewReportPatient.js';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
+import FAQ from './pages/faqs/FAQ.js';
 
 function App() {
 
@@ -78,17 +79,18 @@ function App() {
               <Route path='appointments/:id' element={<ApptDetail />} />
               <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
               <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
-              <Route path='book-appointment/:id' element={<BookAppointment />} />
+              <Route path='book-appointment/:docId' element={<BookAppointment />} />
               <Route path='reports/:id' element={<AllReports />} />
               <Route path='payment/:id' element={<Payment />} />
               <Route path='your-report/:id' element={<ViewReportPatient />} />
               <Route path='review' element={<DoctorReview />} />
               <Route path="account/:id" element={<PatientManageAccount />} />
               <Route path='favorites' element={<Favorites />} />
+              <Route path='doctor-detail' element={<DoctorDetail />} />
+              <Route path='faq' element={<FAQ />} />
             </Route>
           </Route>
           <Route path="/" element={<NavBar />}>
-            <Route path='doctor-detail' element={<DoctorDetail />} />
           </Route>
           <Route path='*' element={<NotFoundPage />} />
         </Routes>

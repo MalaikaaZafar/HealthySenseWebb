@@ -147,6 +147,24 @@ const adminController = {
         }
 
     },
+
+    banUser: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const user = await User.findById(id);
+            if (user.isBanned) {
+                user.isBanned = false;
+            }
+            else {
+                user.isBanned = true;
+            }
+            await user.save();
+            return res.status(200).json({ message: "User banned/unbanned successfully" });
+        }
+        catch (err) {
+            return res.status(500).json({ message: err.message });
+        }
+    }
 }
 
 module.exports = adminController;
