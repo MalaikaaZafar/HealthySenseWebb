@@ -8,7 +8,7 @@ const secret = process.env.SECRET;
 const auth = async (req, res, next) => {
   try {
     const token = req.cookies.token;
-
+    console.log(token);
     if (token) {
       jwt.verify(token, secret, async (error, decodedData) => {
         if (error) {
@@ -16,11 +16,11 @@ const auth = async (req, res, next) => {
         }
         const existingUser = await User.findById(decodedData?.id);
 
-        if (!existingUser || existingUser.type !== "Doctor")
+        if (!existingUser)
           return res.status(404).json({ message: "Wrong User" });
 
         req.user = existingUser;
-
+        console.log(req.user);
         next();
       });
     }

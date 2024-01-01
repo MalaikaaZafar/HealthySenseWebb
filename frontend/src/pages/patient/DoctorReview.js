@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Typography,
@@ -21,6 +21,7 @@ import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
 import StarRatings from 'react-star-ratings';
 import ReactStars from "react-rating-stars-component";
 import styles from './DoctorReview.module.css';
+import api from '../../services/api';
 
 const CustomTextField = styled(TextField)({
   '& .MuiInputAdornment-root.MuiInputAdornment-positionStart': {
@@ -63,7 +64,7 @@ function DoctorReviewForm() {
 
   useEffect(() => {
 
-    axios.post('http://localhost:3000/doctor-compact/658c46d48180f6a9f753706c', { withCredentials: true })
+    api.post('/doctor-compact/658c46d48180f6a9f753706c', { withCredentials: true })
             .then(res => {
                 console.log(res);
                 doctor = res.data;

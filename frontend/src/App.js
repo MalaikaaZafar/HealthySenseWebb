@@ -33,6 +33,10 @@ import DocNavbar from './components/DocNavbar.js';
 import AdminNavbar from './components/AdminNavbar.js';
 import NotFoundPage from './pages/NotFound.jsx';
 import Payment from './patientLayout/Payment/Payment.js';
+import AllReports from './patientLayout/reports/AllReports.js';
+import PatientHistory from './pages/doctor/PatientHisttory.js';
+import ViewReportPatient from './pages/report/ViewReportPatient.js';
+import ProtectedRoute from './routes/ProtectedRoute.jsx';
 
 function App() {
 
@@ -49,35 +53,42 @@ function App() {
             <Route path="doctors" element={<AdminDoctor />} />
             <Route path='patients' element={<AdminPatient />} />
           </Route>
-          <Route path="/:id/doctor" element={<DocNavbar />}>
-            <Route index element={<CustomTabPanel />} />
-            <Route path="appointments/:id" element={<AppointmentDetail />} />
-            <Route path="appointments" element={<CustomTabPanel />} />
-            <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
-            <Route path="appointmentSlots" element={<AppointmentSlots />} />
-            <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
-            <Route path='patient-detail' element={<PatientDetail />} />
-            <Route path='account/:id' element={<DoctorManageAccount />} />
-            <Route path='diagnosis' element={<DiagnosisPage />} />
-            <Route path='report/:id' element={<ViewReportDoctor />} />
+          <Route path="/:id/doctor" element={<ProtectedRoute />}>
+            <Route element={<DocNavbar />}>
+
+              <Route index element={<CustomTabPanel />} />
+              <Route path="appointments/:id" element={<AppointmentDetail />} />
+              <Route path="appointments" element={<CustomTabPanel />} />
+              <Route path="appointments/cancel/:id" element={<CancelAppointment />} />
+              <Route path="appointmentSlots" element={<AppointmentSlots />} />
+              <Route path="appointments/reschedule/:id" element={<RescheduleAppointment />} />
+              <Route path='patient-detail' element={<PatientDetail />} />
+              <Route path='patient-history/:id' element={<PatientHistory />} />
+              <Route path='account/:id' element={<DoctorManageAccount />} />
+              <Route path='diagnosis/:id' element={<DiagnosisPage />} />
+              <Route path='report/:id' element={<ViewReportDoctor />} />
+            </Route>
           </Route>
 
-          <Route path='/:id/patient' element={<NavBar />}>
-            <Route index element={<Search />} />
-            <Route index element={<AppointmentListPatient />} />
-            <Route path='appointments' element={<AppointmentListPatient />} />
-            <Route path='appointments/:id' element={<ApptDetail />} />
-            <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
-            <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
-            <Route path='book-appointment/:id' element={<BookAppointment />} />
-            <Route path='payment/:id' element={<Payment />} />
-            <Route path='review' element={<DoctorReview />} />
-            <Route path="account/:id" element={<PatientManageAccount />} />
+          <Route path='/:id/patient' element={<ProtectedRoute />}>
+            <Route element={<NavBar />}>
+
+              <Route index element={<Search />} />
+              <Route path='appointments' element={<AppointmentListPatient />} />
+              <Route path='appointments/:id' element={<ApptDetail />} />
+              <Route path='appointments/reschedule/:id' element={<ReschedulePatient />} />
+              <Route path='appointments/cancel/:id' element={<CancelPatientAppt />} />
+              <Route path='book-appointment/:id' element={<BookAppointment />} />
+              <Route path='reports/:id' element={<AllReports />} />
+              <Route path='payment/:id' element={<Payment />} />
+              <Route path='your-report/:id' element={<ViewReportPatient />} />
+              <Route path='review' element={<DoctorReview />} />
+              <Route path="account/:id" element={<PatientManageAccount />} />
+              <Route path='favorites' element={<Favorites />} />
+            </Route>
           </Route>
           <Route path="/" element={<NavBar />}>
             <Route path='doctor-detail' element={<DoctorDetail />} />
-            <Route path='favorites' element={<Favorites />} />
-            <Route index element={<Search />} />
           </Route>
           <Route path='*' element={<NotFoundPage />} />
         </Routes>

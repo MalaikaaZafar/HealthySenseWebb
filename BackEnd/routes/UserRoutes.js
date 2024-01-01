@@ -5,6 +5,7 @@ const reportController = require('../controllers/ReportController');
 
 const router = express.Router();
 
+router.get('/verifyuser', auth, userController.getUserType);
 router.post('/login', userController.login);
 router.post('/signup', userController.signup);
 
