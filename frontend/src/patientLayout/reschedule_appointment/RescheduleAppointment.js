@@ -53,8 +53,6 @@ export const RescheduleAppointment = () => {
     setReason(event.target.value);
   }
 
-
-
   const getAppointment = async () => {
     try {
       const formattedStr = `/patient/consultations/${id}`;
@@ -120,10 +118,10 @@ export const RescheduleAppointment = () => {
   }
 
   return (
-    <Container width="100%" sx={{m:0, display:'flex', flexDirection: 'column', p:0, alignItems:'center'}} >
-      <Box sx={{width:{xs:"100%", md:"80%"}}}>
+    <Container width="100%" sx={{}} >
+      <Box sx={{width:{ md:"100%"}, mt:3}}>
       <Grid container alignItems="stretch">
-        <Grid item md={6} sm={14}>
+        <Grid item md={6} sm={12}>
           {appointment && <AppointmentCard type="doctor" appt={appointment} />}
         </Grid>
         <Grid item xs={4} sm={4} md={2}>

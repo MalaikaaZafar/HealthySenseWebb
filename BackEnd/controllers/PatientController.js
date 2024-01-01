@@ -7,6 +7,7 @@ const Diagnosis = require("../models/Diagnosis");
 const Payment = require("../models/Payment");
 const fs = require("fs");
 const path = require("path");
+const { default: mongoose } = require("mongoose");
 
 const patientController = {
   // view all consultations of a doctor, both pending and completed
@@ -97,6 +98,7 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+  
   getDoctors: async (req, res) => {
     try {
       const doctors = await Doctor.find().populate("user").exec();
@@ -107,10 +109,11 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+
   getDoctorById: async (req, res) => {
     const { id } = req.params;
     try {
-      const doctor = await Doctor.findById(id).populate("user").exec();
+      const doctor = await Doctor.findById(new mongoose.Types.ObjectId(id)).populate("user").exec();
       return res.status(200).json({ message: "Success", doctor });
     }
     catch (err) {
@@ -118,6 +121,7 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+
   bookAppointment: async (req, res) => {
     const { doctorId, date, time, type, problem } = req.body;
     const patientId= req.user._id;
@@ -136,7 +140,7 @@ const patientController = {
         paymentStatus: 'Unpaid',
       });
       await appointment.save();
-      const doctor = await Doctor.findById(doctorId);
+      const doctor = await Doctor.findById({_id: new mongoose.Types.ObjectId(doctorId)});
       doctor.appointmentSlots.forEach((slot) => {
         console.log(date, slot.time, time);
         if (slot.date.getDate() === newDate.getDate()
@@ -153,6 +157,8 @@ const patientController = {
       return res.status(500).json({ message: "Something went wrong" });
     }
   },
+
+
   getFavorites: async (req, res) => {
     const patient = await Patient.findOne({ user: req.userId });
     if (!patient)
