@@ -16,7 +16,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { ListItemButton, ListItemIcon, ListItemText, List, Drawer, IconButton } from '@mui/material';
 
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import AccountCircleOutlined from '@mui/icons-material/AccountCircleOutlined';
 
 import { style } from '@mui/system';
