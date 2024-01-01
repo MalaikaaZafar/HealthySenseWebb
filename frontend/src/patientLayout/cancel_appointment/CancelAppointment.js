@@ -46,12 +46,8 @@ export const CancelAppointment = () => {
     }).then((response) => response.json());
     setAppointment(appoinmentList);
   };
-  
+
     const cancelAppointment=async ()=>{
-      const formattedStr = `/patient/consultations/cancel`;
-      const appointmentList= await api.put(formattedStr, {id: id, reason: reason}).then((response) => response.data);
-      if (appointmentList.message==="Success")
-      {
         if (appointment.status!=="Cancelled"){
         try{
         const formattedStr = `/patient/consultations/cancel`;
@@ -74,9 +70,7 @@ export const CancelAppointment = () => {
       } else {
         setOpenError(true);
       }
-    } else {
-      setOpenErr(true);
-    }
+    
   };
 
   const handleCloseError = (event, reason) => {
