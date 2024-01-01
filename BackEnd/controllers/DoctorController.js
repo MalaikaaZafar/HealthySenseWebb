@@ -492,7 +492,27 @@ const doctorController = {
             console.log(error.message);
             return res.status(500).json({ message: "Something went wrong" });
         }
-    }
+    },
+
+    updateDiagnosis: async (req, res) => {
+        const { id } = req.params;
+        const { diagnosis, prescription, tests, notes } = req.body;
+        try {
+            const diagnosisData = await Diagnosis.findOne({ appointmentId: id });
+            if (!diagnosisData)
+                return res.status(404).json({ message: "Diagnosis not found" });
+            diagnosisData.description = diagnosis;
+            diagnosisData.prescription = prescription;
+            diagnosisData.tests = tests;
+            diagnosisData.notes = notes;
+            await diagnosisData.save();
+            return res.status(200).json({ message: "Success" });
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
 };
 
 module.exports = doctorController;
