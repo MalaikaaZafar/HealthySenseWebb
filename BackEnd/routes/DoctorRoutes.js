@@ -8,10 +8,10 @@ const router = express.Router();
 router.post('/register', auth, doctorAuth, doctorController.registerDoctor);
 
 router.get("/consultations", auth, doctorAuth, doctorController.consultations);
-router.get("/consultations/:id", doctorController.getConsultationById);
-router.post("/consultations/reschedule", doctorController.rescheduleAppt);
-router.put("/consultations/cancel", doctorController.cancelAppt);
-router.put("/consultations/complete", doctorController.completeAppt);
+router.get("/consultations/:id", auth, doctorAuth, doctorController.getConsultationById);
+router.post("/consultations/reschedule", auth, doctorAuth, doctorController.rescheduleAppt);
+router.put("/consultations/cancel", auth, doctorAuth, doctorController.cancelAppt);
+router.put("/consultations/complete", auth, doctorAuth, doctorController.completeAppt);
 
 router.put("/addSlots",auth, doctorAuth, doctorController.addSlots);
 router.get("/slots", auth, doctorAuth, doctorController.getSlots);

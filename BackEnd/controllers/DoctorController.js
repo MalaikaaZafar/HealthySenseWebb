@@ -166,9 +166,10 @@ const doctorController = {
     },
     addSlots: async (req, res) => {
         const { slots } = req.body;
-        const userId = "658aeab2a07cfdec21fc4968";
+        const userId = req.user._id;
         try {
-            const doctor = await Doctor.findOne({ _id: userId });
+            const doc= await User.findOne({ _id: userId });
+            const doctor = await Doctor.findOne({ user: doc._id });
             if (!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
             const newSlots = doctor.appointmentSlots.concat(slots);
@@ -184,7 +185,8 @@ const doctorController = {
     getSlots: async (req, res) => {
         const userId = req.user._id;
         try {
-            const appointment_slots = await Doctor.findById({ _id: userId }, { appointmentSlots: 1 });
+            const doc= await User.findOne ({ _id: userId });
+            const appointment_slots = await Doctor.findById({ user: doc._id }, { appointmentSlots: 1 });
             if (!appointment_slots)
                 return res.status(404).json({ message: "Doctor not found" });
             return res.status(200).json({ message: "Success", slots: appointment_slots.appointmentSlots });
@@ -199,7 +201,8 @@ const doctorController = {
         const { date, time } = req.body;
         const userId = req.user._id;
         try {
-            const doctor = await Doctor.findOne({ _id: userId });
+            const doc = await User.findOne({ _id: userId })
+            const doctor = await Doctor.findOne({ user: doc._id });
             if (!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
             const newSlots = doctor.appointmentSlots.filter(slot1 => slot1.date !== date)

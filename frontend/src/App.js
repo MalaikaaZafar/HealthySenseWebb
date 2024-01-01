@@ -38,6 +38,7 @@ import PatientHistory from './pages/doctor/PatientHisttory.js';
 import ViewReportPatient from './pages/report/ViewReportPatient.js';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
 import FAQ from './pages/faqs/FAQ.js';
+import { Messages }  from './pages/messages/Messages.js';
 
 function App() {
 
@@ -69,6 +70,8 @@ function App() {
               <Route path='diagnosis/:appid' element={<DiagnosisPage />} />
               <Route path='report/:appid' element={<ViewReportDoctor />} />
               <Route path='doctor-detail' element={<DoctorDetail type='doctor' />} />
+              <Route path='messages' element={<Messages />} />
+              <Route path="messages/:id" element={<Messages />} />
             </Route>
           </Route>
 
@@ -88,6 +91,8 @@ function App() {
               <Route path='favorites' element={<Favorites />} />
               <Route path='doctor-detail' element={<DoctorDetail type='patient' />} />
               <Route path='faq' element={<FAQ />} />
+              <Route path='messages' element={<Messages />} />
+              <Route path="messages/:id" element={<Messages />} />
             </Route>
           </Route>
           <Route path="/" element={<NavBar />}>

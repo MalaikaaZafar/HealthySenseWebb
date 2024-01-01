@@ -9,8 +9,8 @@ router.get('/verifyuser', auth, userController.getUserType);
 router.post('/login', userController.login);
 router.post('/signup', userController.signup);
 
-router.get('/messages/:id', userController.getMessages);
-router.post('/messages', userController.sendMessage);
+router.get('/messages/:id', auth, userController.getMessages);
+router.post('/messages', auth, userController.sendMessage);
 
 router.get('/report/:id', reportController.getReport);
 router.get('/report/appointment/:id', reportController.getSpecificReport);

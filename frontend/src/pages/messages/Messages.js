@@ -24,59 +24,15 @@ import fetchMessages from "../../services/fetchMessages";
 import sendMessage from "../../services/sendMessage";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import useUserStore from "../../stores/userStore";
 
-const User = ({ text }) => {
-  return (
-    <Paper sx={styles.messagePrimary} style={{ float: "right" }}>
-      <p
-        style={{
-          padding: "0px",
-          margin: "0px",
-          maxWidth: "100%",
-          fontSize: "medium",
-        }}
-      >
-        {text}
-      </p>
-    </Paper>
-  );
-};
-
-const SecondaryUser = ({ text }) => {
-  return (
-    <Paper sx={styles.messageSecondary}>
-      <p
-        style={{
-          padding: "0px",
-          margin: "0px",
-          maxWidth: "100%",
-          fontSize: "medium",
-        }}
-      >
-        {text}
-      </p>
-    </Paper>
-  );
-};
-
-const ChatList = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  height: "100%",
-  width: "20%",
-  border: "1px solid #ccc",
-  padding: "16px",
-  overflowY: "auto",
-  background: "#EEEEEE",
-});
 
 export const Messages = () => {
   const [messageInput, setMessageInput] = useState("");
   const [chats, setChat] = useState([]);
   const [selectedChat, setSelectedChat] = useImmer(null);
-  const { user } = useUserStore();
-  const { id } = useParams();
+  const [userId, setUserId] = useState(0);
+  const { patientId, docId, id } = useParams();
+  
 
   const handleSendMessage = async () => {
     if (messageInput.trim() === "") return;
@@ -84,19 +40,21 @@ export const Messages = () => {
     const message = {
       text: messageInput,
       date: new Date(),
-      senderId: user.user._id,
+      senderId: userId,
     };
+
+
     var receiverId = 0;
-    if (selectedChat?.primary?._id === user.user._id)
+    if (selectedChat?.primary?._id === userId )
       receiverId = selectedChat?.secondary?._id;
-    else receiverId = selectedChat?.primary?._id;
+    else 
+      receiverId = selectedChat?.primary?._id;
+
     const response = await sendMessage(message, receiverId);
     if (response.message === "Success") {
       setSelectedChat((draft) => {
         draft.messages.push({
-          text: messageInput,
-          date: new Date(),
-          senderId: user.user._id,
+            message
         });
       });
       setMessageInput("");
@@ -108,12 +66,14 @@ export const Messages = () => {
 
   useEffect(() => {
     const fetch = async () => {
+      if (patientId)
+    setUserId(patientId)
+  else 
+    setUserId(docId)
       const response = await fetchMessages(id);
       if (response.message === "Success") {
         setChat(response.chat);
-        
         response?.chat?.map ((chat) => {
-          console.log("COMPARE: ", chat?.primary?._id, id, chat?.secondary?._id)
           if (chat?.primary?._id === id || chat?.secondary?._id === id) {
             setSelectedChat(chat);
           }
@@ -129,7 +89,6 @@ export const Messages = () => {
     // Clean up function
     return () => clearInterval(intervalId);
   }, []);
-
   return (
     <Grid container sx={{ overflow: "hidden" }}>
       <Grid
@@ -159,11 +118,11 @@ export const Messages = () => {
                 </ListItemAvatar>
                 <ListItemText
                   primary={
-                    chat?.secondary?._id !== user.user._id
+                    chat?.secondary?._id !== userId
                       ? chat?.secondary?.name
                       : chat?.primary?.name
                   }
-                  secondary={chat?.secondary?.isOnline ? "Online" : "Offline"}
+                  secondary= "Online" 
                 />
               </ListItemButton>
             ))}
@@ -189,7 +148,7 @@ export const Messages = () => {
           }}
         >
           <Typography variant="h6">
-            {selectedChat?.secondary?._id !== user.user._id
+            {selectedChat?.secondary?._id !== userId
               ? selectedChat?.secondary?.name
               : selectedChat?.primary?.name}
           </Typography>
@@ -205,15 +164,14 @@ export const Messages = () => {
           }}
         >
           {selectedChat &&
-            Array.isArray(selectedChat.messages) &&
+            Array.isArray(selectedChat.messages) && selectedChat.messages.length>0 &&
             selectedChat.messages.map((message, index) => (
+              (message.senderId === userId || message.senderId ===id) &&
               <Box
                 p={1}
-                bgcolor={
-                  message.senderId === user.user._id ? "#2854C3" : "#eeeeee"
-                }
+                bgcolor={message.senderId === userId ? "#2854C3" : message.senderId===id?  "#eeeeee": null}
                 borderRadius={
-                  message.senderId === user.user._id
+                  message.senderId === userId
                     ? "16px 16px 0px 16px"
                     : "0px 16px 16px 16px"
                 }
@@ -222,14 +180,14 @@ export const Messages = () => {
                 my={1}
                 sx={{
                   marginLeft:
-                    message.senderId === user.user._id ? "auto" : "none",
+                    message.senderId === userId ? "auto" : "none",
                   position: "relative",
                   boxShadow: "0 3px 5px rgba(0, 0, 0, 0.2)",
                 }}
               >
                 <Typography
                   variant="body1"
-                  color={message.senderId === user.user._id ? "white" : "black"}
+                  color={message.senderId === userId ? "white" : message.senderId===id?  "black": null}
                   sx={{
                     fontFamily: "Arial",
                     fontSize: "16px",
@@ -240,14 +198,14 @@ export const Messages = () => {
                 </Typography>
                 <Typography
                   variant="caption"
-                  color={message.senderId === user.user._id ? "white" : "black"}
+                  color={message.senderId === userId ? "white" : message.senderId===id?  "black": null}
                   sx={{
                     display: "block",
                     textAlign: "right",
                     fontSize: "12px",
                   }}
                 >
-                  {new Date(message.date).toLocaleTimeString()}
+                  {message.senderId === userId ? new Date(message.date).toLocaleTimeString() : message.senderId===id? new Date(message.date).toLocaleTimeString() : null}
                 </Typography>
               </Box>
             ))}
