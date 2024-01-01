@@ -97,6 +97,7 @@ const FinalReport = () => {
                             boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.2)',
                             py: 3,
                         }}
+                        className="changes1"
                     >
                         <Button variant="contained"
                             style={{ backgroundColor: '#3f51b5', color: 'white', marginBottom: '20px' }}
@@ -147,7 +148,7 @@ const FinalReport = () => {
                                     width: '100%',
                                     borderBottom: '1px solid rgba(224, 224, 224, 1)',
                                 }}
-                                className="changes"
+                                className="changes2"
                             >
                                 <Box
                                     sx={{
@@ -160,7 +161,7 @@ const FinalReport = () => {
                                         py: 3,
                                         borderRight: '1px solid rgba(224, 224, 224, 1)',
                                     }}
-                                    className="changes1"
+                                    className="changes3"
                                 >
                                     <Typography variant="h6" style={{ fontWeight: 'bold' }}>Doctor Details </Typography>
                                     <Box
@@ -230,7 +231,7 @@ const FinalReport = () => {
                                         py: 3,
                                         marginLeft: '30px'
                                     }}
-                                    className="changes1"
+                                    className="changes3"
                                 >
                                     <Typography variant="h6" component="div" style={{ fontWeight: 'bold' }}>
                                         Patient Details
