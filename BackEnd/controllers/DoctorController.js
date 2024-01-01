@@ -179,7 +179,7 @@ const doctorController = {
         }
     },
     getSlots: async (req, res) => {
-        const userId = "658aeab2a07cfdec21fc4968";
+        const userId = req.user._id;
         try {
             const appointment_slots = await Doctor.findById({ _id: userId }, { appointmentSlots: 1 });
             if (!appointment_slots)
@@ -193,9 +193,8 @@ const doctorController = {
     },
 
     deleteSlots: async (req, res) => {
-        const { date, time, type } = req.body;
-        console.log(date, time, type)
-        const userId = "658aeab2a07cfdec21fc4968";
+        const { date, time } = req.body;
+        const userId = req.user._id;
         try {
             const doctor = await Doctor.findOne({ _id: userId });
             if (!doctor)
@@ -218,7 +217,7 @@ const doctorController = {
         const { query, sort, sortOrder, specialty, minRating, skip } = req.query;
 
         try {
-            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor').where('approvedStatus').equals(true);
+            const q = User.find({ name: { $regex: query, $options: 'i' } }).where('isBanned').equals(false).where('type').equals('Doctor');
             const users = await q.exec();
             const userIds = users.map(user => user._id);
             let filter = { user: { $in: userIds } };
@@ -228,7 +227,7 @@ const doctorController = {
             // if (minRating) {
             //     filter.rating = { $gte: minRating };
             // }
-            let doctors = await Doctor.find(filter).populate('user');
+            let doctors = await Doctor.find(filter).where('approvedStatus').equals(true).populate('user');
             if (doctors.length !== 0) {
                 if (sort == 'A-Z') {
                     doctors = doctors.sort((a, b) => {

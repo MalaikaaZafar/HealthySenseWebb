@@ -11,7 +11,7 @@ const path = require("path");
 const patientController = {
   // view all consultations of a doctor, both pending and completed
   consultations: async (req, res) => {
-    const UserId = "6585484c797f80875a8a769c";
+    const UserId = req.user._id;
     try {
       const apptList = await Appointment.find({ patientId: UserId })
         .populate({ path: "doctorId", populate: { path: "user" } })
@@ -31,6 +31,7 @@ const patientController = {
         .populate({ path: "doctorId", populate: { path: "user" } })
         .populate({ path: "patientId", populate: { path: "user" } })
         .exec();
+      console.log(appt)
       return res.status(200).json(appt);
     } catch (error) {
       console.log(error.message);
@@ -118,11 +119,14 @@ const patientController = {
     }
   },
   bookAppointment: async (req, res) => {
-    const { patientId, doctorId, date, time, type, problem } = req.body;
+    const { doctorId, date, time, type, problem } = req.body;
+    const patientId= req.user._id;
     try {
       const newDate = new Date(date);
+      const patient= await Patient.findOne({user:patientId});
+      console.log(patient);
       const appointment = new Appointment({
-        patientId: patientId,
+        patientId: patient._id,
         doctorId: doctorId,
         date: newDate,
         time: time,
@@ -131,7 +135,6 @@ const patientController = {
         status: 'Booked',
         paymentStatus: 'Unpaid',
       });
-
       await appointment.save();
       const doctor = await Doctor.findById(doctorId);
       doctor.appointmentSlots.forEach((slot) => {

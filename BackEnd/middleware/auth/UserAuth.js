@@ -17,7 +17,6 @@ const auth = async (req, res, next) => {
 
         if (!existingUser)
           return res.status(404).json({ message: "Wrong User" });
-
         req.user = existingUser;
         next();
       });

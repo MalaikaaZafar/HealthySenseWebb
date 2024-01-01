@@ -23,9 +23,9 @@ function AppointmentCard({ type, appt }) {
   const goToDetails = (event) => {
     event.preventDefault();
     if (type === "doctor") {
-      navigate(`/patient/appointments/${appt._id}`);
+      navigate(`/${appt?.patientId?.user?._id}/patient/appointments/${appt._id}`);
     } else {
-      navigate(`/doctor/appointments/${appt._id}`);
+      navigate(`/${appt?.patientId?.user?._id}/doctor/appointments/${appt._id}`);
     }
   };
 

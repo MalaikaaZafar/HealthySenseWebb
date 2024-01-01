@@ -48,9 +48,7 @@ export const AppointmentList = () => {
               {appointmentList &&
           appointmentList.map((app, index) =>
             app.status === value ? (
-              // <Box key={index} width="50%" >
                 <ApptCardForList type="doctor" appt={app} />
-              // </Box>
             ) : null
           )}
       </Box>
