@@ -1,7 +1,7 @@
 import { Alert, Snackbar, TableRow, TableCell, Table, TableHead, TableBody, Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import GetAllDiagnosis from '../../services/patient/report/GetAllDiagnosis';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import LoadingAnimation from '../../components/Loader/LoadingAnimation';
 import { Container, color, styled } from "@mui/system";
 import SummarizeIcon from '@mui/icons-material/Summarize';
@@ -34,7 +34,7 @@ const CustomTableCell = styled(TableCell)(({ }) => ({
 
 const AllReports = () => {
     const navigate = useNavigate();
-    const id = "6585484c797f80875a8a769d";
+    const { id } = useParams();
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [msg, setMsg] = useState('');
