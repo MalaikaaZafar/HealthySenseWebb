@@ -18,5 +18,13 @@ router.put("/deleteSlot", doctorController.deleteSlots);
 
 router.get("/specialties", doctorController.getSpecialties);
 router.get("/search", doctorController.searchDoctors);
+router.get("/appointments/:id", doctorController.getAppintmentDetails);
+
+router.post("/appointments/:id/diagnosis", doctorController.createDiagnosis);
+router.get("/account/:id", doctorController.getAccountDetails);
+router.put("/account/:id", doctorController.updateAccount);
+router.get("/patient/history/:id", doctorController.getPatientHistory);
+
 router.post("/complaint/:id",auth, doctorController.addComplaint); //add doctor auth
+
 module.exports = router;

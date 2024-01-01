@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const patientHistorySchema = new mongoose.Schema({
-    date: { type: Date, required: true },
+    date: { type: Date, required: true, default: Date.now() },
     description: { type: String, required: true },
     type: { type: String, required: true },
 });

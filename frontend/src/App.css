@@ -36,3 +36,150 @@
     transform: rotate(360deg);
   }
 } */
+
+
+.row-display {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.Column-display {
+  display: flex;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.column1 {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+}
+
+.column2 {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+}
+
+.MuiAccordionDetails-root {
+  padding-top: 0% !important;
+}
+
+.PatientDetails-Diag {
+  padding: 3%;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.336);
+  border-radius: 10px;
+  transition: 0.5s ease-in-out;
+  margin-bottom: 20px;
+}
+
+.PatientDetails-Diag h6 {
+  font-size: large !important;
+}
+
+.Diagnosis-Diag{
+  width: 100%;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.column21{
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin-bottom: 30px !important;
+}
+
+.model-container{
+  position: absolute;
+  top :50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  width: fit-content;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.column211{
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  gap: 30px !important;
+  margin-top: 30px !important ;
+  margin-bottom: 30px !important;
+}
+.column123{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px !important;
+  margin-top: 10px !important ;
+  margin-bottom: 10px !important;
+} 
+
+.column123 .row-display{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.column123 span{
+  padding: 8px;  
+  border-radius: 8px;
+}
+.column123 .MuiAvatar-root{
+  width: 180px;
+  height: 180px;
+  min-height: 180px;
+  min-width: 180px;
+  align-self: center;
+}
+
+.row-display span{
+  padding: 8px;  
+  border-radius: 8px; 
+}
+
+
+.loading-animation{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: white;
+  z-index: 5000;
+}
+
+.Completed{
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: white;
+}
+
+@media screen and (max-width: 768px) {
+    .disappear{
+      display: none !important;
+    }
+    .adjust{
+      width: 40% !important;
+    }
+}
+
+

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 require('dotenv').config();
 
 const parse = require('./middleware/parse');
@@ -22,11 +23,14 @@ app.use(cors({
     credentials: true
 }));
 
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+
 app.use('/', require('./routes/UserRoutes'));
 app.use('/', require('./routes/PatientRoutes'));
 app.use('/doctor', require('./routes/DoctorRoutes'));
 app.use('/admin', require('./routes/AdminRoutes'));
 app.use('/patient', require('./routes/PatientRoutes'));
+app.use('/payment', require('./routes/PaymentRoutes'));
 
 const PORT =process.env.PORT || 3000;
 
