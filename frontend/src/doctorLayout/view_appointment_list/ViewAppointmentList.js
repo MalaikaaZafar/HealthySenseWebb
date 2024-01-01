@@ -41,7 +41,7 @@ async function fetchAppointments() {
   }, []);
 
   return (
-    <Container maxWidth="100%">
+    <Box width="100%">
       <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mb: 2 }}>
         <Tabs
           value={value}
@@ -62,7 +62,7 @@ async function fetchAppointments() {
           ) : null
         )}
       </Box>
-    </Container>
+    </Box>
   );
 }
 

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/register', auth, doctorAuth, doctorController.registerDoctor);
 
-router.get("/consultations", doctorController.consultations);
+router.get("/consultations", auth, doctorAuth, doctorController.consultations);
 router.get("/consultations/:id", doctorController.getConsultationById);
 router.post("/consultations/reschedule", doctorController.rescheduleAppt);
 router.put("/consultations/cancel", doctorController.cancelAppt);
