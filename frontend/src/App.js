@@ -45,6 +45,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <Routes>
+          <Route path='/patient-detail' element={<PatientDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/:id/register" element={<RegisterDoctor />} />

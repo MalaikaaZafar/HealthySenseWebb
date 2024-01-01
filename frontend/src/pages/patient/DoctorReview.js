@@ -13,6 +13,7 @@ import {
   InputAdornment,
   TextField,
   Hidden,
+  CircularProgress,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import PersonIcon from '@mui/icons-material/Person';
@@ -22,7 +23,6 @@ import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
 import StarRatings from 'react-star-ratings';
 import ReactStars from "react-rating-stars-component";
 import styles from './DoctorReview.module.css';
-import api from '../../services/api';
 
 const CustomTextField = styled(TextField)({
   '& .MuiInputAdornment-root.MuiInputAdornment-positionStart': {
@@ -40,6 +40,7 @@ function DoctorReviewForm() {
   const [staffRating, setStaffRating] = useState(0);
   const [recommend, setRecommend] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const onRatingChange = (e) => {
     setRating(e);
@@ -82,6 +83,7 @@ function DoctorReviewForm() {
             experience: res.data.experience,
             rating: res.data.rating,
           });
+          setIsLoaded(true);
         })
         .catch(err => {
           console.log(err);
@@ -125,6 +127,19 @@ function DoctorReviewForm() {
 
     setIsSubmitting(false);
   };
+
+  if (!isLoaded) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <div>
