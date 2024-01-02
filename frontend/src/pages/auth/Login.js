@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button, TextField, Link, Box, Container, Typography, Avatar, CssBaseline, InputAdornment, IconButton } from '@mui/material';
+import { Button, TextField, Link, Box, Grid, Typography, Avatar, CssBaseline, InputAdornment, IconButton, Hidden } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
 import { styled } from '@mui/system';
-import styles from './Login.module.css';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import Visibility from '@mui/icons-material/Visibility';
@@ -22,7 +21,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -59,12 +58,12 @@ export default function Login() {
                 console.log(res);
                 document.cookie = `token=${res.data.token}`;
                 if (res.data.result.type === 'Doctor') {
-                    navigate(`/${res.data.result._id}/doctor`);
+                    navigate(`/${res.data.result._id}/doctor`, { replace: true });
                 } else if (res.data.result.type === 'Patient') {
-                    navigate(`/${res.data.result._id}/patient`);
+                    navigate(`/${res.data.result._id}/patient`, { replace: true });
                 }
                 else if (res.data.result.type === 'Admin') {
-                    navigate(`/${res.data.result._id}/admin`);
+                    navigate(`/${res.data.result._id}/admin`, { replace: true });
                 }
             })
             .catch(err => {
@@ -74,83 +73,106 @@ export default function Login() {
     }
 
     return (
-        <div className={styles.Screen}>
-            <div className={styles.Background}>
-                <img src="./imgs/LOGO.png" alt="Healthy Sense Logo" />
-                <Typography component="h1" variant="h2" color='white'>
-                    HealthySense
-                </Typography>
-            </div>
-            <Container component="main" className={styles.Container}>
-                <CssBaseline />
-                <StyledBox>
-                    <StyledAvatar>
-                        <LockOutlinedIcon />
-                    </StyledAvatar>
-                    <Typography component="h1" variant="h5">
-                        Log in
-                    </Typography>
-                    <form noValidate autoComplete="off">
-                        <StyledTextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoFocus
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <EmailOutlinedIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <StyledTextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type={showPassword ? 'text' : 'password'}
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <VpnKeyOutlinedIcon />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleShowPassword}
-                                        >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <StyledButton type="submit" fullWidth variant="contained" color="primary" onClick={handleSubmit}>
-                            Log In
-                        </StyledButton>
-                        <Typography component="p" variant="body2">
-                            Don't have an account?&nbsp;
-                            <Link href="" variant="body2" onClick={() => navigate('/signup', { replace: true })} underline='none'>
-                                {"Sign Up"}
-                            </Link>
+        <Box sx={{ width: '100%', height: '100vh' }} bgcolor={'#F1F1F1'}>
+            <Grid container>
+                <Grid container item xs={12} md={6}
+                    sx={{
+                        background: 'linear-gradient(to bottom, #0045F3 0%, #454545 126.02%)',
+                        height: { xs: '15vh', md: '100vh' }
+                    }}
+                    justifyContent="center"
+                >
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'row', md: 'column' },
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <Hidden mdDown>
+                            <img src="./imgs/LOGO.png" alt="Healthy Sense Logo" style={{ width: '300px', height: '300px' }} />
+                            <Typography component="h1" variant="h2" color='white'>
+                                HealthySense
+                            </Typography>
+                        </Hidden>
+                        <Hidden mdUp>
+                            <img src="./imgs/LOGO.png" alt="Healthy Sense Logo" style={{ width: '70px', height: '70px' }} />
+                            <Typography component="h1" variant="h5" color='white'>
+                                HealthySense
+                            </Typography>
+                        </Hidden>
+                    </Box>
+                </Grid>
+                <Grid container item xs={12} md={6} justifyContent="center" alignItems="center" p={2} marginTop={{ xs: '30px', md: '0' }}>
+                    <CssBaseline />
+                    <StyledBox>
+                        <StyledAvatar>
+                            <LockOutlinedIcon />
+                        </StyledAvatar>
+                        <Typography component="h1" variant="h5">
+                            Log in
                         </Typography>
-                    </form>
-                </StyledBox>
-            </Container>
-        </div>
+                        <form noValidate autoComplete="off">
+                            <StyledTextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoFocus
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <EmailOutlinedIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <StyledTextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type={showPassword ? 'text' : 'password'}
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <VpnKeyOutlinedIcon />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleShowPassword}
+                                            >
+                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <StyledButton type="submit" fullWidth variant="contained" color="primary" onClick={handleSubmit}>
+                                Log In
+                            </StyledButton>
+                            <Typography component="p" variant="body2">
+                                Don't have an account?&nbsp;
+                                <Link href="" variant="body2" onClick={() => navigate('/signup', { replace: true })} underline='none'>
+                                    {"Sign Up"}
+                                </Link>
+                            </Typography>
+                        </form>
+                    </StyledBox>
+                </Grid>
+            </Grid>
+        </Box>
     );
 }

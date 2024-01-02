@@ -9,7 +9,7 @@ import {
     TextField,
     Link,
     Box,
-    Container,
+    Hidden,
     Typography,
     Avatar,
     CssBaseline,
@@ -38,7 +38,6 @@ import PatientIcon from '@mui/icons-material/Person';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import { styled } from '@mui/system';
-import styles from './Login.module.css';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import Visibility from '@mui/icons-material/Visibility';
@@ -57,7 +56,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -107,7 +106,7 @@ const Signup = () => {
     const [showPassword, setShowPassword] = React.useState(false);
 
     const handleShowPassword = () => setShowPassword(!showPassword);
-  
+
 
     const [contryCode, setCountryCode] = useState('');
 
@@ -177,7 +176,11 @@ const Signup = () => {
             .then(res => {
                 console.log(res);
                 document.cookie = `token=${res.data.token}`;
-                navigate('/', { replace: true });
+                if (res.data.result.type === 'Doctor') {
+                    navigate(`/register`, { replace: true });
+                } else if (res.data.result.type === 'Patient') {
+                    navigate(`/${res.data.result._id}/patient`, { replace: true });
+                }
             })
             .catch(err => {
                 console.log(err);
@@ -188,294 +191,322 @@ const Signup = () => {
     };
 
     return (
-        <div className={styles.Screen}>
-            <div className={styles.Background}>
-                <img src="./imgs/LOGO.png" alt="Healthy Sense Logo" />
-                <Typography component="h1" variant="h2" color='white'>
-                    HealthySense
-                </Typography>
-            </div>
-            <Container component='main' className={styles.Container}>
-                <CssBaseline />
-                <StyledBox>
-                    <StyledAvatar>
-                        <LockOutlinedIcon />
-                    </StyledAvatar>
-                    <Typography component='h1' variant='h5'>
-                        Sign Up
-                    </Typography>
-                    <form noValidate autoComplete='off' onSubmit={handleSubmit}>
-                        <StyledTextField
-                            variant='outlined'
-                            margin='normal'
-                            required
-                            fullWidth
-                            id='name'
-                            label='Full Name'
-                            name='name'
-                            autoFocus
-                            onChange={handleChange}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position='start'>
-                                        <AccountCircleOutlinedIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <FormControl component="fieldset" margin="normal" >
-                            <FormLabel component="legend">Profile Picture</FormLabel>
-                            <StyledInput
-                                id="icon-button-file"
-                                type="file"
-                                onChange={handleProfilePictureChange}
-                                inputProps={{ accept: "image/png, image/jpeg , image/jpg" }}
-                            />
-                            <Grid container justifyContent="flex-start" alignItems="center" spacing={2}>
-                                <Grid item>
-                                    <IconButton color="primary" component="span" onClick={() => document.getElementById('icon-button-file').click()}>
-                                        <PhotoCamera />
-                                    </IconButton>
-                                </Grid>
-                                <Grid item>
-                                    {profilePicture && <img src={profilePicture} alt="Profile" style={{ width: '70px', height: '70px', borderRadius: '50%', marginTop: '10px' }} />}
-                                </Grid>
-                            </Grid>
-                        </FormControl>
-                        <StyledTextField
-                            variant='outlined'
-                            margin='normal'
-                            required
-                            fullWidth
-                            id='email'
-                            label='Email Address'
-                            name='email'
-                            autoComplete='off'
-                            onChange={handleChange}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position='start'>
-                                        <EmailOutlinedIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <StyledTextField
-                            variant='outlined'
-                            margin='normal'
-                            required
-                            fullWidth
-                            name='password'
-                            label='Password'
-                            type={showPassword ? 'text' : 'password'}
-                            id='password'
-                            onChange={handleChange}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position='start'>
-                                        <VpnKeyOutlinedIcon />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                      <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleShowPassword}
-                                      >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                      </IconButton>
-                                    </InputAdornment>
-                                  ),
-                            }}
-                        />
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <StyledDatePicker
+        <Box sx={{ width: '100%', height: { xs: 'auto', md: '100vh' } }} bgcolor={'#F1F1F1'}>
+            <Grid container>
+                <Grid container item xs={12} md={6}
+                    sx={{
+                        background: 'linear-gradient(to bottom, #0045F3 0%, #454545 126.02%)',
+                        height: { xs: '15vh', md: '100vh' },
+                        overflow: 'hidden',
+                        position: { xs: 'fixed', md: 'relative' },
+                        zIndex: '10',
+                    }}
+                    justifyContent="center"
+                >
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'row', md: 'column' },
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <Hidden mdDown>
+                            <img src="./imgs/LOGO.png" alt="Healthy Sense Logo" style={{ width: '300px', height: '300px' }} />
+                            <Typography component="h1" variant="h2" color='white'>
+                                HealthySense
+                            </Typography>
+                        </Hidden>
+                        <Hidden mdUp>
+                            <img src="./imgs/LOGO.png" alt="Healthy Sense Logo" style={{ width: '70px', height: '70px' }} />
+                            <Typography component="h1" variant="h5" color='white'>
+                                HealthySense
+                            </Typography>
+                        </Hidden>
+                    </Box>
+                </Grid>
+                <Grid container item xs={12} md={6} justifyContent="center" alignItems="center"
+                    sx={{ height: { xs: 'auto', md: '100vh' }, p: 2, marginTop: { xs: '150px', md: '0' }, overflow: 'auto' }}
+                >
+                    <CssBaseline />
+                    <StyledBox>
+                        <StyledAvatar>
+                            <LockOutlinedIcon />
+                        </StyledAvatar>
+                        <Typography component='h1' variant='h5'>
+                            Sign Up
+                        </Typography>
+                        <form noValidate autoComplete='off' onSubmit={handleSubmit}>
+                            <StyledTextField
+                                variant='outlined'
                                 margin='normal'
-                                id='dob'
-                                label='Date of Birth'
-                                name='dob'
-                                inputFormat='yyyy-MM-dd'
+                                required
                                 fullWidth
-                                onChange={(date) => setFormData({ ...formData, dob: date })}
-                                maxDate={dayjs(new Date())}
-                                slotProps={{
-                                    textField: {
-                                        fullWidth: true,
-                                        margin: 'normal',
-                                        name: 'dob',
-                                        required: true,
-                                        InputProps: {
-                                            startAdornment: (
-                                                <InputAdornment position='start'>
-                                                    <CakeOutlinedIcon />
-                                                </InputAdornment>
-                                            ),
-                                        },
-                                    },
+                                id='name'
+                                label='Full Name'
+                                name='name'
+                                autoFocus
+                                onChange={handleChange}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position='start'>
+                                            <AccountCircleOutlinedIcon />
+                                        </InputAdornment>
+                                    ),
                                 }}
                             />
-                        </LocalizationProvider>
-                        <FormControl variant="outlined" margin='normal' required fullWidth>
-                            <InputLabel id="country-label">Country</InputLabel>
-                            <StyledSelect
-                                labelId="country-label"
-                                id="country"
-                                name="country"
-                                label="Country"
-                                value={formData.country}
+                            <FormControl component="fieldset" margin="normal" >
+                                <FormLabel component="legend">Profile Picture</FormLabel>
+                                <StyledInput
+                                    id="icon-button-file"
+                                    type="file"
+                                    onChange={handleProfilePictureChange}
+                                    inputProps={{ accept: "image/png, image/jpeg , image/jpg" }}
+                                />
+                                <Grid container justifyContent="flex-start" alignItems="center" spacing={2}>
+                                    <Grid item>
+                                        <IconButton color="primary" component="span" onClick={() => document.getElementById('icon-button-file').click()}>
+                                            <PhotoCamera />
+                                        </IconButton>
+                                    </Grid>
+                                    <Grid item>
+                                        {profilePicture && <img src={profilePicture} alt="Profile" style={{ width: '70px', height: '70px', borderRadius: '50%', marginTop: '10px' }} />}
+                                    </Grid>
+                                </Grid>
+                            </FormControl>
+                            <StyledTextField
+                                variant='outlined'
+                                margin='normal'
+                                required
+                                fullWidth
+                                id='email'
+                                label='Email Address'
+                                name='email'
+                                autoComplete='off'
                                 onChange={handleChange}
-                                startAdornment={
-                                    <InputAdornment position='start'>
-                                        <RoomOutlinedIcon />
-                                    </InputAdornment>
-                                }
-                            >
-                                <MenuItem value={'Pakistan'}>Pakistan</MenuItem>
-                            </StyledSelect>
-                        </FormControl>
-                        <Grid container spacing={2} >
-                            <Grid item xs={12} sm={3}>
-                                <FormControl variant="outlined" margin='normal' required fullWidth>
-                                    <InputLabel id="country-code-label">Country Code</InputLabel>
-                                    <StyledSelect
-                                        labelId="country-code-label"
-                                        id="country-code"
-                                        label="Country Code"
-                                        value={contryCode}
-                                        onChange={handleCountryCodeChange}
-                                        startAdornment={
-                                            <InputAdornment position='start'>
-                                                <FlagIcon />
-                                            </InputAdornment>
-                                        }
-                                    >
-                                        <MenuItem value={'+92'}>+92</MenuItem>
-                                    </StyledSelect>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={12} sm={9}>
-                                <InputMask
-                                    mask="9 9 9 - 9 9 9 9 9 9 9"
-                                    onChange={handleChange}
-                                >
-                                    {() =>
-                                        <StyledTextField
-                                            variant='outlined'
-                                            margin='normal'
-                                            required
-                                            fullWidth
-                                            name='phoneNumber'
-                                            label='Phone Number'
-                                            id='phoneNumber'
-                                            InputProps={{
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position='start'>
+                                            <EmailOutlinedIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <StyledTextField
+                                variant='outlined'
+                                margin='normal'
+                                required
+                                fullWidth
+                                name='password'
+                                label='Password'
+                                type={showPassword ? 'text' : 'password'}
+                                id='password'
+                                onChange={handleChange}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position='start'>
+                                            <VpnKeyOutlinedIcon />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleShowPassword}
+                                            >
+                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <StyledDatePicker
+                                    margin='normal'
+                                    id='dob'
+                                    label='Date of Birth'
+                                    name='dob'
+                                    inputFormat='yyyy-MM-dd'
+                                    fullWidth
+                                    onChange={(date) => setFormData({ ...formData, dob: date })}
+                                    maxDate={dayjs(new Date())}
+                                    slotProps={{
+                                        textField: {
+                                            fullWidth: true,
+                                            margin: 'normal',
+                                            name: 'dob',
+                                            required: true,
+                                            InputProps: {
                                                 startAdornment: (
                                                     <InputAdornment position='start'>
-                                                        <PhoneAndroidOutlinedIcon />
-                                                    </InputAdornment >
+                                                        <CakeOutlinedIcon />
+                                                    </InputAdornment>
                                                 ),
-                                            }}
-                                        />
-                                    }
-                                </InputMask>
-                            </Grid>
-                        </Grid>
-                        <FormControl variant="outlined" margin='normal' required fullWidth>
-                            <InputLabel id="gender-label">Gender</InputLabel>
-                            <StyledSelect
-                                labelId="gender-label"
-                                id="gender"
-                                name="gender"
-                                label="gender"
-                                onChange={handleChange}
-                                value={formData.gender}
-                                startAdornment={
-                                    <InputAdornment position='start'>
-                                        <PersonOutlineOutlinedIcon />
-                                    </InputAdornment>
-                                }
-                            >
-                                <MenuItem value={'Male'}>Male</MenuItem>
-                                <MenuItem value={'Female'}>Female</MenuItem>
-                                <MenuItem value={'Other'}>Other</MenuItem>
-                            </StyledSelect>
-                        </FormControl>
-                        <Box margin='normal'>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <Typography variant="subtitle1" color="grey"> Account Type </Typography>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Paper
-                                        elevation={accountType === 'Patient' ? 4 : 1}
-                                        style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
-                                        onClick={() => setAccountType('Patient')}
-                                    >
-                                        <IconButton color={accountType === 'Patient' ? 'primary' : 'default'}>
-                                            <PatientIcon fontSize="large" />
-                                            <Typography variant="subtitle1">Patient</Typography>
-                                        </IconButton>
-                                    </Paper>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Paper
-                                        elevation={accountType === 'Doctor' ? 4 : 1}
-                                        style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
-                                        onClick={() => {setAccountType('Doctor'); setFormData({...formData, blood: ''})}}
-                                    >
-                                        <IconButton color={accountType === 'Doctor' ? 'primary' : 'default'}>
-                                            <DoctorIcon fontSize="large" />
-                                            <Typography variant="subtitle1">Doctor</Typography>
-                                        </IconButton>
-                                    </Paper>
-                                </Grid>
-                            </Grid>
-                        </Box>
-                        {accountType === 'Patient' && (
-                            <FormControl variant="outlined" margin='normal' required fullWidth style={{ marginTop: '30px' }}>
-                                <InputLabel id="blood">Blood Group</InputLabel>
+                                            },
+                                        },
+                                    }}
+                                />
+                            </LocalizationProvider>
+                            <FormControl variant="outlined" margin='normal' required fullWidth>
+                                <InputLabel id="country-label">Country</InputLabel>
                                 <StyledSelect
-                                    labelId="blood-label"
-                                    id="blood"
-                                    name="blood"
-                                    label="blood group"
-                                    value={formData.blood}
+                                    labelId="country-label"
+                                    id="country"
+                                    name="country"
+                                    label="Country"
+                                    value={formData.country}
                                     onChange={handleChange}
                                     startAdornment={
                                         <InputAdornment position='start'>
-                                            <LocalHospitalIcon />
+                                            <RoomOutlinedIcon />
                                         </InputAdornment>
                                     }
                                 >
-                                    <MenuItem value={'A+'}>A+</MenuItem>
-                                    <MenuItem value={'A-'}>A-</MenuItem>
-                                    <MenuItem value={'B+'}>B+</MenuItem>
-                                    <MenuItem value={'B-'}>B-</MenuItem>
-                                    <MenuItem value={'AB+'}>AB+</MenuItem>
-                                    <MenuItem value={'AB-'}>AB-</MenuItem>
-                                    <MenuItem value={'O+'}>O+</MenuItem>
-                                    <MenuItem value={'O-'}>O-</MenuItem>
+                                    <MenuItem value={'Pakistan'}>Pakistan</MenuItem>
                                 </StyledSelect>
                             </FormControl>
-                        )}
-                        <StyledButton
-                            type='submit'
-                            fullWidth
-                            variant='contained'
-                            color='primary'
-                            disabled={isSubmitting}
-                        >
-                            Sign Up
-                        </StyledButton>
-                        <Typography component='p' variant='body2'>
-                            Already have an account?&nbsp;
-                            <Link href="" variant="body2" onClick={() => navigate('/login', { replace: true })} underline='none'>
-                                {'Log In'}
-                            </Link>
-                        </Typography>
-                    </form>
-                </StyledBox>
-            </Container>
-        </div>
+                            <Grid container spacing={2} >
+                                <Grid item xs={12} sm={3}>
+                                    <FormControl variant="outlined" margin='normal' required fullWidth>
+                                        <InputLabel id="country-code-label">Country Code</InputLabel>
+                                        <StyledSelect
+                                            labelId="country-code-label"
+                                            id="country-code"
+                                            label="Country Code"
+                                            value={contryCode}
+                                            onChange={handleCountryCodeChange}
+                                            startAdornment={
+                                                <InputAdornment position='start'>
+                                                    <FlagIcon />
+                                                </InputAdornment>
+                                            }
+                                        >
+                                            <MenuItem value={'+92'}>+92</MenuItem>
+                                        </StyledSelect>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={9}>
+                                    <InputMask
+                                        mask="9 9 9 - 9 9 9 9 9 9 9"
+                                        onChange={handleChange}
+                                    >
+                                        {() =>
+                                            <StyledTextField
+                                                variant='outlined'
+                                                margin='normal'
+                                                required
+                                                fullWidth
+                                                name='phoneNumber'
+                                                label='Phone Number'
+                                                id='phoneNumber'
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position='start'>
+                                                            <PhoneAndroidOutlinedIcon />
+                                                        </InputAdornment >
+                                                    ),
+                                                }}
+                                            />
+                                        }
+                                    </InputMask>
+                                </Grid>
+                            </Grid>
+                            <FormControl variant="outlined" margin='normal' required fullWidth>
+                                <InputLabel id="gender-label">Gender</InputLabel>
+                                <StyledSelect
+                                    labelId="gender-label"
+                                    id="gender"
+                                    name="gender"
+                                    label="gender"
+                                    onChange={handleChange}
+                                    value={formData.gender}
+                                    startAdornment={
+                                        <InputAdornment position='start'>
+                                            <PersonOutlineOutlinedIcon />
+                                        </InputAdornment>
+                                    }
+                                >
+                                    <MenuItem value={'Male'}>Male</MenuItem>
+                                    <MenuItem value={'Female'}>Female</MenuItem>
+                                    <MenuItem value={'Other'}>Other</MenuItem>
+                                </StyledSelect>
+                            </FormControl>
+                            <Box margin='normal'>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <Typography variant="subtitle1" color="grey"> Account Type </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Paper
+                                            elevation={accountType === 'Patient' ? 4 : 1}
+                                            style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
+                                            onClick={() => setAccountType('Patient')}
+                                        >
+                                            <IconButton color={accountType === 'Patient' ? 'primary' : 'default'}>
+                                                <PatientIcon fontSize="large" />
+                                                <Typography variant="subtitle1">Patient</Typography>
+                                            </IconButton>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Paper
+                                            elevation={accountType === 'Doctor' ? 4 : 1}
+                                            style={{ padding: '10px', borderRadius: '10px', cursor: 'pointer' }}
+                                            onClick={() => { setAccountType('Doctor'); setFormData({ ...formData, blood: '' }) }}
+                                        >
+                                            <IconButton color={accountType === 'Doctor' ? 'primary' : 'default'}>
+                                                <DoctorIcon fontSize="large" />
+                                                <Typography variant="subtitle1">Doctor</Typography>
+                                            </IconButton>
+                                        </Paper>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                            {accountType === 'Patient' && (
+                                <FormControl variant="outlined" margin='normal' required fullWidth style={{ marginTop: '30px' }}>
+                                    <InputLabel id="blood">Blood Group</InputLabel>
+                                    <StyledSelect
+                                        labelId="blood-label"
+                                        id="blood"
+                                        name="blood"
+                                        label="blood group"
+                                        value={formData.blood}
+                                        onChange={handleChange}
+                                        startAdornment={
+                                            <InputAdornment position='start'>
+                                                <LocalHospitalIcon />
+                                            </InputAdornment>
+                                        }
+                                    >
+                                        <MenuItem value={'A+'}>A+</MenuItem>
+                                        <MenuItem value={'A-'}>A-</MenuItem>
+                                        <MenuItem value={'B+'}>B+</MenuItem>
+                                        <MenuItem value={'B-'}>B-</MenuItem>
+                                        <MenuItem value={'AB+'}>AB+</MenuItem>
+                                        <MenuItem value={'AB-'}>AB-</MenuItem>
+                                        <MenuItem value={'O+'}>O+</MenuItem>
+                                        <MenuItem value={'O-'}>O-</MenuItem>
+                                    </StyledSelect>
+                                </FormControl>
+                            )}
+                            <StyledButton
+                                type='submit'
+                                fullWidth
+                                variant='contained'
+                                color='primary'
+                                disabled={isSubmitting}
+                            >
+                                Sign Up
+                            </StyledButton>
+                            <Typography component='p' variant='body2'>
+                                Already have an account?&nbsp;
+                                <Link href="" variant="body2" onClick={() => navigate('/login', { replace: true })} underline='none'>
+                                    {'Log In'}
+                                </Link>
+                            </Typography>
+                        </form>
+                    </StyledBox>
+                </Grid>
+            </Grid>
+        </Box>
     );
 };
 

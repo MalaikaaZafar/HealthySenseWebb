@@ -10,13 +10,13 @@ import {
     Chip,
     Box,
     IconButton,
-    Container,
     CssBaseline,
     Paper,
     Dialog,
     DialogTitle,
     DialogContent,
     Hidden,
+    Avatar,
 } from '@mui/material';
 import { TimePicker, DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -37,15 +37,20 @@ import VideoCallIcon from '@mui/icons-material/VideoCall';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
-import styles from './Register.module.css';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import api from '../../services/api';
 
-const CustomTextField = styled(TextField)({
+const CustomTextField = styled(TextField)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '&:hover fieldset': {
+            borderColor: theme.palette.primary.main,
+        },
+    },
     '& .MuiInputAdornment-root.MuiInputAdornment-positionStart': {
         marginTop: '0.7rem',
         marginBottom: 'auto',
     },
-});
+}));
 
 const StyledBox = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -57,8 +62,46 @@ const StyledBox = styled(Box)(({ theme }) => ({
     padding: theme.spacing(3),
 }));
 
-const StyledButton = styled(Button)(({ theme }) => ({
-    margin: theme.spacing(0, 0, 0),
+const StyledButton = styled(Button)(({ theme }) => `
+  background: linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.dark} 90%);
+  border-radius: 3em;
+  border: 0;
+  color: white;
+  height: 30px;
+  padding: 0 20px;
+  box-shadow: 0 3px 5px 2px rgba(255, 105, 135, .3);
+  &:hover {
+    background: linear-gradient(45deg, ${theme.palette.primary.dark} 30%, ${theme.palette.primary.main} 90%);
+  }
+`);
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.primary.main,
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '&:hover fieldset': {
+            borderColor: theme.palette.primary.main,
+        },
+    },
+}));
+
+const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '&:hover fieldset': {
+            borderColor: theme.palette.primary.main,
+        },
+    },
+}));
+
+const StyledTimePicker = styled(TimePicker)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '&:hover fieldset': {
+            borderColor: theme.palette.primary.main,
+        },
+    },
 }));
 
 const RegisterDoctor = () => {
@@ -318,488 +361,533 @@ const RegisterDoctor = () => {
     }
 
     return (
-        <div className={styles.Screen}>
-            <Container component='main' className={styles.Container}>
-                <CssBaseline />
-                <StyledBox>
-                    <Typography variant="h6">Register</Typography>
-                    <form
-                        noValidate
-                        autoComplete='off'
-                        onSubmit={handleSubmit}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-                                e.preventDefault();
-                            }
-                        }}
-                    >
-                        <Grid container>
-                            <Grid item xs={12} >
-                                <CustomTextField
-                                    name="description"
-                                    onChange={handleChange}
-                                    label="Description"
-                                    fullWidth
-                                    required
-                                    multiline
-                                    margin='normal'
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <InsertDriveFile />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    name="experience"
-                                    onChange={handleChange}
-                                    label="Experience(Years)"
-                                    type="number"
-                                    margin='normal'
-                                    fullWidth
-                                    required
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <School />
-                                            </InputAdornment>
-                                        ),
-                                        inputProps: {
-                                            min: 0,
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    name="Online"
-                                    margin='normal'
-                                    onChange={handleSessionChange}
-                                    label="Online Fee(Rs.)"
-                                    type="number"
-                                    fullWidth
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <Money />
-                                            </InputAdornment>
-                                        ),
-                                        inputProps: {
-                                            min: 1000,
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    name="Clinic"
-                                    margin='normal'
-                                    onChange={handleSessionChange}
-                                    label="Clininc Fee(Rs.)"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <Money />
-                                            </InputAdornment>
-                                        ),
-                                        inputProps: {
-                                            min: 1000,
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    name="specialization"
-                                    onChange={handleChange}
-                                    label="Specialization"
-                                    fullWidth
-                                    margin='normal'
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <Category />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    name="location"
-                                    onChange={handleChange}
-                                    label="Clininc Location"
-                                    margin='normal'
-                                    fullWidth
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <LocationOn />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="subtitle1" color="gray">Services</Typography>
-                                <Button onClick={handleAddService} startIcon={<AddCircleOutline />}>Add Service</Button>
-                                {showServiceInput && (
-                                    <Grid container>
-                                        <Grid item xs={12} mb={1} sm={10}>
-                                            <TextField
-                                                value={currentService}
-                                                onChange={handleServiceChange}
-                                                label="Service"
-                                                margin='normal'
-                                                fullWidth
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <LocalHospital />
-                                                        </InputAdornment >
-                                                    ),
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} mb={1} sm={10}>
-                                            <StyledButton onClick={handleServiceSubmit} variant="contained" color="secondary" fullWidth> Add </StyledButton>
-                                        </Grid>
-                                    </Grid>
-                                )}
-                                <Grid container marginTop='0.1rem'>
-                                    {doctor.services.map((service, index) => (
-                                        <Grid item key={index} mr={1} mb={1}>
-                                            <Chip
-                                                label={service}
-                                                onDelete={() => handleRemoveService(service)}
-                                                color="primary"
-                                                variant="outlined"
-                                                margin='normal'
-                                            />
-                                        </Grid>
-                                    ))}
+        <Box sx={{ width: '100%', height: { xs: 'auto', md: '100vh' } }} bgcolor={'#F1F1F1'}>
+            <Grid container>
+                <Grid container item xs={12} md={6}
+                    sx={{
+                        background: 'linear-gradient(to bottom, #0045F3 0%, #454545 126.02%)',
+                        height: { xs: '15vh', md: '100vh' },
+                        overflow: 'hidden',
+                        position: { xs: 'fixed', md: 'relative' },
+                        zIndex: '10',
+                    }}
+                    justifyContent="center"
+                >
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'row', md: 'column' },
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                        <Hidden mdDown>
+                            <img src="./imgs/LOGO.png" alt="Healthy Sense Logo" style={{ width: '300px', height: '300px' }} />
+                            <Typography component="h1" variant="h2" color='white'>
+                                HealthySense
+                            </Typography>
+                        </Hidden>
+                        <Hidden mdUp>
+                            <img src="./imgs/LOGO.png" alt="Healthy Sense Logo" style={{ width: '70px', height: '70px' }} />
+                            <Typography component="h1" variant="h5" color='white'>
+                                HealthySense
+                            </Typography>
+                        </Hidden>
+                    </Box>
+                </Grid>
+                <Grid container item xs={12} md={6} justifyContent="center" alignItems="center"
+                    sx={{ height: { xs: 'auto', md: '100vh' }, p: 2, marginTop: { xs: '150px', md: '0' }, overflow: 'auto' }}
+                >
+                    <CssBaseline />
+                    <StyledBox>
+                        <StyledAvatar>
+                            <LockOutlinedIcon />
+                        </StyledAvatar>
+                        <Typography component='h1' variant='h5'>
+                            Register
+                        </Typography>
+                        <form
+                            noValidate
+                            autoComplete='off'
+                            onSubmit={handleSubmit}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                                    e.preventDefault();
+                                }
+                            }}
+                        >
+                            <Grid container>
+                                <Grid item xs={12} >
+                                    <CustomTextField
+                                        name="description"
+                                        onChange={handleChange}
+                                        label="Description"
+                                        fullWidth
+                                        required
+                                        multiline
+                                        margin='normal'
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <InsertDriveFile />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
                                 </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="subtitle1" color="gray">Appointment Slots</Typography>
-                                <Button onClick={handleAddAppointmentSlot} startIcon={<AddCircleOutline />}>Add Appointment Slots</Button>
-                                {showAppointmentInput && (
-                                    <Grid item container justifyContent={'space-between'} xs={10}>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <Grid item xs={5}>
-                                                <DatePicker
-                                                    name="date"
-                                                    value={selectedDate}
-                                                    onChange={handleDateChange}
-                                                    label="Date"
-                                                    maxDate={dayjs(new Date())}
-                                                    slotProps={{
-                                                        textField: {
-                                                            fullWidth: true,
-                                                            margin: 'normal',
-                                                            InputProps: {
-                                                                startAdornment: (
-                                                                    <Hidden xsUp>
-                                                                        <InputAdornment position="start">
-                                                                            <CalendarToday />
-                                                                        </InputAdornment>
-                                                                    </Hidden>
-                                                                ),
-                                                            }
-                                                        },
-                                                    }}
-                                                />
-                                            </Grid>
-                                        </LocalizationProvider>
-                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                            <Grid item xs={5}>
-                                                <TimePicker
-                                                    value={selectedTime}
-                                                    onChange={handleTimeChange}
-                                                    slotProps={{
-                                                        textField: {
-                                                            fullWidth: true,
-                                                            margin: 'normal',
-                                                            label: 'Time',
-                                                        },
-                                                    }}
-                                                />
-                                            </Grid>
-                                        </LocalizationProvider>
-                                        <Grid container spacing={2} p={3} pt={0}>
-                                            <Grid item xs={10}>
-                                                <Typography variant="subtitle1" color="grey" fontSize={14}>Slot Type</Typography>
-                                            </Grid>
-                                            <Grid item xs={5}>
-                                                <Paper
-                                                    elevation={selectedType === 'Online' ? 4 : 1}
-                                                    style={{ padding: '5px', borderRadius: '5px', cursor: 'pointer' }}
-                                                    onClick={() => setSelectedType('Online')}
-                                                >
-                                                    <IconButton color={selectedType === 'Online' ? 'primary' : 'default'}>
-                                                        <VideoCallIcon fontSize="large" />
-                                                        <Typography variant="subtitle1">Online</Typography>
-                                                    </IconButton>
-                                                </Paper>
-                                            </Grid>
-                                            <Grid item xs={5}>
-                                                <Paper
-                                                    elevation={selectedType === 'Clinic' ? 4 : 1}
-                                                    style={{ padding: '5px', borderRadius: '5px', cursor: 'pointer' }}
-                                                    onClick={() => setSelectedType('Clinic')}
-                                                >
-                                                    <IconButton color={selectedType === 'Clinic' ? 'primary' : 'default'}>
-                                                        <LocalHospitalIcon fontSize="large" />
-                                                        <Typography variant="subtitle1">Clinic</Typography>
-                                                    </IconButton>
-                                                </Paper>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={10}>
-                                            <StyledButton onClick={handleAppointmentSlotSubmit} variant="contained" color="secondary" fullWidth> Add </StyledButton>
-                                        </Grid>
-                                    </Grid>
-                                )}
-                                <Grid container spacing={2} marginTop='0.1rem'>
-                                    {doctor.appointmentSlots.map((appointment, index) => (
-                                        <Grid item key={index}>
-                                            <Chip
-                                                onDelete={() => handleRemoveAppointment(appointment)}
-                                                color="primary"
-                                                variant="outlined"
-                                                label={`${dayjs(appointment.date).format('DD/MM/YYYY')} | ${appointment.time} | ${appointment.type}`}
-                                            />
-                                        </Grid>
-                                    ))}
+                                <Grid item xs={12}>
+                                    <StyledTextField
+                                        name="experience"
+                                        onChange={handleChange}
+                                        label="Experience(Years)"
+                                        type="number"
+                                        margin='normal'
+                                        fullWidth
+                                        required
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <School />
+                                                </InputAdornment>
+                                            ),
+                                            inputProps: {
+                                                min: 0,
+                                            },
+                                        }}
+                                    />
                                 </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="subtitle1" color="gray">Certificates</Typography>
-                                <Button onClick={handleAddCertificate} startIcon={<AddCircleOutline />}>Add Certificate</Button>
-                                {showCertificateInput && (
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={10}>
-                                            <TextField
-                                                name="name"
-                                                value={currentCertificate.name}
-                                                onChange={handleCertificateChange}
-                                                label="Name"
-                                                fullWidth
-                                                margin='normal'
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <Description />
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={10}>
-                                            <CustomTextField
-                                                name="description"
-                                                value={currentCertificate.description}
-                                                onChange={handleCertificateChange}
-                                                label="Description"
-                                                fullWidth
-                                                multiline
-                                                margin='normal'
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <InsertDriveFile />
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                            />
-                                        </Grid>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <Grid item xs={10}>
-                                                <DatePicker
-                                                    name="issueDate"
-                                                    value={currentCertificate.issueDate}
-                                                    onChange={handleCertificateIssueDateChange}
-                                                    label="Issue Date"
-                                                    maxDate={dayjs(new Date())}
-                                                    slotProps={{
-                                                        textField: {
-                                                            fullWidth: true,
-                                                            margin: 'normal',
-                                                        },
-                                                    }}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={10}>
-                                                <DatePicker
-                                                    name="expiryDate"
-                                                    value={currentCertificate.expiryDate}
-                                                    onChange={handleCertificateExpiryDateChange}
-                                                    label="Expiry Date"
-                                                    minDate={currentCertificate.issueDate}
-                                                    maxDate={dayjs(new Date())}
-                                                    slotProps={{
-                                                        textField: {
-                                                            fullWidth: true,
-                                                            margin: 'normal',
-                                                            InputProps: {
-                                                                startAdornment: (
-                                                                    <InputAdornment position="start">
-                                                                        <IconButton onClick={() => setCurrentCertificate({ ...currentCertificate, expiryDate: null })}>
-                                                                            <Typography variant="body2" color="error">Clear</Typography>
-                                                                        </IconButton>
-                                                                    </InputAdornment>
-                                                                ),
-                                                            }
-                                                        },
-                                                    }}
-                                                />
-                                            </Grid>
-                                        </LocalizationProvider>
-                                        <Grid container spacing={3}>
-                                            <Grid item xs={5}>
-                                                <Button variant="contained" component="label" fullWidth margin='normal' startIcon={<UploadFile />} sx={{ mt: 2, mb: 2, ml: 2 }}>
-                                                    Upload
-                                                    <input
-                                                        type="file"
-                                                        name="file"
-                                                        onChange={handleCertificateFileChange}
-                                                        hidden
-                                                        required
-                                                        accept="image/png, image/jpeg, image/jpg,.pdf"
+                                <Grid item xs={12}>
+                                    <StyledTextField
+                                        name="Online"
+                                        margin='normal'
+                                        onChange={handleSessionChange}
+                                        label="Online Fee(Rs.)"
+                                        type="number"
+                                        fullWidth
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Money />
+                                                </InputAdornment>
+                                            ),
+                                            inputProps: {
+                                                min: 1000,
+                                            },
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <StyledTextField
+                                        name="Clinic"
+                                        margin='normal'
+                                        onChange={handleSessionChange}
+                                        label="Clininc Fee(Rs.)"
+                                        type="number"
+                                        fullWidth
+                                        required
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Money />
+                                                </InputAdornment>
+                                            ),
+                                            inputProps: {
+                                                min: 1000,
+                                            },
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <StyledTextField
+                                        name="specialization"
+                                        onChange={handleChange}
+                                        label="Specialization"
+                                        fullWidth
+                                        margin='normal'
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Category />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <StyledTextField
+                                        name="location"
+                                        onChange={handleChange}
+                                        label="Clininc Location"
+                                        margin='normal'
+                                        fullWidth
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <LocationOn />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="subtitle1" color="gray">Services</Typography>
+                                    <Button onClick={handleAddService} startIcon={<AddCircleOutline />}>Add Service</Button>
+                                    {showServiceInput && (
+                                        <Paper elevation={5} sx={{ p: 2, borderRadius: 2, marginBottom: '1rem' }}>
+                                            <Grid container>
+                                                <Grid item xs={12} mb={1}>
+                                                    <StyledTextField
+                                                        value={currentService}
+                                                        onChange={handleServiceChange}
+                                                        label="Service"
+                                                        margin='normal'
+                                                        fullWidth
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <LocalHospital />
+                                                                </InputAdornment >
+                                                            ),
+                                                        }}
                                                     />
-                                                </Button>
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <StyledButton onClick={handleServiceSubmit} variant="contained" color="secondary" fullWidth> Add </StyledButton>
+                                                </Grid>
                                             </Grid>
-                                            {currentCertificate.file && (
-                                                <Grid item xs={5}>
-                                                    <Box display="flex" alignItems="center" height="100%" justifyContent="center">
-                                                        <Chip
-                                                            icon={<Description />}
-                                                            label={`${currentCertificate.file.name}`}
-                                                            clickable
-                                                            color="primary"
-                                                            variant="outlined"
-                                                            component="a"
-                                                            sx={{ mt: 2, mb: 2 }}
-                                                            href="#"
-                                                            onClick={e => { e.preventDefault(); openDialog(); }}
-                                                            onDelete={handleRemoveCertificateFileChange}
-                                                        />
-                                                        <Dialog
-                                                            open={dialogOpen}
-                                                            onClose={closeDialog}
-                                                            aria-labelledby="file-dialog-title"
-                                                            aria-describedby="file-dialog-description"
-                                                            maxWidth="md"
-                                                            fullWidth
-                                                            PaperProps={{
-                                                                sx: {
-                                                                    position: 'relative',
-                                                                    backgroundColor: 'transparent',
-                                                                    '&::before': {
-                                                                        content: '""',
-                                                                        position: 'absolute',
-                                                                        top: 0,
-                                                                        left: 0,
-                                                                        width: '100%',
-                                                                        height: '100%',
-                                                                        backgroundColor: 'white',
-                                                                        opacity: 0.7,
-                                                                        zIndex: -1,
-                                                                    },
+                                        </Paper>
+                                    )}
+                                    <Grid container marginTop='0.1rem'>
+                                        {doctor.services.map((service, index) => (
+                                            <Grid item key={index} mr={1} mb={1}>
+                                                <Chip
+                                                    label={service}
+                                                    onDelete={() => handleRemoveService(service)}
+                                                    color="primary"
+                                                    variant="outlined"
+                                                    margin='normal'
+                                                />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="subtitle1" color="gray">Appointment Slots</Typography>
+                                    <Button onClick={handleAddAppointmentSlot} startIcon={<AddCircleOutline />}>Add Appointment Slots</Button>
+                                    {showAppointmentInput && (
+                                        <Paper elevation={5} sx={{ p: 2, borderRadius: 2, marginBottom: '1rem' }}>
+                                            <Grid item container justifyContent={'space-between'}>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <StyledDatePicker
+                                                            name="date"
+                                                            value={selectedDate}
+                                                            onChange={handleDateChange}
+                                                            label="Date"
+                                                            maxDate={dayjs(new Date())}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    fullWidth: true,
+                                                                    margin: 'normal',
+                                                                    InputProps: {
+                                                                        startAdornment: (
+                                                                            <Hidden xsUp>
+                                                                                <InputAdornment position="start">
+                                                                                    <CalendarToday />
+                                                                                </InputAdornment>
+                                                                            </Hidden>
+                                                                        ),
+                                                                    }
                                                                 },
                                                             }}
-                                                        >
-                                                            <DialogTitle id="file-dialog-title" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
-                                                                <Typography variant="h7" fontSize={18} fontWeight={600}>Certificate File</Typography>
-                                                                <IconButton aria-label="close" onClick={closeDialog} sx={{ position: 'absolute', right: 8 }}>
-                                                                    <CloseIcon />
-                                                                </IconButton>
-                                                            </DialogTitle>
-                                                            <DialogContent sx={{
-                                                                display: 'flex',
-                                                                flexDirection: 'column',
-                                                                justifyContent: 'center',
-                                                                alignItems: 'center',
-                                                                overflow: 'auto',
-                                                                height: 'auto',
-                                                                padding: '2.5rem',
+                                                        />
+                                                    </Grid>
+                                                </LocalizationProvider>
+                                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                    <Grid item xs={12} sm={5}>
+                                                        <StyledTimePicker
+                                                            value={selectedTime}
+                                                            onChange={handleTimeChange}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    fullWidth: true,
+                                                                    margin: 'normal',
+                                                                    label: 'Time',
+                                                                },
                                                             }}
-                                                            >
-                                                                {currentCertificate.file.type.startsWith('image/') ? (
-                                                                    <Box
-                                                                        component="img"
-                                                                        src={URL.createObjectURL(currentCertificate.file)}
-                                                                        title="Certificate File"
-                                                                        sx={{
-                                                                            maxWidth: '100%',
-                                                                            maxHeight: '100%',
-                                                                            objectFit: 'contain',
-                                                                            border: 'none',
-                                                                            marginBottom: '1rem',
-                                                                        }}
-                                                                    />
-                                                                ) : (
-                                                                    <>
-                                                                        <Hidden smDown>
+                                                        />
+                                                    </Grid>
+                                                </LocalizationProvider>
+                                                <Grid item container justifyContent={'space-between'}>
+                                                    <Grid item xs={12} mb={1}>
+                                                        <Typography variant="subtitle1" color="grey" fontSize={14}>Slot Type</Typography>
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={5} mb={2}>
+                                                        <Paper
+                                                            elevation={selectedType === 'Online' ? 3 : 1}
+                                                            style={{ padding: '5px', borderRadius: '5px', cursor: 'pointer' }}
+                                                            onClick={() => setSelectedType('Online')}
+                                                        >
+                                                            <IconButton color={selectedType === 'Online' ? 'primary' : 'default'}>
+                                                                <VideoCallIcon fontSize="large" />
+                                                                <Typography variant="subtitle1">Online</Typography>
+                                                            </IconButton>
+                                                        </Paper>
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={5} mb={2}>
+                                                        <Paper
+                                                            elevation={selectedType === 'Clinic' ? 3 : 1}
+                                                            style={{ padding: '5px', borderRadius: '5px', cursor: 'pointer' }}
+                                                            onClick={() => setSelectedType('Clinic')}
+                                                        >
+                                                            <IconButton color={selectedType === 'Clinic' ? 'primary' : 'default'}>
+                                                                <LocalHospitalIcon fontSize="large" />
+                                                                <Typography variant="subtitle1">Clinic</Typography>
+                                                            </IconButton>
+                                                        </Paper>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <StyledButton onClick={handleAppointmentSlotSubmit} variant="contained" color="secondary" fullWidth> Add </StyledButton>
+                                                </Grid>
+                                            </Grid>
+                                        </Paper>
+                                    )}
+                                    <Grid container marginTop='0.1rem'>
+                                        {doctor.appointmentSlots.map((appointment, index) => (
+                                            <Grid item key={index} mr={1} mb={1}>
+                                                <Chip
+                                                    onDelete={() => handleRemoveAppointment(appointment)}
+                                                    color="primary"
+                                                    variant="outlined"
+                                                    label={`${dayjs(appointment.date).format('DD/MM/YYYY')} | ${appointment.time} | ${appointment.type}`}
+                                                />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="subtitle1" color="gray">Certificates</Typography>
+                                    <Button onClick={handleAddCertificate} startIcon={<AddCircleOutline />} sx={{ marginBottom: '1rem' }}>Add Certificate</Button>
+                                    {showCertificateInput && (
+                                        <Paper elevation={5} sx={{ p: 2, borderRadius: 2, marginBottom: '1rem', marginTop: '-1rem' }}>
+                                            <Grid container>
+                                                <Grid item xs={12}>
+                                                    <StyledTextField
+                                                        name="name"
+                                                        value={currentCertificate.name}
+                                                        onChange={handleCertificateChange}
+                                                        label="Name"
+                                                        fullWidth
+                                                        margin='normal'
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <Description />
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <CustomTextField
+                                                        name="description"
+                                                        value={currentCertificate.description}
+                                                        onChange={handleCertificateChange}
+                                                        label="Description"
+                                                        fullWidth
+                                                        multiline
+                                                        margin='normal'
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <InsertDriveFile />
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                    />
+                                                </Grid>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <Grid item xs={12}>
+                                                        <StyledDatePicker
+                                                            name="issueDate"
+                                                            value={currentCertificate.issueDate}
+                                                            onChange={handleCertificateIssueDateChange}
+                                                            label="Issue Date"
+                                                            maxDate={dayjs(new Date())}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    fullWidth: true,
+                                                                    margin: 'normal',
+                                                                },
+                                                            }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <StyledDatePicker
+                                                            name="expiryDate"
+                                                            value={currentCertificate.expiryDate}
+                                                            onChange={handleCertificateExpiryDateChange}
+                                                            label="Expiry Date"
+                                                            minDate={currentCertificate.issueDate}
+                                                            maxDate={dayjs(new Date())}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    fullWidth: true,
+                                                                    margin: 'normal',
+                                                                    InputProps: {
+                                                                        startAdornment: (
+                                                                            <InputAdornment position="start">
+                                                                                <IconButton onClick={(e) => { e.preventDefault(); setCurrentCertificate({ ...currentCertificate, expiryDate: null }); }}>
+                                                                                    <Typography variant="body2" color="error">Clear</Typography>
+                                                                                </IconButton>
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                    }
+                                                                },
+                                                            }}
+                                                        />
+                                                    </Grid>
+                                                </LocalizationProvider>
+                                                <Grid container>
+                                                    <Grid item xs={4} mb={2}>
+                                                        <Button component="label" fullWidth margin='normal' startIcon={<UploadFile />} size='large'>
+                                                            Upload
+                                                            <input
+                                                                type="file"
+                                                                name="file"
+                                                                onChange={handleCertificateFileChange}
+                                                                hidden
+                                                                required
+                                                                accept="image/png, image/jpeg, image/jpg,.pdf"
+                                                            />
+                                                        </Button>
+                                                    </Grid>
+                                                    {currentCertificate.file && (
+                                                        <Grid item xs={5}>
+                                                            <Box display="flex" alignItems="center" height="100%" justifyContent="center">
+                                                                <Chip
+                                                                    icon={<Description />}
+                                                                    label={`${currentCertificate.file.name}`}
+                                                                    clickable
+                                                                    color="primary"
+                                                                    variant="outlined"
+                                                                    component="a"
+                                                                    sx={{ mt: 2, mb: 2 }}
+                                                                    href="#"
+                                                                    onClick={e => { e.preventDefault(); openDialog(); }}
+                                                                    onDelete={handleRemoveCertificateFileChange}
+                                                                />
+                                                                <Dialog
+                                                                    open={dialogOpen}
+                                                                    onClose={closeDialog}
+                                                                    aria-labelledby="file-dialog-title"
+                                                                    aria-describedby="file-dialog-description"
+                                                                    maxWidth="md"
+                                                                    fullWidth
+                                                                    PaperProps={{
+                                                                        sx: {
+                                                                            position: 'relative',
+                                                                            backgroundColor: 'transparent',
+                                                                            '&::before': {
+                                                                                content: '""',
+                                                                                position: 'absolute',
+                                                                                top: 0,
+                                                                                left: 0,
+                                                                                width: '100%',
+                                                                                height: '100%',
+                                                                                backgroundColor: 'white',
+                                                                                opacity: 0.7,
+                                                                                zIndex: -1,
+                                                                            },
+                                                                        },
+                                                                    }}
+                                                                >
+                                                                    <DialogTitle id="file-dialog-title" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative' }}>
+                                                                        <Typography variant="h7" fontSize={18} fontWeight={600}>Certificate File</Typography>
+                                                                        <IconButton aria-label="close" onClick={closeDialog} sx={{ position: 'absolute', right: 8 }}>
+                                                                            <CloseIcon />
+                                                                        </IconButton>
+                                                                    </DialogTitle>
+                                                                    <DialogContent sx={{
+                                                                        display: 'flex',
+                                                                        flexDirection: 'column',
+                                                                        justifyContent: 'center',
+                                                                        alignItems: 'center',
+                                                                        overflow: 'auto',
+                                                                        height: 'auto',
+                                                                        padding: '2.5rem',
+                                                                    }}
+                                                                    >
+                                                                        {currentCertificate.file.type.startsWith('image/') ? (
                                                                             <Box
-                                                                                component="iframe"
+                                                                                component="img"
                                                                                 src={URL.createObjectURL(currentCertificate.file)}
                                                                                 title="Certificate File"
                                                                                 sx={{
-                                                                                    width: '100%',
-                                                                                    height: '70vh',
+                                                                                    maxWidth: '100%',
+                                                                                    maxHeight: '100%',
+                                                                                    objectFit: 'contain',
                                                                                     border: 'none',
                                                                                     marginBottom: '1rem',
                                                                                 }}
                                                                             />
-                                                                        </Hidden>
-                                                                    </>
-                                                                )}
-                                                                <Button
-                                                                    variant='contained'
-                                                                    startIcon={<DownloadIcon />}
-                                                                    onClick={downloadFile}
-                                                                >
-                                                                    Download PDF
-                                                                </Button>
-                                                            </DialogContent>
-                                                        </Dialog>
-                                                    </Box>
+                                                                        ) : (
+                                                                            <>
+                                                                                <Hidden smDown>
+                                                                                    <Box
+                                                                                        component="iframe"
+                                                                                        src={URL.createObjectURL(currentCertificate.file)}
+                                                                                        title="Certificate File"
+                                                                                        sx={{
+                                                                                            width: '100%',
+                                                                                            height: '70vh',
+                                                                                            border: 'none',
+                                                                                            marginBottom: '1rem',
+                                                                                        }}
+                                                                                    />
+                                                                                </Hidden>
+                                                                            </>
+                                                                        )}
+                                                                        <Button
+                                                                            variant='contained'
+                                                                            startIcon={<DownloadIcon />}
+                                                                            onClick={downloadFile}
+                                                                        >
+                                                                            Download
+                                                                        </Button>
+                                                                    </DialogContent>
+                                                                </Dialog>
+                                                            </Box>
+                                                        </Grid>
+                                                    )}
                                                 </Grid>
-                                            )}
-                                        </Grid>
-                                        <Grid item xs={10}>
-                                            <StyledButton onClick={handleCertificateSubmit} variant="contained" color="secondary" fullWidth> Add </StyledButton>
-                                        </Grid>
+                                                <Grid item xs={12}>
+                                                    <StyledButton onClick={handleCertificateSubmit} variant="contained" color="secondary" fullWidth> Add </StyledButton>
+                                                </Grid>
+                                            </Grid>
+                                        </Paper>
+                                    )}
+                                    <Grid container marginTop='0.1rem'>
+                                        {doctor.certificates.map((certificate, index) => (
+                                            <Grid item key={index} mr={1} mb={1}>
+                                                <Chip
+                                                    label={certificate.name}
+                                                    onDelete={() => handleRemoveCertificate(certificate)}
+                                                    color="primary"
+                                                    variant="outlined"
+                                                />
+                                            </Grid>
+                                        ))}
                                     </Grid>
-                                )}
-                                <Grid container spacing={2} marginTop='0.1rem'>
-                                    {doctor.certificates.map((certificate, index) => (
-                                        <Grid item key={index}>
-                                            <Chip
-                                                label={certificate.name}
-                                                onDelete={() => handleRemoveCertificate(certificate)}
-                                                color="primary"
-                                                variant="outlined"
-                                            />
-                                        </Grid>
-                                    ))}
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button type="submit" variant="contained" color="primary" fullWidth margin="normal">Register</Button>
                                 </Grid>
                             </Grid>
-                            <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary" fullWidth margin="normal">Register</Button>
-                            </Grid>
-                        </Grid>
-                    </form>
-                </StyledBox>
-            </Container>
-        </div>
+                        </form>
+                    </StyledBox>
+                </Grid>
+            </Grid>
+        </Box>
     );
 }
 

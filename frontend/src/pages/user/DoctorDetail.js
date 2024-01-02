@@ -36,7 +36,6 @@ import styles from './DoctorDetail.module.css';
 import { styled } from '@mui/system';
 import api from '../../services/api';
 import axios from 'axios';
-import { red } from '@mui/material/colors';
 import Ban from '../../components/Ban';
 
 const BlackLinearProgress = styled(LinearProgress)({

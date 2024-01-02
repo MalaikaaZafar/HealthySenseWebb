@@ -41,6 +41,7 @@ import FAQ from './pages/faqs/FAQ.js';
 import Footer from './components/Footer.jsx';
 import AboutUs from './pages/about/AboutUs.jsx';
 import { Box } from '@mui/system';
+import { useLocation } from 'react-router-dom';
 
 function App() {
 
@@ -51,7 +52,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/:id/register" element={<RegisterDoctor />} />
+            <Route path="/register" element={<RegisterDoctor />} />
             <Route path="/:id/meet" element={<Meet />} />
             <Route path="/:adminId/admin" element={<ProtectedRoute />}>
               <Route element={<AdminNavbar />}>
@@ -101,9 +102,21 @@ function App() {
             <Route path='*' element={<NotFoundPage />} />
           </Routes>
         </Box>
-        <Footer />
+        <WithFooter />
       </Box >
     </ThemeProvider >
+  );
+}
+
+function WithFooter({ children }) {
+  const location = useLocation();
+  const noFooterRoutes = ['/login', '/signup', '/register', '/:id/meet' ];
+
+  return (
+    <>
+      {children}
+      {!noFooterRoutes.includes(location.pathname) && <Footer />}
+    </>
   );
 }
 
