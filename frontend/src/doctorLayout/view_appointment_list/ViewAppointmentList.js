@@ -27,7 +27,6 @@ async function fetchAppointments() {
   const [appointmentList, setAppointmentList] = useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    console.log(newValue);
   };
 
   useEffect(() => {

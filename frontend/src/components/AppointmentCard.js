@@ -16,10 +16,14 @@ import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import Dot from "@mui/icons-material/FiberManualRecord";
 import MessageIcon from "@mui/icons-material/MessageOutlined";
+import { useParams } from "react-router-dom" 
+
 const appointmentContext = createContext();
 
 function AppointmentCard({ type, appt }) {
   const navigate = useNavigate();
+  const { patientId, docId }=useParams();
+  
   const goToDetails = (event) => {
     event.preventDefault();
     if (type === "doctor") {
@@ -32,12 +36,12 @@ function AppointmentCard({ type, appt }) {
   const openMessages=(e)=>{
     console.log(appt)
     e.stopPropagation();
-    if (type === "doctor") {
-    navigate(`/messages/${appt?.patientId?.user?._id}`)
-    }
-    else{
-      navigate(`/messages/${appt?.doctorId?.user?._id}`)
-    }
+    if (patientId)
+      {
+        navigate (`/${patientId}/patient/messages/${appt?.doctorId?.user?._id}`)
+      }
+    else 
+        navigate (`/${docId}/doctor/messages/${appt?.patientId?.user?._id}`)
   }
 
 

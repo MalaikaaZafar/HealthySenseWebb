@@ -11,7 +11,7 @@ import { AppointmentDetail as ApptDetail } from './patientLayout/view_appointmen
 import { BookAppointment } from './patientLayout/book_appointment/BookAppointment.js';
 import Meet from './pages/meet/Meet.js';
 import Search from './pages/user/Search.js';
-import Favorites from './pages/patient/Favorites.js';
+import Favorites from './pages/patient/Favorites.jsx';
 import AdminDoctor from './pages/admin/AdminDoctor.js';
 import AdminPatient from './pages/admin/AdminPatient.js';
 import AdminActivity from './pages/admin/AdminActivity.js';
@@ -38,6 +38,7 @@ import PatientHistory from './pages/doctor/PatientHisttory.js';
 import ViewReportPatient from './pages/report/ViewReportPatient.js';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
 import FAQ from './pages/faqs/FAQ.js';
+import { Messages } from './pages/messages/Messages.js';
 import Footer from './components/Footer.jsx';
 import AboutUs from './pages/about/AboutUs.jsx';
 import { Box } from '@mui/system';
@@ -54,6 +55,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/register" element={<RegisterDoctor />} />
             <Route path="/:id/meet" element={<Meet />} />
+            
             <Route path="/:adminId/admin" element={<ProtectedRoute />}>
               <Route element={<AdminNavbar />}>
                 <Route path='' index element={<AdminActivity />} />
@@ -62,6 +64,7 @@ function App() {
                 <Route path='doctor-detail/:docId' element={<DoctorDetail type='admin' />} />
               </Route>
             </Route>
+
             <Route path="/:docId/doctor" element={<ProtectedRoute />}>
               <Route element={<DocNavbar />}>
                 <Route index element={<CustomTabPanel />} />
@@ -76,6 +79,8 @@ function App() {
                 <Route path='diagnosis/:appid' element={<DiagnosisPage />} />
                 <Route path='report/:appid' element={<ViewReportDoctor />} />
                 <Route path='doctor-detail' element={<DoctorDetail type='doctor' />} />
+                <Route path='messages' element={<Messages />} />
+                <Route path="messages/:id" element={<Messages />} />
               </Route>
             </Route>
 
@@ -95,12 +100,16 @@ function App() {
                 <Route path='favorites' element={<Favorites />} />
                 <Route path='doctor-detail' element={<DoctorDetail type='patient' />} />
                 <Route path='faq' element={<FAQ />} />
+                <Route path='messages' element={<Messages />} />
+                <Route path="messages/:id" element={<Messages />} />
               </Route>
             </Route>
+
             <Route path="/" element={<NavBar />}>
             </Route>
             <Route path='*' element={<NotFoundPage />} />
           </Routes>
+
         </Box>
         <WithFooter />
       </Box >
@@ -110,7 +119,7 @@ function App() {
 
 function WithFooter({ children }) {
   const location = useLocation();
-  const noFooterRoutes = ['/login', '/signup', '/register', '/:id/meet' ];
+  const noFooterRoutes = ['/login', '/signup', '/register', '/:id/meet'];
 
   return (
     <>

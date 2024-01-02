@@ -19,7 +19,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { SingleInputTimeRangeField } from "@mui/x-date-pickers-pro/SingleInputTimeRangeField";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import { useImmer } from "use-immer";
 import { useState, useEffect, createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
@@ -55,6 +56,7 @@ function RescheduleAppointment() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [type, setType] = useState(null);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   function setReasonHandler(event) {
     setReason(event.target.value);
@@ -89,7 +91,7 @@ function RescheduleAppointment() {
         reason: reason,
       }).then(response => response.data);
       if (resched.message === "Success") {
-        alert("Appointment Rescheduled Successfully! Please check your email for further details.");
+        setOpenConfirm(true);
         setAppointment(resched.appointment
         )
         setType(resched.appointment.type);
@@ -120,6 +122,14 @@ function RescheduleAppointment() {
   const setTime = (e) => {
     setSelectedTime(e.target.value);
   };
+
+  const handleCloseConfirm = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenConfirm(false);
+  };
+
   return (
     <div className="rescheduleAppointmentScreen">
       <div className="sidePanel">
@@ -168,9 +178,7 @@ function RescheduleAppointment() {
           <div className="appointmentDetailsRA">
             <div className="apptResched">
               <h3>Reschedule Date and Time</h3>
-
               <div className="appointmentHoursResched">
-
                 <div className="typeSetter">
                   <FormControl sx={{ width: "100%", margin: "5px", marginBottom: '0px' }}>
                     <Card onClick={() => { setType("Online") }} sx={type && type === "Online" ? styles.card1 : styles.card2}>
@@ -260,6 +268,11 @@ function RescheduleAppointment() {
           <AddSlotDialog open={open} setOpen={setOpen} />
         </apptContext.Provider>
       )}
+      <Snackbar open={openConfirm} autoHideDuration={1000} onClose={handleCloseConfirm}>
+         <MuiAlert elevation={6} variant="filled">
+          Your appointment has been rescheduled successfully!
+        </MuiAlert>
+      </Snackbar>
     </div>
   );
 }

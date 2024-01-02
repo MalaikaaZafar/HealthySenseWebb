@@ -1,84 +1,131 @@
-import Button from "@mui/material/Button";
 import "@fontsource/roboto";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-
+import {
+  Grid,
+  Box,
+  Container,
+  Typography,
+  FormControl,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Button,
+} from "@mui/material";
+import PatientIcon from "@mui/icons-material/PeopleAltOutlined";
+import ExperienceIcon from "@mui/icons-material/WorkspacePremiumOutlined";
+import StarIcon from "@mui/icons-material/StarBorderOutlined";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import dayjs from "dayjs";
+import CancelIcon from "@mui/icons-material/EventBusyOutlined";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {useImmer} from 'use-immer';
 
-import "./CancelAppointment.css";
+import { useImmer } from "use-immer";
+
 import AppointmentCard from "../../components/AppointmentCard";
-import DoctorSidePanel from "../../components/doctorSidePanel";
 import api from "../../services/api";
 
-const CancelAppointment = () => {
-    const [reason, setReason]= useState("Something urgent came up");
-    const [appointment, setAppointment] = useImmer(null);
-    const {id}= useParams();
-    const fetchAppointment=async ()=>{
+ const CancelAppointment = () => {
+  const [reason, setReason] = useState("Something urgent came up");
+  const [appointment, setAppointment] = useImmer(null);
+  const [open, setOpen] = useState(false);
+  const [openError, setOpenError] = useState(false);
+  const [openErr, setOpenErr] = useState(false);
+  const { id } = useParams();
+
+  const fetchAppointment = async () => {
+    try {
       const formattedStr = `/doctor/consultations/${id}`;
       const appoinmentList = await api.get(formattedStr).then((response) => response.data);
-      if (appoinmentList.message==="Success")
-      {
-        return appoinmentList.appt;
-      }
-      else 
-      {
-        alert("Something went wrong"); 
-      }
+      setAppointment(appoinmentList);
     }
+    catch (err) {
+      alert(err);
+    }
+  };
+
 
     const cancelAppointment=async ()=>{
-      const formattedStr = `/doctor/consultations/cancel`;
-      const appoinmentList = await api.put(formattedStr,{id: id, reason: reason}).then((response) => response.data);
-      if (appoinmentList.message==="Success")
-      {
-        alert("Appointment Cancelled");
-        setAppointment(draft=>{
-          draft.status="Cancelled";
-          draft.updateReason=reason;
-        })
-      }
-      else 
-      {
-        alert("Something went wrong"); 
-      }
-    }
-
-    useEffect(() => {
-      const fetchData = async () => {
-        const data = await fetchAppointment();
-        if (data) {
-          setAppointment(data);
+        if (appointment.status!=="Cancelled"){
+        try{
+        const formattedStr = `/doctor/consultations/cancel`;
+        const appointmentList= await api.put(formattedStr, {id: id, reason: reason}).then((response) => response.data);
+        if (appointmentList.message==="Success")
+        {
+          setOpen(true);
+          setAppointment(draft=>{
+            draft.status="Cancelled";
+            draft.updateReason=reason;
+          })
         }
-      };
-      fetchData();
-    }, []);
+        else 
+        {
+          alert("Something went wrong"); 
+        }}
+        catch(err){
+          alert("Something went wrong");
+        }
+      } else {
+        setOpenError(true);
+      }
+    
+  };
 
-    function setReasonHandler(event){
-        setReason(event.target.value);
+  const handleCloseError = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
     }
+    setOpenError(false);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchAppointment();
+      if (data) {
+        setAppointment(data);
+      }
+    };
+    fetchData();
+  }, []);
+
+  function setReasonHandler(event) {
+    setReason(event.target.value);
+  }
+
+  const handleCloseErr = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenErr(false);
+  };
 
   return (
-    <div className="cancelAppointmentScreenDoc">
-      <div className="sidePanel">
-      <DoctorSidePanel appt={appointment}/>
-      </div>
-      <div className="ScreenBodyCADoc">
-        <div className="halfCADoc">
-          {
-            appointment && 
-            <div className="userDoc">
-              <AppointmentCard appt={appointment} />
-            </div>
-          }
-          
-          <div className="reasonDivDoc">
-            <h2 style ={{color: '#2854C3'}}>Reason for Cancelling Appointment</h2>
+    <Container>
+      <Grid container spacing={2} alignItems="stretch">
+        <Grid item xs={12} sm={6}>
+          {appointment && <AppointmentCard type="patient" appt={appointment} />}
+        </Grid>
+      </Grid>
+      <Grid
+        container
+        spacing={1}
+        sx={{
+          background: "#eeeeee",
+          mt: 2,
+          mb: 0,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+        }}
+      >
+        <Grid item xs={12} sm={6}>
+          <Container sx={{ width: "80%", mx: "auto" }}>
+            <Typography variant="h6" component="div" color="primary">
+              Reason for Cancelling Appointment
+            </Typography>
             <FormControl>
               <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
@@ -105,28 +152,84 @@ const CancelAppointment = () => {
                 />
               </RadioGroup>
             </FormControl>
-            <textarea rows={10} disabled={reason === "other" ? false : true} onChange={setReasonHandler} style={{borderRadius: '10px'}}></textarea>
-          </div>
-          <div className="appointmentBtnsDoc">
+            <Box
+              component="textarea"
+              rows={10}
+              disabled={
+                reason !== "Something urgent came up" &&
+                reason !== "I'm not feeling well"
+                  ? false
+                  : true
+              }
+              onChange={setReasonHandler}
+              sx={{ width: "80%", borderRadius: "10px", p: 1, mx: "auto" }}
+            />
+          </Container>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              value={dayjs(appointment?.date)}
+              readOnly
+              disabled
+              sx={{
+                "& .Mui-selected": {
+                  backgroundColor:
+                    appointment?.status === "Cancelled"
+                      ? "red"
+                      : appointment?.status === "Booked"
+                      ? "#2854C3"
+                      : "green",
+                },
+              }}
+            />
+          </LocalizationProvider>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
             <Button
               onClick={cancelAppointment}
               variant="contained"
-              style={{
-                background: "#2854c3",
-                margin: "10px",
+              color="primary"
+              sx={{
                 width: "50%",
                 textTransform: "none",
                 borderRadius: "10px",
-                padding: '10px'
+                padding: "10px",
+                mx: "auto",
+                mb: 2,
+                background: "#2854C3",
+                "&:hover": {
+                  background: "#2854C3",
+                  boxShadow: "10 10 10 0 rgba(0, 0, 0, 0.15)",
+                },
               }}
+              startIcon={<CancelIcon />}
             >
-              Cancel Appointment
+              Cancel
             </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Grid>
+      </Grid>
+      <Snackbar open={open} autoHideDuration={1000} onClose={handleCloseError}>
+        <MuiAlert severity="success" elevation={6} variant="filled">
+          Your appointment has been cancelled successfully!
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={openError}
+        autoHideDuration={1000}
+        onClose={handleCloseError}
+      >
+        <MuiAlert severity="error" elevation={6} variant="filled">
+          Your appointment was already cancelled
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar open={openErr} autoHideDuration={500} onClose={handleCloseErr}>
+        <MuiAlert elevation={6} variant="filled" severity="error">
+          Please fill all the fields!
+        </MuiAlert>
+      </Snackbar>
+    </Container>
   );
-}
+};
 
 export default CancelAppointment;
