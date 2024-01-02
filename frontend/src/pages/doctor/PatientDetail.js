@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import {
     Container,
     Grid,
@@ -82,7 +82,7 @@ const DataTable = ({ data, columns }) => (
                     <StyledTableRow key={index}>
                         <TableCell>
                             {item.doctor ? (
-                                <Link href="#" color="primary" underline="none">
+                                <Link href={`appointments/${item._id}`} color="inherit">
                                     {item.doctor}
                                 </Link>
                             ) : (
@@ -118,9 +118,11 @@ const PatientDetails = () => {
     });
     const [loading, setLoading] = useState(true);
 
+    const url = process.env.REACT_APP_SERVER_URL;
+
     useEffect(() => {
         const getPatientDetails = async () => {
-            await axios.get('http://localhost:3000/doctor/patient-detail/6592fa7c57277a58b08e1f62')
+            await api.get('/doctor/patient-detail/6592fa7c57277a58b08e1f62')
                 .then((res) => {
                     console.log(res.data);
                     setPatient(res.data);
@@ -170,7 +172,7 @@ const PatientDetails = () => {
                         <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
                             <Box marginBottom={2}>
                                 {patient.image ? (
-                                    <StyledAvatar src={`http://localhost:3000/uploads/${patient.image}`} alt="Profile Picture" />
+                                    <StyledAvatar src={`${url}/uploads/${patient.image}`} alt="Profile Picture" />
                                 ) : (
                                     <StyledAvatar src="/images/photo.png" />
                                 )}

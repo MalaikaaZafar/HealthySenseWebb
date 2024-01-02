@@ -35,7 +35,6 @@ import IconButton from '@mui/material/IconButton';
 import styles from './DoctorDetail.module.css';
 import { styled } from '@mui/system';
 import api from '../../services/api';
-import axios from 'axios';
 import Ban from '../../components/Ban';
 
 const BlackLinearProgress = styled(LinearProgress)({
@@ -75,9 +74,11 @@ function DoctorDeatils({ type }) {
         setOpen(true);
     };
 
+    const url = process.env.REACT_APP_SERVER_URL;
+
     const handleCertificateChange = async (certificate) => {
         try {
-            const response = await axios.get(`http://localhost:3000/uploads/${certificate.file}`, { responseType: 'blob' });
+            const response = await api.get(`/uploads/${certificate.file}`, { responseType: 'blob' });
             setCurrentCertificate({
                 name: certificate.name,
                 file: new File([response.data], certificate.file, { type: response.data.type })
@@ -126,6 +127,7 @@ function DoctorDeatils({ type }) {
         location: "",
         availability: false,
         verified: false,
+        image: null,
     });
 
     useEffect(() => {
@@ -155,7 +157,7 @@ function DoctorDeatils({ type }) {
     }, [banClickCount]);
 
     const handleVerifyDoctor = () => {
-        api.put(`/verify/${docId}`)
+        api.post(`/verify/${docId}`)
             .then(res => {
                 window.location.reload();
             }
@@ -175,7 +177,13 @@ function DoctorDeatils({ type }) {
                         <Grid item xs={12} sm={6} md={doctor.name.length > 20 || doctor.specialization.length > 20 ? 4 : 3}>
                             <Paper className={styles.innerBigPane1}>
                                 <Box display="flex" alignItems="center" marginLeft={2} height={100} pr={2} justifyContent={'center'} >
-                                    <PersonIcon fontSize="large" color="black" />
+                                    <Box marginBottom={2}>
+                                        {doctor.image ? (
+                                            <StyledAvatar src={`${url}/uploads/${doctor.image}`} alt="Profile Picture" />
+                                        ) : (
+                                            <StyledAvatar src="/images/photo.png" />
+                                        )}
+                                    </Box>
                                     <Box ml={2} mt={-2}>
                                         <Typography variant="h7" color={'black'} fontWeight={'bold'}>
                                             {doctor.name}
