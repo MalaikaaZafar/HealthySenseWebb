@@ -20,7 +20,7 @@ app.use(fileUpload({
 app.use(parse);
 app.use(cors({
     origin: [
-        "http://localhost:3000",
+        "http://localhost:3001",
         "https://healthy-sense-webb-6hfg.vercel.app"
     ],
     credentials: true,
