@@ -68,6 +68,18 @@ const DoctorSidePanel = ({ appt }) => {
     Navigate(`/messages/${appt.patientId._id}`);
   };
 
+  const PatientHistory = () => {
+    //Navigate(`/${docId}/doctor/patient-history/${appt._id}/${appt.patientId._id}`);
+  }
+
+  const PatientDiagnosis = () => {
+    //Navigate(`/${docId}/doctor/diagnosis/${appt._id}`);
+  }
+
+  const PatientReport = () => {
+    //Navigate(`/${docId}/doctor/report/${appt._id}`);
+  }
+
   const handleClose = (event, reason) => {
     setErrorMessage("");
     setOpenError(false);
@@ -104,15 +116,15 @@ const DoctorSidePanel = ({ appt }) => {
           <CancelIcon sx={styles.icon} />
           <ListItemText primary="Cancel" sx={styles.listItemText} />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton onClick={PatientHistory}>
           <MedicalServicesIcon sx={styles.icon} />
           <ListItemText primary="History" sx={styles.listItemText} />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton onClick={PatientDiagnosis}>
           <DiagnosisIcon sx={styles.icon} />
           <ListItemText primary="Diagnosis" sx={styles.listItemText} />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton onClick={PatientReport}>
           <ReportIcon sx={styles.icon} />
           <ListItemText primary="Report" sx={styles.listItemText} />
         </ListItemButton>

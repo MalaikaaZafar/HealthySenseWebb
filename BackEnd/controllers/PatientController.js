@@ -226,7 +226,7 @@ const patientController = {
   getAccountDetails: async (req, res) => {
     const { id } = req.params;
     try {
-      const patient = await Patient.findById(id).populate('user').exec();
+      const patient = await Patient.findOne({ user: id }).populate('user').exec();
       if (!patient) {
         return res.status(404).json({ message: 'Patient not found' });
       }
@@ -249,7 +249,7 @@ const patientController = {
       File = req.files.profile;
     }
     try {
-      const patient = await Patient.findById(id);
+      const patient = await Patient.findOne({ user: id });
       if (!patient) {
         return res.status(404).json({ message: 'Patient not found' });
       }
