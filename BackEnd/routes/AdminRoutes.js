@@ -12,4 +12,5 @@ router.get("/doctor/search", adminController.searchDoctors);
 router.get("/patient/search", adminController.searchPatients);
 router.get("/activity", adminController.getActivity);
 router.put("/:id", auth, adminAuth, adminController.banUser);
+router.post("/verify",auth, adminAuth, adminController.verifyDoctor);
 module.exports = router;

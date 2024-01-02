@@ -125,6 +125,7 @@ function DoctorDeatils({ type }) {
         fees: 0,
         location: "",
         availability: false,
+        verified: false,
     });
 
     useEffect(() => {
@@ -152,6 +153,19 @@ function DoctorDeatils({ type }) {
         fetchData();
 
     }, [banClickCount]);
+
+    const handleVerifyDoctor = () => {
+        api.put(`/verify/${docId}`)
+            .then(res => {
+                window.location.reload();
+            }
+            )
+            .catch(err => {
+                console.log(err);
+                alert(err.response.data.message);
+            }
+            );
+    }
 
     return (
         <div>
@@ -398,7 +412,7 @@ function DoctorDeatils({ type }) {
                                     startIcon={<DownloadIcon />}
                                     onClick={downloadFile}
                                 >
-                                    Download PDF
+                                    Download
                                 </Button>
                             </DialogContent>
                         </Dialog>
@@ -430,12 +444,14 @@ function DoctorDeatils({ type }) {
                                             Book Appointment
                                         </Button>
                                     }
-                                    {type === 'admin' &&
+                                    {type === 'admin' && !doctor.verified &&
                                         <>
                                             {doctor.isBanned ? <Ban text={'Unban Doctor'} onChange={handleBanClick} /> : <Ban text={'Ban Doctor'} onChange={handleBanClick} />}
                                             <Button variant="contained"
                                                 sx={{ marginLeft: '10px', width: '20%', textTransform: 'none', borderRadius: '10px', alignSelf: 'center' }}
-                                                fullWidth>
+                                                fullWidth
+                                                onClick={() => handleVerifyDoctor()}
+                                            >
                                                 Verify Doctor
                                             </Button>
                                         </>

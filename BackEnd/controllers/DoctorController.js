@@ -35,9 +35,9 @@ const doctorController = {
                 certificate.file = fileNames[index];
             });
 
-            const result = await Doctor.create({ user: req.user, specialization, description, location, experience, session, services, appointmentSlots, certificates });
+            await Doctor.create({ user: req.user._id, specialization, description, location, experience, session, services, appointmentSlots, certificates });
 
-            return res.status(201).json({ result });
+            return res.status(201).json({ id: req.user._id });
         } catch (error) {
             console.log(error);
             return res.status(500).json({ message: "Something went wrong" });
