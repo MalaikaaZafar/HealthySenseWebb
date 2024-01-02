@@ -174,7 +174,8 @@ function NavBar() {
         >
           Favorites
         </Button>
-        <Button sx={styles.btn}>Appointments</Button>
+        <Button sx={styles.btn} onClick={() => handleButtonClick('/appointments')}
+        >Appointments</Button>
         <Button
           onClick={() => handleButtonClick('/faq')}
           sx={styles.btn}>Support</Button>

@@ -131,11 +131,11 @@ function IsNotComplete({ type, navigate }) {
         onClick={(e) => {
           if (type === "doctor")
             navigate(
-              `${appt?.patientId?.user?._id}/patient/appointments/reschedule/${appt._id}`
+              `/${appt?.patientId?.user?._id}/patient/appointments/reschedule/${appt._id}`
             );
           else
             navigate(
-              `${appt?.doctorId?.user?._id}/doctor/appointments/reschedule/${appt._id}`
+              `/${appt?.doctorId?.user?._id}/doctor/appointments/reschedule/${appt._id}`
             );
           e.stopPropagation();
         }}

@@ -155,7 +155,7 @@ function DoctorDeatils({ type }) {
     }, [banClickCount]);
 
     const handleVerifyDoctor = () => {
-        api.put(`/verify/${docId}`)
+        api.post(`/verify/${docId}`)
             .then(res => {
                 window.location.reload();
             }

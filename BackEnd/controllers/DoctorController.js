@@ -55,6 +55,8 @@ const doctorController = {
         const UserId = req.user._id;
         try {
             const doc = await Doctor.findOne({ user: UserId });
+            console.log(doc);
+
             const apptList = await Appointment.find({ doctorId: doc._id })
                 .populate({ path: "doctorId", populate: { path: "user" } })
                 .populate({ path: "patientId", populate: { path: "user" } })
@@ -145,6 +147,8 @@ const doctorController = {
             const slots = doc.appointmentSlots.filter(slot => (slot.date !== app.date && slot.time !== app.time));
             slots.push({ date: app.date, time: app.time, availability: true });
             doc.appointmentSlots = slots;
+            doc.appointmentSlots.save();
+            doc.save();
             await app.save();
             return res.status(200).json({ message: 'Success', appointment: app });
         } catch (error) {

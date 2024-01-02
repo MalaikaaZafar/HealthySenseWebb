@@ -29,7 +29,7 @@ function AppointmentCard({ type, appt }) {
     if (type === "doctor") {
       navigate(`/${appt?.patientId?.user?._id}/patient/appointments/${appt._id}`);
     } else {
-      navigate(`/${appt?.patientId?.user?._id}/doctor/appointments/${appt._id}`);
+      navigate(`/${appt?.doctorId?.user?._id}/doctor/appointments/${appt._id}`);
     }
   };
 

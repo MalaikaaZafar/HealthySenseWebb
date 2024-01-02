@@ -50,7 +50,6 @@ function DocNavbar() {
 
 
     const handleButtonClick = (path) => {
-        console.log("HELLLLLOOOOOO   ",`/${docId}/doctor${path}` )
         navigate(`/${docId}/doctor${path}`);
         setSelectedButton(path);
     };

@@ -3,6 +3,7 @@ import { Box, Container, Tab, Tabs, Typography } from '@mui/material';
 
 import ApptCardForList from '../../components/ApptCardForList';
 import api from '../../services/api';
+import NotFoundImg from './404Illustration.png'; 
 
 async function fetchAppointments() {
   try{
@@ -54,6 +55,19 @@ async function fetchAppointments() {
           <Tab value="Cancelled" label="Cancelled" sx={{ textTransform: 'none' }} />
         </Tabs>
       </Box>
+      {!appointmentList?.some (appt => appt?.status === value) ? (
+        <Box>
+        <Box display="flex" justifyContent="center" alignItems="center" flexDirection='column' width="100%" marginTop={4}>
+          <img src= {NotFoundImg} alt =" No appointments found"></img>
+          </Box>
+          <Box display="flex" justifyContent="center" alignItems="center" flexDirection= "column" width="100%" margin={4}>
+            {value ==="Booked" ? (
+          <h2>No appointments found! Click here to book an appointment</h2>) : value ==="Completed" ? (
+            <h2>No completed appointments found!</h2> ) : ( <h2>No cancelled appointments found!</h2> )}
+          </Box>
+        </Box>
+      ) : (
+        <Box>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems:'center', justifyContent:'center' }}>
         {appointmentList && appointmentList.map((app, index) => 
           app?.status === value ? (
@@ -61,6 +75,7 @@ async function fetchAppointments() {
           ) : null
         )}
       </Box>
+    </Box>)}
     </Box>
   );
 }
