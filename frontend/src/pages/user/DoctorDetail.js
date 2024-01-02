@@ -69,6 +69,7 @@ function DoctorDeatils({ type }) {
         file: null
     });
     const { patientId, docId } = useParams();
+
     const [banClickCount, setBanClickCount] = useState(0);
     const navigate = useNavigate();
 
@@ -139,7 +140,7 @@ function DoctorDeatils({ type }) {
 
     useEffect(() => {
 
-        console.log(type);
+        console.log("docId: ", docId);
 
         const fetchData = () => {
             console.log("cookie: ", document.cookie);
@@ -164,7 +165,7 @@ function DoctorDeatils({ type }) {
     }, [banClickCount]);
 
     const handleVerifyDoctor = () => {
-        api.post(`/verify/${docId}`)
+        api.post(`/admin/verify/${docId}`)
             .then(res => {
                 window.location.reload();
             }

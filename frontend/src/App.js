@@ -54,7 +54,6 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/register" element={<RegisterDoctor />} />
-            <Route path="/:id/meet" element={<Meet />} />
 
             <Route path="/:adminId/admin" element={<ProtectedRoute />}>
               <Route element={<AdminNavbar />}>
@@ -81,6 +80,7 @@ function App() {
                 <Route path='doctor-detail' element={<DoctorDetail type='doctor' />} />
                 <Route path='messages' element={<Messages />} />
                 <Route path="messages/:id" element={<Messages />} />
+                <Route path=":id/meet" element={<Meet />} />
               </Route>
             </Route>
 
@@ -103,6 +103,7 @@ function App() {
                 <Route path='messages' element={<Messages />} />
                 <Route path="messages/:id" element={<Messages />} />
                 <Route path='about' element={<AboutUs />} />
+                <Route path=":id/meet" element={<Meet />} />
               </Route>
             </Route>
 
