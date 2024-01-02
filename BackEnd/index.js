@@ -23,7 +23,9 @@ app.use(cors({
         "http://localhost:3000",
         "https://healthy-sense-webb-6hfg.vercel.app/"
     ],
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
