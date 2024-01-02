@@ -273,9 +273,8 @@ function AppointmentSlots() {
     try {
       const responseObj = await api.get(`/doctor/slots`);
       if (responseObj.data.message === "Success") {
-       
+        console.log (responseObj.data.slots)
         setSlotList(groupSlotsByDate(responseObj.data.slots));
-
       } else {
         alert("Slots could not be fetched!");
       }
@@ -444,17 +443,17 @@ const SlotList = ({ date, slotListByDate }) => {
               return (
                 <TableRow key={slot.time}>
                   <TableCell
-                    sx={{ padding: "5px", textAlign: "left", width: "33%" }}
+                    sx={{ padding: "5px", textAlign: "left", width: "50%" }}
                   >
                     {slot.time}
                   </TableCell>
                   <TableCell
-                    sx={{ padding: "5px", textAlign: "center", width: "33%" }}
+                    sx={{ padding: "5px", textAlign: "center", width: "50%" }}
                   >
                     {slot.availability ? "Available" : "Unavailable"}
                   </TableCell>
                   <TableCell
-                    sx={{ padding: "5px", textAlign: "right", width: "33%" }}
+                    sx={{ padding: "5px", textAlign: "right", width: "50%" }}
                   >
                     <Button
                       disabled={!checkDate(date)}

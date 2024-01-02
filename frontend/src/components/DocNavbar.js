@@ -27,7 +27,7 @@ import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 
 function DocNavbar() {
     const navigate = useNavigate();
-    const { patientId } = useParams();
+    const { docId } = useParams();
     const [selectedButton, setSelectedButton] = useState('/');
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -50,7 +50,8 @@ function DocNavbar() {
 
 
     const handleButtonClick = (path) => {
-        navigate(`/${patientId}/patient${path}`);
+        console.log("HELLLLLOOOOOO   ",`/${docId}/doctor${path}` )
+        navigate(`/${docId}/doctor${path}`);
         setSelectedButton(path);
     };
 
@@ -181,6 +182,10 @@ function DocNavbar() {
                 <Button
                     onClick={() => handleButtonClick('/about')}
                     sx={styles.btn}>About Us</Button>
+
+                    <Button
+                    onClick={() => handleButtonClick('/appointmentSlots')}
+                    sx={styles.btn}>Slots</Button>
             </Box>
 
             <Outlet />

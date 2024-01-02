@@ -186,7 +186,8 @@ const doctorController = {
         const userId = req.user._id;
         try {
             const doc = await User.findOne({ _id: userId });
-            const appointment_slots = await Doctor.findById({ user: doc._id }, { appointmentSlots: 1 });
+            console.log(doc)
+            const appointment_slots = await Doctor.findOne({ user: doc._id }, { appointmentSlots: 1 });
             if (!appointment_slots)
                 return res.status(404).json({ message: "Doctor not found" });
             return res.status(200).json({ message: "Success", slots: appointment_slots.appointmentSlots });
