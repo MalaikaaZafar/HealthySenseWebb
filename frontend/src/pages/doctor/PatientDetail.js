@@ -18,6 +18,7 @@ import {
     CircularProgress,
 } from '@mui/material';
 import { styled } from '@mui/system';
+import { useParams } from 'react-router-dom';
 
 import styles from './PatientDetail.module.css';
 
@@ -67,41 +68,46 @@ const StyledTableRow = styled(TableRow)`
   }
 `;
 
-const DataTable = ({ data, columns }) => (
-    <TableContainer component={Paper}>
-        <Table>
-            <StyledTableHead>
-                <TableRow>
-                    {columns.map((column, index) => (
-                        <StyledTableCell key={index}>{column}</StyledTableCell>
-                    ))}
-                </TableRow>
-            </StyledTableHead>
-            <TableBody>
-                {data.length > 0 ? data.map((item, index) => (
-                    <StyledTableRow key={index}>
-                        <TableCell>
-                            {item.doctor ? (
-                                <Link href={`appointments/${item._id}`} color="inherit">
-                                    {item.doctor}
-                                </Link>
-                            ) : (
-                                item.description
-                            )}
-                        </TableCell>
-                        <TableCell>{item.date || item.type}</TableCell>
-                    </StyledTableRow>
-                )) :
-                    <StyledTableRow>
-                        <TableCell colSpan={columns.length} align="center">
-                            No data available
-                        </TableCell>
-                    </StyledTableRow>
-                }
-            </TableBody>
-        </Table>
-    </TableContainer>
-);
+const DataTable = ({ data, columns }) => {
+
+    const { doctorId } = useParams();
+
+    return (
+        <TableContainer component={Paper}>
+            <Table>
+                <StyledTableHead>
+                    <TableRow>
+                        {columns.map((column, index) => (
+                            <StyledTableCell key={index}>{column}</StyledTableCell>
+                        ))}
+                    </TableRow>
+                </StyledTableHead>
+                <TableBody>
+                    {data.length > 0 ? data.map((item, index) => (
+                        <StyledTableRow key={index}>
+                            <TableCell>
+                                {item.doctor ? (
+                                    <Link href={`/${doctorId}/doctor/appointments/${item._id}`} color="inherit">
+                                        {item.doctor}
+                                    </Link>
+                                ) : (
+                                    item.description
+                                )}
+                            </TableCell>
+                            <TableCell>{item.date || item.type}</TableCell>
+                        </StyledTableRow>
+                    )) :
+                        <StyledTableRow>
+                            <TableCell colSpan={columns.length} align="center">
+                                No data available
+                            </TableCell>
+                        </StyledTableRow>
+                    }
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+};
 
 const PatientDetails = () => {
 
@@ -116,6 +122,7 @@ const PatientDetails = () => {
         complaints: [],
         image: null,
     });
+
     const [loading, setLoading] = useState(true);
 
     const url = process.env.REACT_APP_SERVER_URL;
@@ -153,10 +160,10 @@ const PatientDetails = () => {
 
     if (loading) {
         return (
-            <Box 
-                display="flex" 
-                justifyContent="center" 
-                alignItems="center" 
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
                 height="100vh"
             >
                 <CircularProgress />
