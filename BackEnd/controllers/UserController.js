@@ -110,7 +110,7 @@ const userController = {
                 { email: existingUser.email, id: existingUser._id },
                 secret
             );
-            return res.status(200).cookie("token", token, { 
+            return res.status(200).cookie("token", token, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none"
@@ -254,6 +254,7 @@ const userController = {
                 fees: minFee,
                 verified: doctor.approvedStatus,
                 image: doctor.profilePicture,
+                isBanned: doctor.isBanned,
             };
 
             return res.status(200).json(temp);

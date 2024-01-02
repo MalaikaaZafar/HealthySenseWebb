@@ -136,6 +136,7 @@ function DoctorDeatils({ type }) {
         availability: false,
         verified: false,
         image: null,
+        isBanned: false,
     });
 
     useEffect(() => {
@@ -467,16 +468,18 @@ function DoctorDeatils({ type }) {
                                             Book Appointment
                                         </Button>
                                     }
-                                    {type === 'admin' && !doctor.verified &&
+                                    {type === 'admin' &&
                                         <>
                                             {doctor.isBanned ? <Ban text={'Unban Doctor'} onChange={handleBanClick} /> : <Ban text={'Ban Doctor'} onChange={handleBanClick} />}
-                                            <Button variant="contained"
-                                                sx={{ marginLeft: '10px', width: '20%', textTransform: 'none', borderRadius: '10px', alignSelf: 'center' }}
-                                                fullWidth
-                                                onClick={() => handleVerifyDoctor()}
-                                            >
-                                                Verify Doctor
-                                            </Button>
+                                            {!doctor.verified &&
+                                                <Button variant="contained"
+                                                    sx={{ marginLeft: '10px', width: '20%', textTransform: 'none', borderRadius: '10px', alignSelf: 'center' }}
+                                                    fullWidth
+                                                    onClick={() => handleVerifyDoctor()}
+                                                >
+                                                    Verify Doctor
+                                                </Button>
+                                            }
                                         </>
                                     }
 
