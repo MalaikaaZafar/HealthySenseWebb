@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { Alert, Button, Container, Snackbar } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SavePayment from "../../services/patient/payment/savePayment";
 
 
@@ -9,6 +9,7 @@ const PaymentForm = ({ id }) => {
     const stripe = useStripe();
     const elements = useElements();
     const navigate = useNavigate();
+    const { patientId } = useParams();
     const [message, setMessage] = useState("");
     const [open, setOpen] = useState(false);
     const [variant, setVariant] = useState("success");
@@ -36,7 +37,9 @@ const PaymentForm = ({ id }) => {
                 setOpen(true);
                 setVariant("success");
                 setTimeout(() => {
-                    navigate('/login');
+                    console.log("Payment Successful");
+                    console.log(patientId);
+                    navigate(`/${patientId}/patient`);
                 }, 2000);
             }
             else{
@@ -44,13 +47,17 @@ const PaymentForm = ({ id }) => {
                 setOpen(true);
                 setVariant("error");
                 setTimeout(() => {
-                    navigate('/login');
+                    navigate(`/${patientId}/patient`);
                 }, 2000);
             }
         }
         else {
             setMessage("Payment Failed.");
+            setOpen(true);
             setVariant("error");
+            setTimeout(() => {
+                navigate(`/${patientId}/patient`);
+            }, 2000);
         }
     }
 

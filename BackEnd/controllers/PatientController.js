@@ -260,7 +260,8 @@ const patientController = {
       user.dob = dob;
       user.country = country;
       user.gender = gender;
-      patient.history = JSON.parse(history);
+      console.log(history);
+      patient.history = (history);
       patient.bloodGroup = bloodGroup;
       if (File) {
         var fileName = user._id + path.extname(File.name);

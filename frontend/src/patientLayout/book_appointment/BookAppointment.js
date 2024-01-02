@@ -48,17 +48,17 @@ export const BookAppointment = () => {
   const groupSlotsByDate = (slotData) => {
     const groupedSlots = {};
     if (slotData && slotData.length !== 0) {
-    if (slotData && slotData.length !== 0) {
-      slotData.forEach((slot) => {
-        let date = slot.date;
-        date = format(new Date(date), "yyyy-MM-dd");
-        if (!groupedSlots[date]) {
-          groupedSlots[date] = [];
-        }
-        groupedSlots[date].push(slot);
-      });
+      if (slotData && slotData.length !== 0) {
+        slotData.forEach((slot) => {
+          let date = slot.date;
+          date = format(new Date(date), "yyyy-MM-dd");
+          if (!groupedSlots[date]) {
+            groupedSlots[date] = [];
+          }
+          groupedSlots[date].push(slot);
+        });
+      }
     }
-  }
     return groupedSlots;
   };
 
@@ -103,7 +103,8 @@ export const BookAppointment = () => {
           })
           .then((response) => response.data);
         if (resched.message === "Success") {
-          setOpen(true);
+          // setOpen(true);
+          navigate(`../payment/${resched.id}`);
           setAppt(resched.id);
         }
       } catch (err) {

@@ -20,7 +20,7 @@ import {
     Divider,
     Hidden,
 } from '@mui/material';
-import { Link as RouterLink, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { Link as MuiLink } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import PeopleIcon from '@mui/icons-material/People';
@@ -64,8 +64,10 @@ function DoctorDeatils({ type }) {
         name: '',
         file: null
     });
-    const { docId } = useParams();
+    const { patientId, docId } = useParams();
     const [banClickCount, setBanClickCount] = useState(0);
+    const navigate = useNavigate();
+
 
     const handleBanClick = () => {
         setBanClickCount(prevCount => prevCount + 1);
@@ -77,7 +79,7 @@ function DoctorDeatils({ type }) {
 
     const handleCertificateChange = async (certificate) => {
         try {
-            const response = await axios.get(`http://localhost:3000/uploads/${certificate.file}`, { responseType: 'blob' });
+            const response = await api.get(`/uploads/${certificate.file}`, { responseType: 'blob' });
             setCurrentCertificate({
                 name: certificate.name,
                 file: new File([response.data], certificate.file, { type: response.data.type })
@@ -152,6 +154,11 @@ function DoctorDeatils({ type }) {
         fetchData();
 
     }, [banClickCount]);
+
+    const bookAppt = (e) => {
+        e.stopPropagation();
+        navigate(`/${patientId}/patient/book-appointment/${docId}`);
+    }
 
     return (
         <div>
@@ -426,7 +433,9 @@ function DoctorDeatils({ type }) {
                                 </Grid>
                                 <Grid item xs={12} mt={2}>
                                     {type === 'patient' &&
-                                        <Button variant="contained" color="primary" fullWidth>
+                                        <Button
+                                            onClick={bookAppt}
+                                            variant="contained" color="primary" fullWidth>
                                             Book Appointment
                                         </Button>
                                     }

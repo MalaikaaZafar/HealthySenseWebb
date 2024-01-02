@@ -51,7 +51,7 @@ const AllReports = () => {
             setMsg('Something went wrong');
             setOpen(true);
             setTimeout(() => {
-                //navigate('/login');
+                navigate('../');
             }, 2000);
         }
     }

@@ -14,7 +14,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import MailIcon from '@mui/icons-material/Mail';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { ListItemButton, ListItemIcon, ListItemText, List, Drawer, IconButton } from '@mui/material';
-
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountCircleOutlined from '@mui/icons-material/AccountCircleOutlined';
@@ -31,6 +31,7 @@ function NavBar() {
   const [selectedButton, setSelectedButton] = useState('/');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const url = process.env.REACT_APP_BASE_URL;
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -64,7 +65,7 @@ function NavBar() {
     <>
 
       <Box className="top">
-        <Box className="logo">
+        <Box className="logo" onClick={() => handleButtonClick('/')}>
           <img src={logo} className="healthySenseLogo" alt="logo" />
           <h2>HealthySense</h2>
         </Box>
@@ -73,6 +74,7 @@ function NavBar() {
             <UserNotifications />
             <Avatar
               onClick={handleProfileMenuOpen}
+              src={`${url}/uploads/${patientId}.png`}
               style={{ marginRight: '5%', height: '65px', width: '65px', float: 'right' }}>H</Avatar>
           </Box>
           <Menu
@@ -82,7 +84,7 @@ function NavBar() {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
-            <MenuItem onClick={() => handleButtonClick('/profile')} sx={styles.menuItem} >
+            <MenuItem onClick={() => handleButtonClick('/account')} sx={styles.menuItem} >
               <ListItemIcon sx={styles.menuItemIcon}>
                 <AccountCircleOutlined fontSize="small" />
               </ListItemIcon>
@@ -138,6 +140,12 @@ function NavBar() {
                 <ListItemText sx={selectedButton === '/appointments' ? styles.selectedBtnText : styles.btnText} primary="Appointments" />
               </ListItemButton>
               <ListItemButton
+                sx={selectedButton === '/reports' ? styles.selectedListItem : null}
+                onClick={() => handleButtonClick('/reports')}>
+                <ListItemIcon sx={selectedButton === '/reports' ? styles.selectedListItemIcon : styles.listItemIcon}><SummarizeIcon /></ListItemIcon>
+                <ListItemText sx={selectedButton === '/reports' ? styles.selectedBtnText : styles.btnText} primary="View Reports" />
+              </ListItemButton>
+              <ListItemButton
                 sx={selectedButton === '/faq' ? styles.selectedListItem : null}
                 onClick={() => handleButtonClick('/faq')}>
                 <ListItemIcon sx={selectedButton === '/faq' ? styles.selectedListItemIcon : styles.listItemIcon}><LiveHelpIcon /></ListItemIcon>
@@ -174,7 +182,12 @@ function NavBar() {
         >
           Favorites
         </Button>
-        <Button sx={styles.btn}>Appointments</Button>
+        <Button
+          onClick={() => handleButtonClick('/appointments')}
+          sx={styles.btn}>Appointments</Button>
+        <Button
+          onClick={() => handleButtonClick('/reports')}
+          sx={styles.btn}>View Reports</Button>
         <Button
           onClick={() => handleButtonClick('/faq')}
           sx={styles.btn}>Support</Button>
