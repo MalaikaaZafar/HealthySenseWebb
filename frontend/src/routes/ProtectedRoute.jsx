@@ -8,6 +8,7 @@ const ProtectedRoute = () => {
 
     useEffect(() => {
         const checkAuth = async () => {
+            console.log('cookeis', Cookies.get('token'));
             if (!Cookies.get('token')) {
                 setIsAuthenticated(false);
                 return;

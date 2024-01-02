@@ -15,6 +15,7 @@ import DateIcon from "@mui/icons-material/DateRange";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 import Dot from "@mui/icons-material/FiberManualRecord";
+import VideoIcon from "@mui/icons-material/VideoCallOutlined";
 import MessageIcon from "@mui/icons-material/MessageOutlined";
 import { useParams } from "react-router-dom" 
 
@@ -29,7 +30,7 @@ function AppointmentCard({ type, appt }) {
     if (type === "doctor") {
       navigate(`/${appt?.patientId?.user?._id}/patient/appointments/${appt._id}`);
     } else {
-      navigate(`/${appt?.patientId?.user?._id}/doctor/appointments/${appt._id}`);
+      navigate(`/${appt?.docId?.user?._id}/doctor/appointments/${appt._id}`);
     }
   };
 
@@ -160,6 +161,14 @@ function AppointmentCard({ type, appt }) {
                     startIcon={<MessageIcon />}
                   >
                     Chat
+                  </Button>
+                  <Button
+                    onClick={navigate(`/meet/${appt._id}`)}
+                    variant="contained"
+                    sx={{ margin: 1, background: "#2854C3" }}
+                    startIcon={<VideoIcon />}
+                  >
+                    Meet
                   </Button>
                 </Box>
               </Container>

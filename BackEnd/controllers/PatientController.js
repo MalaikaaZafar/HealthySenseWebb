@@ -91,6 +91,7 @@ const patientController = {
           && slot.date.getFullYear() === appointment.date.getFullYear()
       );
       slot.availability = true;
+      appointment.doctorId.appointmentSlots.save();
       await appointment.save();
       console.log(appointment);
       return res.status(200).json({ message: "Success", appointment: appointment });
