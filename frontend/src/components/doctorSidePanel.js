@@ -69,15 +69,15 @@ const DoctorSidePanel = ({ appt }) => {
   };
 
   const PatientHistory = () => {
-    Navigate(`/${docId}/doctor/patient-history/${appt._id}/${appt.patientId._id}`);
+    //Navigate(`/${docId}/doctor/patient-history/${appt._id}/${appt.patientId._id}`);
   }
 
   const PatientDiagnosis = () => {
-    Navigate(`/${docId}/doctor/diagnosis/${appt._id}`);
+    //Navigate(`/${docId}/doctor/diagnosis/${appt._id}`);
   }
 
   const PatientReport = () => {
-    Navigate(`/${docId}/doctor/report/${appt._id}`);
+    //Navigate(`/${docId}/doctor/report/${appt._id}`);
   }
 
   const handleClose = (event, reason) => {
