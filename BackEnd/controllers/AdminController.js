@@ -170,7 +170,23 @@ const adminController = {
             console.log(err);
             return res.status(500).json({ message: err.message });
         }
-    }
+    },
+
+    verifyDoctor: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const doctor = await Doctor.findOne({ user: id });
+            if (!doctor)
+                return res.status(404).json({ message: "Doctor not found" });
+            doctor.approvedStatus = true;
+            await doctor.save();
+            return res.status(200).json({ message: "Success" });
+        }
+        catch (error) {
+            console.log(error.message);
+            return res.status(502).json({ message: "Something went wrong" });
+        }
+    },
 }
 
 module.exports = adminController;

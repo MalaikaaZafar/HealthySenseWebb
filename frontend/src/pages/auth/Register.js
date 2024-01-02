@@ -69,7 +69,7 @@ const StyledButton = styled(Button)(({ theme }) => `
   color: white;
   height: 30px;
   padding: 0 20px;
-  box-shadow: 0 3px 5px 2px rgba(255, 105, 135, .3);
+  box-shadow: 0 3px 5px 2px rgba(255, 255, 255, .3);
   &:hover {
     background: linear-gradient(45deg, ${theme.palette.primary.dark} 30%, ${theme.palette.primary.main} 90%);
   }
@@ -351,7 +351,7 @@ const RegisterDoctor = () => {
 
         api.post('/doctor/register', formData, { withCredentials: true })
             .then(res => {
-                navigate('/doctor');
+                navigate(`/${res.data.id}/doctor`, { replace: true });
             })
             .catch(err => {
                 console.log(err);
@@ -582,7 +582,7 @@ const RegisterDoctor = () => {
                                                             value={selectedDate}
                                                             onChange={handleDateChange}
                                                             label="Date"
-                                                            maxDate={dayjs(new Date())}
+                                                            minDate={dayjs(new Date())}
                                                             slotProps={{
                                                                 textField: {
                                                                     fullWidth: true,

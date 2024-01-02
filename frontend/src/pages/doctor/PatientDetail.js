@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import {
     Container,
     Grid,
@@ -18,6 +18,7 @@ import {
     CircularProgress,
 } from '@mui/material';
 import { styled } from '@mui/system';
+import { useParams } from 'react-router-dom';
 
 import styles from './PatientDetail.module.css';
 
@@ -67,41 +68,46 @@ const StyledTableRow = styled(TableRow)`
   }
 `;
 
-const DataTable = ({ data, columns }) => (
-    <TableContainer component={Paper}>
-        <Table>
-            <StyledTableHead>
-                <TableRow>
-                    {columns.map((column, index) => (
-                        <StyledTableCell key={index}>{column}</StyledTableCell>
-                    ))}
-                </TableRow>
-            </StyledTableHead>
-            <TableBody>
-                {data.length > 0 ? data.map((item, index) => (
-                    <StyledTableRow key={index}>
-                        <TableCell>
-                            {item.doctor ? (
-                                <Link href="#" color="primary" underline="none">
-                                    {item.doctor}
-                                </Link>
-                            ) : (
-                                item.description
-                            )}
-                        </TableCell>
-                        <TableCell>{item.date || item.type}</TableCell>
-                    </StyledTableRow>
-                )) :
-                    <StyledTableRow>
-                        <TableCell colSpan={columns.length} align="center">
-                            No data available
-                        </TableCell>
-                    </StyledTableRow>
-                }
-            </TableBody>
-        </Table>
-    </TableContainer>
-);
+const DataTable = ({ data, columns }) => {
+
+    const { doctorId } = useParams();
+
+    return (
+        <TableContainer component={Paper}>
+            <Table>
+                <StyledTableHead>
+                    <TableRow>
+                        {columns.map((column, index) => (
+                            <StyledTableCell key={index}>{column}</StyledTableCell>
+                        ))}
+                    </TableRow>
+                </StyledTableHead>
+                <TableBody>
+                    {data.length > 0 ? data.map((item, index) => (
+                        <StyledTableRow key={index}>
+                            <TableCell>
+                                {item.doctor ? (
+                                    <Link href={`/${doctorId}/doctor/appointments/${item._id}`} color="inherit">
+                                        {item.doctor}
+                                    </Link>
+                                ) : (
+                                    item.description
+                                )}
+                            </TableCell>
+                            <TableCell>{item.date || item.type}</TableCell>
+                        </StyledTableRow>
+                    )) :
+                        <StyledTableRow>
+                            <TableCell colSpan={columns.length} align="center">
+                                No data available
+                            </TableCell>
+                        </StyledTableRow>
+                    }
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+};
 
 const PatientDetails = () => {
 
@@ -116,11 +122,14 @@ const PatientDetails = () => {
         complaints: [],
         image: null,
     });
+
     const [loading, setLoading] = useState(true);
+
+    const url = process.env.REACT_APP_SERVER_URL;
 
     useEffect(() => {
         const getPatientDetails = async () => {
-            await axios.get('http://localhost:3000/doctor/patient-detail/6592fa7c57277a58b08e1f62')
+            await api.get('/doctor/patient-detail/6592fa7c57277a58b08e1f62')
                 .then((res) => {
                     console.log(res.data);
                     setPatient(res.data);
@@ -151,10 +160,10 @@ const PatientDetails = () => {
 
     if (loading) {
         return (
-            <Box 
-                display="flex" 
-                justifyContent="center" 
-                alignItems="center" 
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
                 height="100vh"
             >
                 <CircularProgress />
@@ -170,7 +179,7 @@ const PatientDetails = () => {
                         <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
                             <Box marginBottom={2}>
                                 {patient.image ? (
-                                    <StyledAvatar src={`http://localhost:3000/uploads/${patient.image}`} alt="Profile Picture" />
+                                    <StyledAvatar src={`${url}/uploads/${patient.image}`} alt="Profile Picture" />
                                 ) : (
                                     <StyledAvatar src="/images/photo.png" />
                                 )}

@@ -19,10 +19,10 @@ import {
     TableBody,
     Divider,
     Hidden,
+    Avatar,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { Link as MuiLink } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
 import PeopleIcon from '@mui/icons-material/People';
 import School from '@mui/icons-material/School';
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -35,7 +35,6 @@ import IconButton from '@mui/material/IconButton';
 import styles from './DoctorDetail.module.css';
 import { styled } from '@mui/system';
 import api from '../../services/api';
-import axios from 'axios';
 import Ban from '../../components/Ban';
 
 const BlackLinearProgress = styled(LinearProgress)({
@@ -55,6 +54,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         backgroundColor: theme.palette.action.hover,
     },
 }));
+
+const StyledAvatar = styled(Avatar)({
+    width: '70px',
+    height: '70px',
+});
 
 function DoctorDeatils({ type }) {
 
@@ -76,6 +80,8 @@ function DoctorDeatils({ type }) {
     const handleClickOpen = () => {
         setOpen(true);
     };
+
+    const url = process.env.REACT_APP_SERVER_URL;
 
     const handleCertificateChange = async (certificate) => {
         try {
@@ -127,6 +133,8 @@ function DoctorDeatils({ type }) {
         fees: 0,
         location: "",
         availability: false,
+        verified: false,
+        image: null,
     });
 
     useEffect(() => {
@@ -155,6 +163,19 @@ function DoctorDeatils({ type }) {
 
     }, [banClickCount]);
 
+    const handleVerifyDoctor = () => {
+        api.post(`/verify/${docId}`)
+            .then(res => {
+                window.location.reload();
+            }
+            )
+            .catch(err => {
+                console.log(err);
+                alert(err.response.data.message);
+            }
+            );
+    }
+
     const bookAppt = (e) => {
         e.stopPropagation();
         navigate(`/${patientId}/patient/book-appointment/${docId}`);
@@ -168,7 +189,13 @@ function DoctorDeatils({ type }) {
                         <Grid item xs={12} sm={6} md={doctor.name.length > 20 || doctor.specialization.length > 20 ? 4 : 3}>
                             <Paper className={styles.innerBigPane1}>
                                 <Box display="flex" alignItems="center" marginLeft={2} height={100} pr={2} justifyContent={'center'} >
-                                    <PersonIcon fontSize="large" color="black" />
+                                    <Box>
+                                        {doctor.image ? (
+                                            <StyledAvatar src={`${url}/uploads/${doctor.image}`} alt="Profile Picture" />
+                                        ) : (
+                                            <StyledAvatar src="/images/photo.png" />
+                                        )}
+                                    </Box>
                                     <Box ml={2} mt={-2}>
                                         <Typography variant="h7" color={'black'} fontWeight={'bold'}>
                                             {doctor.name}
@@ -405,7 +432,7 @@ function DoctorDeatils({ type }) {
                                     startIcon={<DownloadIcon />}
                                     onClick={downloadFile}
                                 >
-                                    Download PDF
+                                    Download
                                 </Button>
                             </DialogContent>
                         </Dialog>
@@ -439,12 +466,14 @@ function DoctorDeatils({ type }) {
                                             Book Appointment
                                         </Button>
                                     }
-                                    {type === 'admin' &&
+                                    {type === 'admin' && !doctor.verified &&
                                         <>
                                             {doctor.isBanned ? <Ban text={'Unban Doctor'} onChange={handleBanClick} /> : <Ban text={'Ban Doctor'} onChange={handleBanClick} />}
                                             <Button variant="contained"
                                                 sx={{ marginLeft: '10px', width: '20%', textTransform: 'none', borderRadius: '10px', alignSelf: 'center' }}
-                                                fullWidth>
+                                                fullWidth
+                                                onClick={() => handleVerifyDoctor()}
+                                            >
                                                 Verify Doctor
                                             </Button>
                                         </>
