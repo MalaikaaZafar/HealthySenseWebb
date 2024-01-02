@@ -164,23 +164,23 @@ function DocNavbar() {
             <Box className="navBar" sx={{ display: { xs: 'none', md: 'flex' } }}>
                 <Button
                     sx={selectedButton === '/' ? styles.selectedBtn : styles.btn}
-                    onClick={() => handleButtonClick('/')}
+                    onClick={() => handleButtonClick('/appointments')}
                 >
                     Home
                 </Button>
-                <Button
-                    sx={selectedButton === '/favorites' ? styles.selectedBtn : styles.btn}
-                    onClick={() => handleButtonClick('/favorites')}
-                >
-                    Favorites
-                </Button>
-                <Button sx={styles.btn}>Appointments</Button>
+                <Button sx={styles.btn}
+                    onClick={() => handleButtonClick('/appointments')}
+                >Consultations</Button>
+                <Button sx={styles.btn}
+                    onClick={() => handleButtonClick('/appointmentSlots')}
+                >Slots</Button>
                 <Button
                     onClick={() => handleButtonClick('/faq')}
                     sx={styles.btn}>Support</Button>
                 <Button
                     onClick={() => handleButtonClick('/about')}
                     sx={styles.btn}>About Us</Button>
+
             </Box>
 
             <Outlet />
