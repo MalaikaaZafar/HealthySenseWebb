@@ -55,7 +55,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/register" element={<RegisterDoctor />} />
             <Route path="/:id/meet" element={<Meet />} />
-            
+
             <Route path="/:adminId/admin" element={<ProtectedRoute />}>
               <Route element={<AdminNavbar />}>
                 <Route path='' index element={<AdminActivity />} />
