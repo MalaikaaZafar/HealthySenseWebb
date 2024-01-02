@@ -154,6 +154,19 @@ function DoctorDeatils({ type }) {
 
     }, [banClickCount]);
 
+    const handleVerifyDoctor = () => {
+        api.put(`/verify/${docId}`)
+            .then(res => {
+                window.location.reload();
+            }
+            )
+            .catch(err => {
+                console.log(err);
+                alert(err.response.data.message);
+            }
+            );
+    }
+
     return (
         <div>
             <Container>
@@ -436,7 +449,9 @@ function DoctorDeatils({ type }) {
                                             {doctor.isBanned ? <Ban text={'Unban Doctor'} onChange={handleBanClick} /> : <Ban text={'Ban Doctor'} onChange={handleBanClick} />}
                                             <Button variant="contained"
                                                 sx={{ marginLeft: '10px', width: '20%', textTransform: 'none', borderRadius: '10px', alignSelf: 'center' }}
-                                                fullWidth>
+                                                fullWidth
+                                                onClick={() => handleVerifyDoctor()}
+                                            >
                                                 Verify Doctor
                                             </Button>
                                         </>

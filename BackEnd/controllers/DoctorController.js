@@ -37,7 +37,7 @@ const doctorController = {
 
             await Doctor.create({ user: req.user._id, specialization, description, location, experience, session, services, appointmentSlots, certificates });
 
-            return res.status(201).json(req.user._id);
+            return res.status(201).json({ id: req.user._id });
         } catch (error) {
             console.log(error);
             return res.status(500).json({ message: "Something went wrong" });

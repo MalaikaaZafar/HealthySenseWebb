@@ -351,7 +351,7 @@ const RegisterDoctor = () => {
 
         api.post('/doctor/register', formData, { withCredentials: true })
             .then(res => {
-                navigate(`/${res.data.result._id}/doctor`, { replace: true });
+                navigate(`/${res.data.id}/doctor`, { replace: true });
             })
             .catch(err => {
                 console.log(err);
