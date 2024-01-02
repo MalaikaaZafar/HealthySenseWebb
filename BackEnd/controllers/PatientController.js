@@ -84,7 +84,8 @@ const patientController = {
         return res.status(404).json({ message: "Appointment not found" });
       appointment.status = "Cancelled";
       appointment.updateReason = reason;
-      const slot = appointment.doctorId.appointmentSlots.find(
+      const doc= await Doctor.findById(appointment.doctorId._id).populate('appointmentSlots').exec();
+      const slot = doc.appointmentSlots.find(
         (slot) =>
           slot.date.getDate() === appointment.date.getDate()
           && slot.date.getMonth() === appointment.date.getMonth()
@@ -93,6 +94,9 @@ const patientController = {
       slot.availability = true;
       appointment.doctorId.appointmentSlots.save();
       await appointment.save();
+      await slot.save();
+      await doc.save();
+      console.log(doc.appointmentSlots);
       console.log(appointment);
       return res.status(200).json({ message: "Success", appointment: appointment });
     } catch (error) {

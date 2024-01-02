@@ -55,6 +55,8 @@ const doctorController = {
         const UserId = req.user._id;
         try {
             const doc = await Doctor.findOne({ user: UserId });
+            console.log(doc);
+
             const apptList = await Appointment.find({ doctorId: doc._id })
                 .populate({ path: "doctorId", populate: { path: "user" } })
                 .populate({ path: "patientId", populate: { path: "user" } })
@@ -145,6 +147,8 @@ const doctorController = {
             const slots = doc.appointmentSlots.filter(slot => (slot.date !== app.date && slot.time !== app.time));
             slots.push({ date: app.date, time: app.time, availability: true });
             doc.appointmentSlots = slots;
+            doc.appointmentSlots.save();
+            doc.save();
             await app.save();
             return res.status(200).json({ message: 'Success', appointment: app });
         } catch (error) {
@@ -186,7 +190,8 @@ const doctorController = {
         const userId = req.user._id;
         try {
             const doc = await User.findOne({ _id: userId });
-            const appointment_slots = await Doctor.findById({ user: doc._id }, { appointmentSlots: 1 });
+            console.log(doc)
+            const appointment_slots = await Doctor.findOne({ user: doc._id }, { appointmentSlots: 1 });
             if (!appointment_slots)
                 return res.status(404).json({ message: "Doctor not found" });
             return res.status(200).json({ message: "Success", slots: appointment_slots.appointmentSlots });
