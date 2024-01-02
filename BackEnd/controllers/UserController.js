@@ -254,7 +254,7 @@ const userController = {
                 fees: minFee,
                 verified: doctor.approvedStatus,
                 image: doctor.profilePicture,
-                isBanned: doctor.isBanned,
+                isBanned: doctor.user.isBanned,
             };
 
             return res.status(200).json(temp);
