@@ -110,7 +110,11 @@ const userController = {
                 { email: existingUser.email, id: existingUser._id },
                 secret
             );
-            return res.status(200).json({ result: existingUser, token });
+            return res.status(200).cookie("token", token, { 
+                httpOnly: true,
+                secure: true,
+                sameSite: "none"
+            }).json({ result: existingUser, token });
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: "Something went wrong" });
@@ -215,91 +219,91 @@ const userController = {
                 checkupRating += reviews[i].checkupRating;
             }
 
-      if (reviews.length > 0) {
-        staffRating /= reviews.length;
-        clinicRating /= reviews.length;
-        checkupRating /= reviews.length;
-      }
+            if (reviews.length > 0) {
+                staffRating /= reviews.length;
+                clinicRating /= reviews.length;
+                checkupRating /= reviews.length;
+            }
 
-      staffRating = staffRating * 20;
-      clinicRating = clinicRating * 20;
-      checkupRating = checkupRating * 20;
+            staffRating = staffRating * 20;
+            clinicRating = clinicRating * 20;
+            checkupRating = checkupRating * 20;
 
             const minFee = doctor.session.reduce(
                 (min, session) => (session.fee < min ? session.fee : min),
                 doctor.session[0].fee
             );
 
-      let temp = {
-        name: doctor.user.name,
-        specialization: doctor.specialization,
-        rating: doctor.rating,
-        experience: doctor.experience,
-        patients: patientCount.length,
-        profilePicture: doctor.user.profilePicture,
-        certifications: doctor.certificates,
-        reviews: reviews,
-        staffRating: staffRating,
-        clinicRating: clinicRating,
-        checkupRating: checkupRating,
-        description: doctor.description,
-        fees: doctor.fees,
-        location: doctor.location,
-        services: doctor.services,
-        availability: doctor.availability,
-        fees: minFee,
-        verified: doctor.approvedStatus,
-        image: doctor.profilePicture,
-      };
+            let temp = {
+                name: doctor.user.name,
+                specialization: doctor.specialization,
+                rating: doctor.rating,
+                experience: doctor.experience,
+                patients: patientCount.length,
+                profilePicture: doctor.user.profilePicture,
+                certifications: doctor.certificates,
+                reviews: reviews,
+                staffRating: staffRating,
+                clinicRating: clinicRating,
+                checkupRating: checkupRating,
+                description: doctor.description,
+                fees: doctor.fees,
+                location: doctor.location,
+                services: doctor.services,
+                availability: doctor.availability,
+                fees: minFee,
+                verified: doctor.approvedStatus,
+                image: doctor.profilePicture,
+            };
 
-      return res.status(200).json(temp);
-    }
-    catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: 'Something went wrong' });
-    }
-  },
+            return res.status(200).json(temp);
+        }
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({ message: 'Something went wrong' });
+        }
+    },
 
-  getNotifications: async (req, res) => {
-    try {
-      const userId = req.user._id;
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-      const notifications = user.notifications;
-      return res.status(200).json(notifications);
-    }
-    catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: 'Something went wrong' });
-    }
-  },
-  readNotifications: async (req, res) => {
+    getNotifications: async (req, res) => {
+        try {
+            const userId = req.user._id;
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            const notifications = user.notifications;
+            return res.status(200).json(notifications);
+        }
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({ message: 'Something went wrong' });
+        }
+    },
+    readNotifications: async (req, res) => {
 
-    try {
-      const userId = req.user._id;
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-      const notifications = user.notifications;
+        try {
+            const userId = req.user._id;
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            const notifications = user.notifications;
 
-      // Mark all notifications as read
-      for (let notification of notifications) {
-        notification.isRead = true;
-      }
-      // Save the user document
-      await user.save();
+            // Mark all notifications as read
+            for (let notification of notifications) {
+                notification.isRead = true;
+            }
+            // Save the user document
+            await user.save();
 
-      return res.status(200).json(notifications);
+            return res.status(200).json(notifications);
+        }
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({ message: 'Something went wrong' });
+        }
+
     }
-    catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: 'Something went wrong' });
-    }
-
-  }
 };
 
 module.exports = userController;
