@@ -747,7 +747,7 @@ const RegisterDoctor = () => {
                                                         />
                                                     </Grid>
                                                 </LocalizationProvider>
-                                                <Grid container>
+                                                <Grid container justifyContent={'space-between'} alignItems={'center'}>
                                                     <Grid item xs={4} mb={2}>
                                                         <Button component="label" fullWidth margin='normal' startIcon={<UploadFile />} size='large'>
                                                             Upload
@@ -762,7 +762,7 @@ const RegisterDoctor = () => {
                                                         </Button>
                                                     </Grid>
                                                     {currentCertificate.file && (
-                                                        <Grid item xs={5}>
+                                                        <Grid item xs={5} mb={2}>
                                                             <Box display="flex" alignItems="center" height="100%" justifyContent="center">
                                                                 <Chip
                                                                     icon={<Description />}
