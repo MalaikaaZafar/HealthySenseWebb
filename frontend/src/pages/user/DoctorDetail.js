@@ -125,6 +125,7 @@ function DoctorDeatils({ type }) {
         fees: 0,
         location: "",
         availability: false,
+        verified: false,
     });
 
     useEffect(() => {
@@ -398,7 +399,7 @@ function DoctorDeatils({ type }) {
                                     startIcon={<DownloadIcon />}
                                     onClick={downloadFile}
                                 >
-                                    Download PDF
+                                    Download
                                 </Button>
                             </DialogContent>
                         </Dialog>
@@ -430,7 +431,7 @@ function DoctorDeatils({ type }) {
                                             Book Appointment
                                         </Button>
                                     }
-                                    {type === 'admin' &&
+                                    {type === 'admin' && !doctor.verified &&
                                         <>
                                             {doctor.isBanned ? <Ban text={'Unban Doctor'} onChange={handleBanClick} /> : <Ban text={'Ban Doctor'} onChange={handleBanClick} />}
                                             <Button variant="contained"

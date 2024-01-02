@@ -247,6 +247,7 @@ const userController = {
         services: doctor.services,
         availability: doctor.availability,
         fees: minFee,
+        verified: doctor.approvedStatus,
       };
 
             return res.status(200).json(temp);
