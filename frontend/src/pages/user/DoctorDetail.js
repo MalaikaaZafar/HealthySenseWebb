@@ -19,10 +19,10 @@ import {
     TableBody,
     Divider,
     Hidden,
+    Avatar,
 } from '@mui/material';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { Link as MuiLink } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
 import PeopleIcon from '@mui/icons-material/People';
 import School from '@mui/icons-material/School';
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -54,6 +54,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         backgroundColor: theme.palette.action.hover,
     },
 }));
+
+const StyledAvatar = styled(Avatar)({
+    width: '70px',
+    height: '70px',
+});
 
 function DoctorDeatils({ type }) {
 
@@ -177,7 +182,7 @@ function DoctorDeatils({ type }) {
                         <Grid item xs={12} sm={6} md={doctor.name.length > 20 || doctor.specialization.length > 20 ? 4 : 3}>
                             <Paper className={styles.innerBigPane1}>
                                 <Box display="flex" alignItems="center" marginLeft={2} height={100} pr={2} justifyContent={'center'} >
-                                    <Box marginBottom={2}>
+                                    <Box>
                                         {doctor.image ? (
                                             <StyledAvatar src={`${url}/uploads/${doctor.image}`} alt="Profile Picture" />
                                         ) : (
