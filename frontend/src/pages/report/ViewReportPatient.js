@@ -54,7 +54,6 @@ const ViewReportPatient = () => {
             setOpen(true);
             setTimeout(() => {
                 //navigate('/app/patient');
-                navigate('/login');
             }, 2000);
         }
     }
