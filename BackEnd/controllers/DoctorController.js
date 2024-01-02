@@ -54,17 +54,17 @@ const doctorController = {
     consultations: async (req, res) => {
         const UserId = req.user._id;
         try {
-          const doc = await Doctor.findOne({ user: UserId });
-          const apptList = await Appointment.find({ doctorId: doc._id })
-            .populate({ path: "doctorId", populate: { path: "user" } })
-            .populate({ path: "patientId", populate: { path: "user" } })
-            .exec();
-          return res.status(200).json(apptList);
-        } catch (error) { 
-          console.log(error.message);
-          return res.status(500).json({ message: "Something went wrong" });
-        } 
-      },
+            const doc = await Doctor.findOne({ user: UserId });
+            const apptList = await Appointment.find({ doctorId: doc._id })
+                .populate({ path: "doctorId", populate: { path: "user" } })
+                .populate({ path: "patientId", populate: { path: "user" } })
+                .exec();
+            return res.status(200).json(apptList);
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({ message: "Something went wrong" });
+        }
+    },
 
     // view details of a specific appointment 
     getConsultationById: async (req, res) => {
@@ -168,7 +168,7 @@ const doctorController = {
         const { slots } = req.body;
         const userId = req.user._id;
         try {
-            const doc= await User.findOne({ _id: userId });
+            const doc = await User.findOne({ _id: userId });
             const doctor = await Doctor.findOne({ user: doc._id });
             if (!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
@@ -185,7 +185,7 @@ const doctorController = {
     getSlots: async (req, res) => {
         const userId = req.user._id;
         try {
-            const doc= await User.findOne ({ _id: userId });
+            const doc = await User.findOne({ _id: userId });
             const appointment_slots = await Doctor.findById({ user: doc._id }, { appointmentSlots: 1 });
             if (!appointment_slots)
                 return res.status(404).json({ message: "Doctor not found" });
@@ -232,7 +232,7 @@ const doctorController = {
             }
             if (minRating) {
                 console.log(minRating)
-                filter.rating = { $gte: Number(minRating) , $exists: true};
+                filter.rating = { $gte: Number(minRating), $exists: true };
             }
             let doctors = await Doctor.find(filter).where('approvedStatus').equals(true).populate('user');
             if (doctors.length !== 0) {
@@ -367,7 +367,7 @@ const doctorController = {
     getAccountDetails: async (req, res) => {
         const { id } = req.params;
         try {
-            const doctor = await Doctor.findById(id).populate({ path: 'user' }).exec();
+            const doctor = await Doctor.findOne({ user: id }).populate({ path: 'user' }).exec();
             if (!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
             return res.status(200).json({ doctor });
@@ -383,7 +383,7 @@ const doctorController = {
         const { specialization, description, location, experience, workingHours, services, certificates, session, user, availability, phoneNumber } = req.body;
         var UpdatedCertificates = JSON.parse(certificates);
         try {
-            const doctor = await Doctor.findById(id);
+            const doctor = await Doctor.findOne({ user: id });
             if (!doctor)
                 return res.status(404).json({ message: "Doctor not found" });
             const userdata = await User.findById(doctor.user);
@@ -489,14 +489,14 @@ const doctorController = {
     },
 
     getPatientHistory: async (req, res) => {
-        const { appid ,id } = req.params;
+        const { appid, id } = req.params;
         try {
             const patient = await Patient.findById(id);
             if (!patient)
                 return res.status(404).json({ message: "Patient not found" });
             const appointment = await Appointment.findById(appid).
-                    populate({ path: 'doctorId', populate: { path: 'user' } }).
-                    populate({ path: 'patientId', populate: { path: 'user' } }).exec();
+                populate({ path: 'doctorId', populate: { path: 'user' } }).
+                populate({ path: 'patientId', populate: { path: 'user' } }).exec();
             return res.status(200).json({ message: "Success", History: patient.history, app: appointment });
         }
         catch (error) {
