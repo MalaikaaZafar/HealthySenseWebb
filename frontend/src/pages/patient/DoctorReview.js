@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import {
   Button,
   Typography,
@@ -14,6 +14,7 @@ import {
   TextField,
   Hidden,
   CircularProgress,
+  Avatar,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import PersonIcon from '@mui/icons-material/Person';
@@ -29,6 +30,11 @@ const CustomTextField = styled(TextField)({
     marginTop: '0.7rem',
     marginBottom: 'auto',
   },
+});
+
+const StyledAvatar = styled(Avatar)({
+  width: '70px',
+  height: '70px',
 });
 
 function DoctorReviewForm() {
@@ -74,7 +80,7 @@ function DoctorReviewForm() {
 
     const fetchData = () => {
       console.log("cookie: ", document.cookie);
-      axios.post('http://localhost:3000/doctor-compact/658c46d48180f6a9f753706c', {}, { withCredentials: true })
+      api.post('/doctor-compact/658c46d48180f6a9f753706c')
         .then(res => {
           setDoctor({
             name: res.data.name,
@@ -112,9 +118,7 @@ function DoctorReviewForm() {
       recommendation: recommend,
     };
 
-    console.log(review);
-
-    axios.post('http://localhost:3000/patient/review/658c46d48180f6a9f753706c', review, { withCredentials: true })
+    api.post('/patient/review/658c46d48180f6a9f753706c', review)
       .then(res => {
         console.log(res);
         alert(res.data.message);
@@ -127,6 +131,8 @@ function DoctorReviewForm() {
 
     setIsSubmitting(false);
   };
+
+  const url = process.env.REACT_APP_SERVER_URL;
 
   if (!isLoaded) {
     return (
@@ -150,7 +156,13 @@ function DoctorReviewForm() {
               <Grid item xs={12} sm={6} md={doctor.name.length > 20 || doctor.specialization.length > 20 ? 4 : 3}>
                 <Paper className={styles.innerBigPane1}>
                   <Box display="flex" alignItems="center" marginLeft={2} height={100} pr={2} justifyContent={'center'} >
-                    <PersonIcon fontSize="large" color="black" />
+                    <Box>
+                      {doctor.image ? (
+                        <StyledAvatar src={`${url}/uploads/${doctor.image}`} alt="Profile Picture" />
+                      ) : (
+                        <StyledAvatar src="/images/photo.png" />
+                      )}
+                    </Box>
                     <Box ml={2} mt={-2}>
                       <Typography variant="h7" color={'black'} fontWeight={'bold'}>
                         {doctor.name}

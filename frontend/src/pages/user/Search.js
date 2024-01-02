@@ -192,7 +192,7 @@ const Search = () => {
                 <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', p: 2, justifyContent: 'center', alignItems: 'flex-start', width: '100%' }}>
                     {doctors?.length > 0 && doctors.map((doctor, index) => {
                         return (
-                            isFavorite(doctor) ? <DoctorCard user={doctor} buttons={true} key={index} isFav={true} onFavChanged={onFavChange} /> : <DoctorCard user={doctor} buttons={true} key={index} onFavChanged={onFavChange} />
+                            isFavorite(doctor) ? <DoctorCard user={doctor} role='patient' buttons={true} key={index} isFav={true} onFavChanged={onFavChange} /> : <DoctorCard role='patient' user={doctor} buttons={true} key={index} onFavChanged={onFavChange} />
                         );
                     })}
                 </Box>

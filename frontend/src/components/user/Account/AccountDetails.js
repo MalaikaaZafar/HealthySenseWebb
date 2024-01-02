@@ -3,9 +3,10 @@ import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
-import React from "react";
+import React, { useEffect } from "react";
 
-const AccountDetails = ({ Data, setData, setChanges,ImageUrl ,setImageUrl }) => {
+const AccountDetails = ({ Data, setData, setChanges, ImageUrl, setImageUrl }) => {
+    const url = process.env.REACT_APP_BASE_URL;
     const HandleProfilePicChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -28,11 +29,18 @@ const AccountDetails = ({ Data, setData, setChanges,ImageUrl ,setImageUrl }) => 
         return /^\d+$/.test(value);
     }
 
+    useEffect(() => {
+        console.log("ImageUrl");
+        console.log(ImageUrl);
+        console.log("Data");
+        console.log(Data);
+        console.log(url);   
+    }, [])
+
     return (
         <>
-            <Typography variant="h4" style={{ textAlign: 'center' }}>My Account</Typography>
             <div className="column123">
-                <Avatar sx={{ width: 300, height: 300 }} src={ImageUrl? Data.profilePicture :`http://localhost:5000/${Data.profilePicture}`}  />
+                <Avatar sx={{ width: 300, height: 300 }} src={ImageUrl ? Data.profilePicture : `${url}/uploads/${Data.profilePicture}`} />
                 <div className="row-display">
                     <input type="file"
                         accept="image/*"
@@ -91,14 +99,15 @@ const AccountDetails = ({ Data, setData, setChanges,ImageUrl ,setImageUrl }) => 
                     setChanges(true);
                 }}
                     fullWidth
+                    disabled
                 />
                 <TextField id="outlined-basic" label="Phone" variant="outlined" value={Data.phoneNumber} onChange={(e) => {
                     if (e.target.value.length > 10) {
-                        alert("Phone Number Cannot be more than 12 digits")
+                        alert("Phone Number Cannot be more than 10 digits")
                     }
                     else if (isNumeric(e.target.value)) {
                         setData(draft => {
-                            draft.user.phoneNumber =e.target.value;
+                            draft.user.phoneNumber = e.target.value;
                         })
                         setChanges(true);
                     }

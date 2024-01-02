@@ -92,6 +92,7 @@ const patientController = {
           && slot.date.getFullYear() === appointment.date.getFullYear()
       );
       slot.availability = true;
+      appointment.doctorId.appointmentSlots.save();
       await appointment.save();
       await slot.save();
       await doc.save();
@@ -264,7 +265,8 @@ const patientController = {
       user.dob = dob;
       user.country = country;
       user.gender = gender;
-      patient.history = JSON.parse(history);
+      console.log(history);
+      patient.history = (history);
       patient.bloodGroup = bloodGroup;
       if (File) {
         var fileName = user._id + path.extname(File.name);

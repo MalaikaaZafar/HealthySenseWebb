@@ -19,10 +19,10 @@ import {
     TableBody,
     Divider,
     Hidden,
+    Avatar,
 } from '@mui/material';
-import { Link as RouterLink, useParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { Link as MuiLink } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
 import PeopleIcon from '@mui/icons-material/People';
 import School from '@mui/icons-material/School';
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -35,7 +35,6 @@ import IconButton from '@mui/material/IconButton';
 import styles from './DoctorDetail.module.css';
 import { styled } from '@mui/system';
 import api from '../../services/api';
-import axios from 'axios';
 import Ban from '../../components/Ban';
 
 const BlackLinearProgress = styled(LinearProgress)({
@@ -56,6 +55,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
+const StyledAvatar = styled(Avatar)({
+    width: '70px',
+    height: '70px',
+});
+
 function DoctorDeatils({ type }) {
 
     const [open, setOpen] = useState(false);
@@ -64,8 +68,10 @@ function DoctorDeatils({ type }) {
         name: '',
         file: null
     });
-    const { docId } = useParams();
+    const { patientId, docId } = useParams();
     const [banClickCount, setBanClickCount] = useState(0);
+    const navigate = useNavigate();
+
 
     const handleBanClick = () => {
         setBanClickCount(prevCount => prevCount + 1);
@@ -75,9 +81,11 @@ function DoctorDeatils({ type }) {
         setOpen(true);
     };
 
+    const url = process.env.REACT_APP_SERVER_URL;
+
     const handleCertificateChange = async (certificate) => {
         try {
-            const response = await axios.get(`http://localhost:3000/uploads/${certificate.file}`, { responseType: 'blob' });
+            const response = await api.get(`/uploads/${certificate.file}`, { responseType: 'blob' });
             setCurrentCertificate({
                 name: certificate.name,
                 file: new File([response.data], certificate.file, { type: response.data.type })
@@ -126,6 +134,7 @@ function DoctorDeatils({ type }) {
         location: "",
         availability: false,
         verified: false,
+        image: null,
     });
 
     useEffect(() => {
@@ -167,6 +176,11 @@ function DoctorDeatils({ type }) {
             );
     }
 
+    const bookAppt = (e) => {
+        e.stopPropagation();
+        navigate(`/${patientId}/patient/book-appointment/${docId}`);
+    }
+
     return (
         <div>
             <Container>
@@ -175,7 +189,13 @@ function DoctorDeatils({ type }) {
                         <Grid item xs={12} sm={6} md={doctor.name.length > 20 || doctor.specialization.length > 20 ? 4 : 3}>
                             <Paper className={styles.innerBigPane1}>
                                 <Box display="flex" alignItems="center" marginLeft={2} height={100} pr={2} justifyContent={'center'} >
-                                    <PersonIcon fontSize="large" color="black" />
+                                    <Box>
+                                        {doctor.image ? (
+                                            <StyledAvatar src={`${url}/uploads/${doctor.image}`} alt="Profile Picture" />
+                                        ) : (
+                                            <StyledAvatar src="/images/photo.png" />
+                                        )}
+                                    </Box>
                                     <Box ml={2} mt={-2}>
                                         <Typography variant="h7" color={'black'} fontWeight={'bold'}>
                                             {doctor.name}
@@ -440,7 +460,9 @@ function DoctorDeatils({ type }) {
                                 </Grid>
                                 <Grid item xs={12} mt={2}>
                                     {type === 'patient' &&
-                                        <Button variant="contained" color="primary" fullWidth>
+                                        <Button
+                                            onClick={bookAppt}
+                                            variant="contained" color="primary" fullWidth>
                                             Book Appointment
                                         </Button>
                                     }

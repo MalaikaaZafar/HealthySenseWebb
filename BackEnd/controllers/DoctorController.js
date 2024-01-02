@@ -386,7 +386,7 @@ const doctorController = {
     updateAccount: async (req, res) => {
         const { id } = req.params;
         const { specialization, description, location, experience, workingHours, services, certificates, session, user, availability, phoneNumber } = req.body;
-        var UpdatedCertificates = JSON.parse(certificates);
+        var UpdatedCertificates = (certificates);
         try {
             const doctor = await Doctor.findOne({ user: id });
             if (!doctor)
@@ -446,7 +446,7 @@ const doctorController = {
                     UpdatedCertificates[index].file = fileName;
                 });
             }
-            var newuser = JSON.parse(user);
+            var newuser = (user);
             userdata.name = newuser.name;
             userdata.email = newuser.email;
             userdata.phoneNumber = phoneNumber;
@@ -460,10 +460,10 @@ const doctorController = {
             doctor.location = location;
             doctor.experience = experience;
             doctor.workingHours = workingHours;
-            doctor.services = JSON.parse(services);
+            doctor.services = (services);
             doctor.certificates = UpdatedCertificates;
-            doctor.session = JSON.parse(session);
-            doctor.availability = JSON.parse(availability);
+            doctor.session = (session);
+            doctor.availability = (availability);
             await doctor.save();
             res.json({ message: "Success" });
         } catch (error) {

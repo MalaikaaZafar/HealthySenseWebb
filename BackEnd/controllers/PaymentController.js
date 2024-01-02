@@ -4,6 +4,7 @@ dotenv.config();
 const stripe = require("stripe")('sk_test_51ORCE8COwHOebIPaJCcA5KIonEpNVIL5NoNTFFquyPetGMIPuKMfbn7M3HQWa0NSM4Tih512nFrI2qfZrbWSFKLp00wwmvDQHk');
 const Appointment = require("../models/Apointments");
 const Payment = require("../models/Payment");
+const User = require("../models/User");
 
 const paymentController = {
     getClientSecret: async (req, res) => {
@@ -23,7 +24,7 @@ const paymentController = {
                 client_secret = payment.clientSecret;
                 fee = payment.amount;
                 if (payment.status == true) {
-                    status = true;  
+                    status = true;
                 }
             }
             else {
@@ -74,11 +75,14 @@ const paymentController = {
         const { id } = req.params;
         try {
             const payment = await Payment.findById(id);
-            const appointment = await Appointment.findById(payment.appointmentId);
+            const appointment = await Appointment.findById(payment.appointmentId).populate('patientId').exec();
             appointment.paymentStatus = 'Paid';
             await appointment.save();
             payment.status = true;
             await payment.save();
+
+            const user = await User.findById(appointment.patientId.user);
+            user.notifications.push({ message: `You have successfully wasted money` });
             res.status(200).json({
                 message: "Payment Successful",
             });

@@ -98,10 +98,11 @@ function App() {
                 <Route path='review' element={<DoctorReview />} />
                 <Route path="account" element={<PatientManageAccount />} />
                 <Route path='favorites' element={<Favorites />} />
-                <Route path='doctor-detail' element={<DoctorDetail type='patient' />} />
+                <Route path='doctor-detail/:docId' element={<DoctorDetail type='patient' />} />
                 <Route path='faq' element={<FAQ />} />
                 <Route path='messages' element={<Messages />} />
                 <Route path="messages/:id" element={<Messages />} />
+                <Route path='about' element={<AboutUs />} />
               </Route>
             </Route>
 

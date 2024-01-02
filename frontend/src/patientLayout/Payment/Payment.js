@@ -13,7 +13,7 @@ const stripePromise = loadStripe("pk_test_51ORCE8COwHOebIPaJuo4wEtBzTUJBXnMudevC
 
 const Payment = () => {
     const navigate = useNavigate();
-    const { appid } = useParams();
+    const { patientId, appid } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [clientSecret, setClientSecret] = useState(null);
     const [data, setData] = useState({});
@@ -39,7 +39,7 @@ const Payment = () => {
                 setVariant("info");
                 setOpen(true);
                 setTimeout(() => {
-                    navigate('/login');
+                    navigate(`/${patientId}/patient`);
                 }, 2000);
                 setIsLoading(true);
             }
@@ -54,7 +54,7 @@ const Payment = () => {
             setMessage("Something went wrong");
             setVariant("error");
             setTimeout(() => {
-                navigate('/login');
+                navigate('../');
             }, 3000);
         }
     }
@@ -83,14 +83,14 @@ const Payment = () => {
                         }}
                     >
                         <Typography variant='h4' sx={{ fontWeight: 'bold', textAlign: 'center' }}>Payment</Typography>
-                        <Container maxWidth='md' 
+                        <Container maxWidth='md'
                             className="element"
-                        sx={{
-                            marginTop: '30px',
-                            borderRadius: '10px',
-                            padding: '20px',
-                            border: '1px solid #e0e0e0',
-                        }}>
+                            sx={{
+                                marginTop: '30px',
+                                borderRadius: '10px',
+                                padding: '20px',
+                                border: '1px solid #e0e0e0',
+                            }}>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <Avatar alt={data.Name} src={data.Profile} sx={{ width: '120px', height: '120px' }} />
@@ -108,7 +108,7 @@ const Payment = () => {
                             padding: '10px',
                             border: '1px solid #e0e0e0',
                         }}
-                        className="element"
+                            className="element"
                         >
                             <Container maxWidth='md' sx={{ marginTop: '1rem' }}>
                                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>

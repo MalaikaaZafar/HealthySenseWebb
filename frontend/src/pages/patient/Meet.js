@@ -1,20 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { JaaSMeeting } from '@jitsi/react-sdk';
-import { useParams } from 'react-router-dom';
 
 const Meet = () => {
 
   const navigate = useNavigate();
   const name = "Moiz";
+  const room = "123-345";
   const appId = "vpaas-magic-cookie-718c706ae06a47358bd331c069d34baa";
-  const {id} = useParams();
 
   return (
     <div style={{ height: '100vh', display: 'grid', flexDirection: 'column', overflow: 'hidden' }}>
       <JaaSMeeting
         appId={appId}
-        roomName={id}
+        roomName={room}
         displayName={name}
         onApiReady={api => {
           api.on('displayNameChange', (e) => {

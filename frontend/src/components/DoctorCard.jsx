@@ -23,7 +23,7 @@ function DoctorCard({ user, buttons, onFavChanged, role, isFav }) {
     const { patientId } = useParams();
     const bookAppt = (e) => {
         e.stopPropagation();
-        navigate(`/${patientId}/patient/book-appointment/${user._id}`);
+        navigate(`/${patientId}/patient/book-appointment/${user.user._id}`);
     }
     useEffect(() => {
         user.session.map((session) => {
@@ -42,6 +42,9 @@ function DoctorCard({ user, buttons, onFavChanged, role, isFav }) {
         //Navigate to user page
         if (role == 'admin') {
             navigate(`../doctor-detail/${user.user._id}`);
+        }
+        if (role == 'patient') {
+            navigate(`doctor-detail/${user.user._id}`);
         }
         alert("Navigate to user page");
     }
@@ -77,7 +80,7 @@ function DoctorCard({ user, buttons, onFavChanged, role, isFav }) {
     }
 
     useEffect(() => {
-       
+
     }, [user]);
     return (
         <Card
